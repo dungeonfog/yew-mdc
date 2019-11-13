@@ -1,0 +1,23 @@
+[package]
+name = "yew-mdc"
+version = "0.1.0"
+authors = ["Follpvosten <wolfi@karpador.xyz>"]
+edition = "2018"
+
+[features]
+default = ["mdc-ripple", "mdc-text-field"]
+mdc-ripple = []
+mdc-text-field = []
+
+[dependencies]
+yew = { version = "0.10", default-features = false }
+wasm-bindgen = "0.2.45"
+js-sys = "0.3.22"
+
+[dependencies.web-sys]
+version = "0.3.22"
+features = [
+    "Element",
+    "Window",
+    "Document",
+]
