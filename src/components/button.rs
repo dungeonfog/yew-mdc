@@ -3,11 +3,12 @@ use web_sys::window;
 use yew::prelude::*;
 
 pub struct Button {
+    id: String,
     ripple: Option<MDCRipple>,
     props: Props,
 }
 
-#[derive(PartialEq)]
+#[derive(PartialEq, Debug)]
 pub enum Style {
     None,
     Raised,
@@ -32,10 +33,9 @@ impl std::fmt::Display for Style {
     }
 }
 
-#[derive(PartialEq, Properties)]
+#[derive(PartialEq, Properties, Debug)]
 pub struct Props {
-    #[props(required)]
-    pub id: String,
+    pub id: Option<String>,
     #[props(required)]
     pub text: String,
     pub style: Style,
@@ -52,7 +52,13 @@ impl Component for Button {
     type Message = Msg;
 
     fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
+        let id = props
+            .id
+            .as_ref()
+            .map(|id| id.to_owned())
+            .unwrap_or_else(|| format!("button-{}", crate::next_id()));
         Self {
+            id,
             ripple: None,
             props,
         }
@@ -62,12 +68,10 @@ impl Component for Button {
         if self.props.ripple {
             self.ripple = window()
                 .and_then(|w| w.document())
-                .and_then(|d| d.get_element_by_id(&self.props.id))
-                .map(|elem| MDCRipple::new(elem));
-            true
-        } else {
-            false
+                .and_then(|d| d.get_element_by_id(&self.id))
+                .map(MDCRipple::new);
         }
+        false
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
@@ -82,9 +86,14 @@ impl Component for Button {
     }
 
     fn view(&self) -> Html<Self> {
+        let ripple_surface = if self.props.ripple {
+            " mdc-ripple-surface"
+        } else {
+            ""
+        };
         html! {
-            <button class=format!("mdc-button {}", self.props.style)
-                    id=self.props.id
+            <button class=format!("mdc-button{} {}", ripple_surface, self.props.style)
+                    id=self.id
                     onclick=|_| Msg::Clicked>
                 <span class="mdc-button__label">{ &self.props.text }</span>
             </button>
