@@ -1,7 +1,7 @@
 use wasm_bindgen::prelude::*;
 use web_sys::Element;
 
-#[cfg(feature = "mdc-ripple")]
+#[cfg(any(feature = "mdc-button", feature = "mdc-fab"))]
 #[wasm_bindgen(module = "@material/ripple/index")]
 extern "C" {
     pub type MDCRipple;

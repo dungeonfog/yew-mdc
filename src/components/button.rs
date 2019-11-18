@@ -33,13 +33,16 @@ impl std::fmt::Display for Style {
     }
 }
 
-#[derive(PartialEq, Properties, Debug)]
+#[derive(Properties, Debug)]
 pub struct Props {
+    #[props(required)]
+    pub children: Children<Button>,
     pub id: Option<String>,
     #[props(required)]
     pub text: String,
     pub style: Style,
     pub ripple: bool,
+    pub trailingicon: bool,
     pub onclick: Option<Callback<()>>,
 }
 
@@ -86,16 +89,30 @@ impl Component for Button {
     }
 
     fn view(&self) -> Html<Self> {
-        let ripple_surface = if self.props.ripple {
-            " mdc-ripple-surface"
+        let ripple = if self.props.ripple {
+            html! {
+                <div class="mdc-button__ripple"></div>
+            }
         } else {
-            ""
+            html! {}
+        };
+        let inner = if self.props.trailingicon {
+            html! { <>
+                { self.props.children.render() }
+                <span class="mdc-button__label">{ &self.props.text }</span>
+            </> }
+        } else {
+            html! { <>
+                <span class="mdc-button__label">{ &self.props.text }</span>
+                { self.props.children.render() }
+            </> }
         };
         html! {
-            <button class=format!("mdc-button{} {}", ripple_surface, self.props.style)
+            <button class=format!("mdc-button {}", self.props.style)
                     id=self.id
                     onclick=|_| Msg::Clicked>
-                <span class="mdc-button__label">{ &self.props.text }</span>
+                { ripple }
+                { inner }
             </button>
         }
     }

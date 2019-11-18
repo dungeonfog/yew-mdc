@@ -5,8 +5,9 @@ authors = ["Follpvosten <wolfi@karpador.xyz>"]
 edition = "2018"
 
 [features]
-default = ["mdc-ripple", "mdc-text-field"]
-mdc-ripple = []
+default = ["mdc-button", "mdc-text-field"]
+mdc-button = []
+mdc-fab = []
 mdc-text-field = []
 
 [dependencies]
