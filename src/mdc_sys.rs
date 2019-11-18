@@ -4,6 +4,13 @@ use web_sys::Element;
 #[cfg(any(feature = "button", feature = "fab"))]
 #[wasm_bindgen(module = "@material/ripple/index")]
 extern "C" {
+    /// MDC Ripple provides the JavaScript and CSS required to provide components
+    /// (or any element at all) with a material “ink ripple” interaction effect.
+    /// It is designed to be efficient, uninvasive, and usable without adding
+    /// any extra DOM to your elements.
+    ///
+    /// MDC Ripple also works without JavaScript, where it gracefully degrades
+    /// to a simpler CSS-Only implementation.
     pub type MDCRipple;
 
     #[wasm_bindgen(constructor)]
@@ -11,7 +18,6 @@ extern "C" {
 
     #[wasm_bindgen(method, getter)]
     pub fn unbounded(this: &MDCRipple) -> bool;
-
     #[wasm_bindgen(method, setter)]
     pub fn set_unbounded(this: &MDCRipple, unbounded: bool);
 
@@ -45,13 +51,11 @@ extern "C" {
 
     #[wasm_bindgen(method, getter)]
     pub fn value(this: &MDCTextField) -> String;
-
     #[wasm_bindgen(method, setter)]
     pub fn set_value(this: &MDCTextField, value: String);
 
     #[wasm_bindgen(method, getter)]
     pub fn disabled(this: &MDCTextField) -> bool;
-
     #[wasm_bindgen(method, setter)]
     pub fn set_disabled(this: &MDCTextField, disabled: bool);
 
@@ -61,6 +65,7 @@ extern "C" {
 
 // Commented out for now - might want to revisit later in case we need more
 // sophisticated text fields.
+
 // #[cfg(feature = "text-field")]
 // #[wasm_bindgen(module = "@material/line-ripple/index")]
 // extern "C" {

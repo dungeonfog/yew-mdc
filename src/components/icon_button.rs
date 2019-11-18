@@ -1,3 +1,37 @@
+/*!
+Icons buttons, as defined [here](https://material.io/develop/web/components/buttons/icon-buttons/).
+
+For normal buttons, there's nothing to take note about. They work similar to
+regular buttons with icons, except that you can also pass them a class and a
+simple string as the content, to make this material icons example possible:
+
+```xml
+<IconButton classes="material-icons">{ "done" }</IconButton>
+```
+
+If you omit the `classes` property, you just get a `<button class="mdc-icon-button">`
+and can put whatever you want inside.
+
+For **toggle buttons**, the situation is a bit more complicated: Currently,
+you have to make sure you put exactly the right contents inside (as defined
+[here](https://material.io/develop/web/components/buttons/icon-buttons/#icon-button-toggle)).
+
+This could, for example, look like this:
+
+```xml
+<IconButton togglable=true toggle_on=true>
+    <i class="material-icons mdc-icon-button__icon mdc-icon-button__icon--on">{ "favorite" }</i>
+    <i class="material-icons mdc-icon-button__icon">{ "favorite_border" }</i>
+</IconButton>
+```
+
+Setting `toggle_on` to `true` will then show the icon which has the `mdc-icon-button__icon--on`
+class, while setting it to `false` will show the other icon.
+
+The plus side of this is that it allows full customizability, as long as you
+stay in the realm of MDC; the downside is that it's also on you to get it right.
+*/
+
 use crate::mdc_sys::MDCRipple;
 use yew::prelude::*;
 
@@ -13,6 +47,7 @@ pub struct Props {
     pub classes: String,
     pub children: Children<IconButton>,
     pub togglable: bool,
+    pub toggle_on: bool,
     pub onclick: Option<Callback<()>>,
 }
 
@@ -57,18 +92,41 @@ impl Component for IconButton {
         false
     }
 
+    fn change(&mut self, props: Props) -> ShouldRender {
+        if props.toggle_on != self.props.toggle_on {
+            self.props = props;
+            true
+        } else {
+            false
+        }
+    }
+
     fn view(&self) -> Html<Self> {
         if self.props.togglable {
-            html! {}
+            let on = if self.props.toggle_on {
+                " mdc-icon-button--on"
+            } else {
+                ""
+            };
+            let classes = format!("mdc-icon-button{}", on);
+            html! {
+                <button id=self.id class=classes onclick=|_| Msg::Clicked>
+                    { self.props.children.render() }
+                </button>
+            }
         } else {
             let classes = format!("mdc-icon-button {}", self.props.classes);
             html! {
-                <button class=classes
+                <button class=classes id=self.id
                         onclick=|_| Msg::Clicked
                     >{ self.props.children.render() }</button>
             }
         }
     }
 
-    fn destroy(&mut self) {}
+    fn destroy(&mut self) {
+        if let Some(ripple) = &self.ripple {
+            ripple.destroy();
+        }
+    }
 }
