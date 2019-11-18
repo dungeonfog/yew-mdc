@@ -1,5 +1,4 @@
 use crate::mdc_sys::MDCTextField;
-use web_sys::window;
 use yew::prelude::*;
 
 // pub mod line_ripple;
@@ -46,10 +45,7 @@ impl Component for TextField {
     }
 
     fn mounted(&mut self) -> ShouldRender {
-        self.inner = window()
-            .and_then(|w| w.document())
-            .and_then(|d| d.get_element_by_id(&self.id))
-            .map(MDCTextField::new);
+        self.inner = crate::get_element_by_id(&self.id).map(MDCTextField::new);
         false
     }
 

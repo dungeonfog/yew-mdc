@@ -1,5 +1,4 @@
 use crate::mdc_sys::MDCRipple;
-use web_sys::window;
 use yew::prelude::*;
 
 pub struct Button {
@@ -35,7 +34,6 @@ impl std::fmt::Display for Style {
 
 #[derive(Properties, Debug)]
 pub struct Props {
-    #[props(required)]
     pub children: Children<Button>,
     pub id: Option<String>,
     #[props(required)]
@@ -69,10 +67,7 @@ impl Component for Button {
 
     fn mounted(&mut self) -> ShouldRender {
         if self.props.ripple {
-            self.ripple = window()
-                .and_then(|w| w.document())
-                .and_then(|d| d.get_element_by_id(&self.id))
-                .map(MDCRipple::new);
+            self.ripple = crate::get_element_by_id(&self.id).map(MDCRipple::new);
         }
         false
     }
