@@ -1,13 +1,19 @@
 use wasm_bindgen::prelude::*;
 use web_sys::Element;
 
-#[cfg(any(feature = "mdc-button", feature = "mdc-fab"))]
+#[cfg(any(feature = "button", feature = "fab"))]
 #[wasm_bindgen(module = "@material/ripple/index")]
 extern "C" {
     pub type MDCRipple;
 
     #[wasm_bindgen(constructor)]
     pub fn new(surface: Element) -> MDCRipple;
+
+    #[wasm_bindgen(method, getter)]
+    pub fn unbounded(this: &MDCRipple) -> bool;
+
+    #[wasm_bindgen(method, setter)]
+    pub fn set_unbounded(this: &MDCRipple, unbounded: bool);
 
     #[wasm_bindgen(method)]
     pub fn activate(this: &MDCRipple);
@@ -28,7 +34,7 @@ extern "C" {
     pub fn destroy(this: &MDCRipple);
 }
 
-#[cfg(feature = "mdc-text-field")]
+#[cfg(feature = "text-field")]
 #[wasm_bindgen(module = "@material/textfield/index")]
 extern "C" {
     /// Text fields allow users to input, edit, and select text.
@@ -55,7 +61,7 @@ extern "C" {
 
 // Commented out for now - might want to revisit later in case we need more
 // sophisticated text fields.
-// #[cfg(feature = "mdc-text-field")]
+// #[cfg(feature = "text-field")]
 // #[wasm_bindgen(module = "@material/line-ripple/index")]
 // extern "C" {
 //     /// The line ripple is used to highlight user-specified input above it.
@@ -78,7 +84,7 @@ extern "C" {
 //     pub fn destroy(this: &MDCLineRipple);
 // }
 
-// #[cfg(feature = "mdc-text-field")]
+// #[cfg(feature = "text-field")]
 // #[wasm_bindgen(module = "@material/floating-label/index")]
 // extern "C" {
 //     /// Floating labels display the type of input a field requires.

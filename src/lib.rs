@@ -27,6 +27,9 @@ right element to attach an MDC component to.
 
 You can find the raw MDC bindings at `yew_mdc::mdc_sys`. These might be
 published as a separate crate at some point.
+
+Pretty much all of the components are crate features, so you can only pull in
+what you actually need; currently, all features are enabled by default.
 */
 
 pub mod components;

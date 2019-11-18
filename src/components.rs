@@ -1,14 +1,19 @@
-#[cfg(feature = "mdc-button")]
+#[cfg(feature = "button")]
 pub mod button;
-#[cfg(feature = "mdc-button")]
+#[cfg(feature = "button")]
 pub use button::Button;
 
-#[cfg(feature = "mdc-fab")]
+#[cfg(feature = "icon-button")]
+pub mod icon_button;
+#[cfg(feature = "icon-button")]
+pub use icon_button::IconButton;
+
+#[cfg(feature = "fab")]
 pub mod fab;
-#[cfg(feature = "mdc-fab")]
+#[cfg(feature = "fab")]
 pub use fab::FAB;
 
-#[cfg(feature = "mdc-text-field")]
+#[cfg(feature = "text-field")]
 pub mod text_field;
-#[cfg(feature = "mdc-text-field")]
+#[cfg(feature = "text-field")]
 pub use text_field::TextField;
