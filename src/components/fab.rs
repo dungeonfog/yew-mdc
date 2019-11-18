@@ -85,7 +85,7 @@ impl Component for FAB {
         };
         let classes = format!("mdc-fab{}{}{}", mini, extended, exited);
         html! {
-            <button class=classes id=self.id>
+            <button class=classes id=self.id onclick=|_| Msg::Clicked>
                 { ripple }
                 { self.props.children.render() }
                 { label }
