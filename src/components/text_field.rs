@@ -5,6 +5,8 @@ use yew::prelude::*;
 // pub use line_ripple::LineRipple;
 // pub mod floating_label;
 // pub use floating_label::FloatingLabel;
+pub mod helper_line;
+pub use helper_line::HelperLine;
 
 pub struct TextField {
     pub id: String,

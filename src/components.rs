@@ -16,4 +16,6 @@ pub use fab::FAB;
 #[cfg(feature = "text-field")]
 pub mod text_field;
 #[cfg(feature = "text-field")]
+pub use text_field::HelperLine as TextFieldHelperLine;
+#[cfg(feature = "text-field")]
 pub use text_field::TextField;
