@@ -19,6 +19,8 @@ pub struct Props {
     pub value: String,
     pub hint: String,
     pub onchange: Option<Callback<String>>,
+    pub disabled: bool,
+    pub outlined: bool,
 }
 
 pub enum Msg {
@@ -61,17 +63,47 @@ impl Component for TextField {
     }
 
     fn view(&self) -> Html<Self> {
+        let disabled = if self.props.disabled {
+            " mdc-text-field--disabled"
+        } else {
+            ""
+        };
+        let outlined = if self.props.outlined {
+            " mdc-text-field--outlined"
+        } else {
+            ""
+        };
+        let classes = format!("mdc-text-field{}{}", disabled, outlined);
+        let label = html! {
+            <label class="mdc-floating-label" for=self.input_id>
+                { &self.props.hint }
+            </label>
+        };
+        let inner = if self.props.outlined {
+            html! {
+                <div class="mdc-notched-outline">
+                    <div class="mdc-notched-outline__leading"></div>
+                    <div class="mdc-notched-outline__notch">
+                        { label }
+                    </div>
+                    <div class="mdc-notched-outline__trailing"></div>
+                </div>
+            }
+        } else {
+            html! { <>
+                <div class="mdc-line-ripple"></div>
+                { label }
+            </> }
+        };
         html! {
-            <div class="mdc-text-field" id=self.id>
+            <div class=classes id=self.id>
                 <input type="text" id=self.input_id
                        value=self.props.value
                        class="mdc-text-field__input"
                        oninput=|e| Msg::ValueChanged(e.value)
+                       disabled=self.props.disabled
                     />
-                <div class="mdc-line-ripple"></div>
-                <label class="mdc-floating-label" for=self.input_id>
-                    { &self.props.hint }
-                </label>
+                { inner }
             </div>
         }
     }
