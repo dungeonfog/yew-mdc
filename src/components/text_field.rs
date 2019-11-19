@@ -23,6 +23,7 @@ pub struct Props {
     pub onchange: Option<Callback<String>>,
     pub disabled: bool,
     pub outlined: bool,
+    pub nolabel: bool,
 }
 
 pub enum Msg {
@@ -75,19 +76,35 @@ impl Component for TextField {
         } else {
             ""
         };
-        let classes = format!("mdc-text-field{}{}", disabled, outlined);
-        let label = html! {
-            <label class="mdc-floating-label" for=self.input_id>
-                { &self.props.hint }
-            </label>
+        let nolabel = if self.props.nolabel {
+            " mdc-text-field--no-label"
+        } else {
+            ""
+        };
+        let classes = format!("mdc-text-field{}{}{}", disabled, outlined, nolabel);
+        let label = if self.props.nolabel {
+            html! {}
+        } else {
+            html! {
+                <label class="mdc-floating-label" for=self.input_id>
+                    { &self.props.hint }
+                </label>
+            }
         };
         let inner = if self.props.outlined {
-            html! {
-                <div class="mdc-notched-outline">
-                    <div class="mdc-notched-outline__leading"></div>
+            let notch = if self.props.nolabel {
+                html! {}
+            } else {
+                html! {
                     <div class="mdc-notched-outline__notch">
                         { label }
                     </div>
+                }
+            };
+            html! {
+                <div class="mdc-notched-outline">
+                    <div class="mdc-notched-outline__leading"></div>
+                    { notch }
                     <div class="mdc-notched-outline__trailing"></div>
                 </div>
             }
@@ -97,6 +114,11 @@ impl Component for TextField {
                 { label }
             </> }
         };
+        let placeholder = if self.props.nolabel && !self.props.hint.is_empty() {
+            &self.props.hint
+        } else {
+            ""
+        };
         html! {
             <div class=classes id=self.id>
                 <input type="text" id=self.input_id
@@ -104,6 +126,7 @@ impl Component for TextField {
                        class="mdc-text-field__input"
                        oninput=|e| Msg::ValueChanged(e.value)
                        disabled=self.props.disabled
+                       placeholder=placeholder
                     />
                 { inner }
             </div>
