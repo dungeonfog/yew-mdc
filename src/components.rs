@@ -19,3 +19,6 @@ pub mod text_field;
 pub use text_field::HelperLine as TextFieldHelperLine;
 #[cfg(feature = "text-field")]
 pub use text_field::TextField;
+
+#[cfg(feature = "menu")]
+pub mod menu;
