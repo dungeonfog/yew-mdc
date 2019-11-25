@@ -5,13 +5,22 @@ authors = ["Follpvosten <wolfi@karpador.xyz>"]
 edition = "2018"
 
 [features]
-default = ["button", "fab", "icon-button", "text-field", "menu", "drawer"]
+default = [
+    "button",
+    "fab",
+    "icon-button",
+    "text-field",
+    "menu",
+    "drawer",
+    "top-app-bar",
+]
 button = []
 fab = []
 icon-button = []
 text-field = []
 menu = []
 drawer = []
+top-app-bar = []
 
 [dependencies]
 yew = { version = "0.10", default-features = false }

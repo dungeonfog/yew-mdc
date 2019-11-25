@@ -31,3 +31,10 @@ pub use drawer::Content as DrawerContent;
 pub use drawer::Drawer;
 #[cfg(feature = "drawer")]
 pub use drawer::Header as DrawerHeader;
+
+#[cfg(feature = "top-app-bar")]
+pub mod top_app_bar;
+#[cfg(feature = "top-app-bar")]
+pub use top_app_bar::Section as TopAppBarSection;
+#[cfg(feature = "top-app-bar")]
+pub use top_app_bar::TopAppBar;
