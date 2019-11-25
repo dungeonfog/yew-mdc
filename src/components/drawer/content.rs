@@ -20,7 +20,7 @@ impl Component for Content {
             .id
             .as_ref()
             .map(|s| s.to_owned())
-            .unwrap_or_else(|| format!("drawer-Content-{}", crate::next_id()));
+            .unwrap_or_else(|| format!("drawer-content-{}", crate::next_id()));
         Self { id, props }
     }
 

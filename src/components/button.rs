@@ -93,13 +93,13 @@ impl Component for Button {
         };
         let inner = if self.props.trailingicon {
             html! { <>
-                { self.props.children.render() }
                 <span class="mdc-button__label">{ &self.props.text }</span>
+                { self.props.children.render() }
             </> }
         } else {
             html! { <>
-                <span class="mdc-button__label">{ &self.props.text }</span>
                 { self.props.children.render() }
+                <span class="mdc-button__label">{ &self.props.text }</span>
             </> }
         };
         html! {
