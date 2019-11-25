@@ -22,3 +22,12 @@ pub use text_field::TextField;
 
 #[cfg(feature = "menu")]
 pub mod menu;
+
+#[cfg(feature = "drawer")]
+pub mod drawer;
+#[cfg(feature = "drawer")]
+pub use drawer::Content as DrawerContent;
+#[cfg(feature = "drawer")]
+pub use drawer::Drawer;
+#[cfg(feature = "drawer")]
+pub use drawer::Header as DrawerHeader;
