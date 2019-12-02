@@ -115,6 +115,10 @@ impl Component for Menu {
     }
 
     fn destroy(&mut self) {
+        if let Some(surface) = &self.surface {
+            surface.unlisten("MDCMenuSurface:closed", &self.close_callback);
+            surface.destroy();
+        }
         if let Some(inner) = &self.inner {
             inner.destroy();
         }
