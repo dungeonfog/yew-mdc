@@ -81,29 +81,62 @@ extern "C" {
     #[wasm_bindgen(method, getter)]
     pub fn items(this: &MDCMenu) -> js_sys::Array;
 
-    #[wasm_bindgen(method, getter)]
+    #[wasm_bindgen(method, getter, js_name = quickOpen)]
     pub fn quick_open(this: &MDCMenu) -> bool;
-    #[wasm_bindgen(method, setter)]
+    #[wasm_bindgen(method, setter, js_name = quickOpen)]
     pub fn set_quick_open(this: &MDCMenu, quick_open: bool);
 
-    #[wasm_bindgen(method, getter)]
+    #[wasm_bindgen(method, getter, js_name = wrapFocus)]
     pub fn wrap_focus(this: &MDCMenu) -> bool;
-    #[wasm_bindgen(method, setter)]
+    #[wasm_bindgen(method, setter, js_name = wrapFocus)]
     pub fn set_wrap_focus(this: &MDCMenu, wrap_focus: bool);
 
-    #[wasm_bindgen(method)]
+    #[wasm_bindgen(method, js_name = setAnchorCorner)]
     pub fn set_anchor_corner(this: &MDCMenu, corner: js_sys::Object);
-    #[wasm_bindgen(method)]
+    #[wasm_bindgen(method, js_name = setAnchorMargin)]
     pub fn set_anchor_margin(this: &MDCMenu, distance: js_sys::Object);
 
-    #[wasm_bindgen(method)]
-    pub fn set_absolute_position(this: &MDCMenu, x: i32, y: i32);
+    #[wasm_bindgen(method, js_name = setAbsolutePosition)]
+    pub fn set_absolute_position(this: &MDCMenu, x: u32, y: u32);
 
-    #[wasm_bindgen(method)]
+    #[wasm_bindgen(method, js_name = setFixedPosition)]
     pub fn set_fixed_position(this: &MDCMenu, is_fixed: bool);
+
+    #[wasm_bindgen(method, js_name = setSelectedIndex)]
+    pub fn set_selected_index(this: &MDCMenu, index: u32);
+
+    #[wasm_bindgen(method, js_name = setIsHoisted)]
+    pub fn set_is_hoisted(this: &MDCMenu, is_hoisted: bool);
+
+    #[wasm_bindgen(method, js_name = setAnchorElement)]
+    pub fn set_anchor_element(this: &MDCMenu, element: Element);
+
+    #[wasm_bindgen(method, js_name = getOptionByIndex)]
+    pub fn get_option_by_index(this: &MDCMenu, index: u32) -> Option<Element>;
+
+    #[wasm_bindgen(method, js_name = setEnabled)]
+    pub fn set_enabled(this: &MDCMenu, index: u32, is_enabled: bool);
 
     #[wasm_bindgen(method)]
     pub fn destroy(this: &MDCMenu);
+}
+
+#[cfg(feature = "menu")]
+#[wasm_bindgen(module = "@material/menu-surface/index")]
+extern "C" {
+    /// The MDC Menu Surface component is a reusable surface that appears above
+    /// the content of the page and can be positioned adjacent to an element.
+    /// Menu Surfaces require JavaScript to properly position themselves when opening.
+    pub type MDCMenuSurface;
+
+    #[wasm_bindgen(constructor)]
+    pub fn new(surface: Element) -> MDCMenuSurface;
+
+    #[wasm_bindgen(method)]
+    pub fn listen(this: &MDCMenuSurface, type_: &str, handler: &Closure<dyn FnMut(web_sys::Event)>);
+
+    #[wasm_bindgen(method)]
+    pub fn destroy(this: &MDCMenuSurface);
 }
 
 // #[cfg(feature = "text-field")]

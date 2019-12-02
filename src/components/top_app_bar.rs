@@ -3,6 +3,9 @@ use yew::prelude::*;
 pub mod section;
 pub use section::Section;
 
+/// This component is not really usable as of now.
+/// [This issue](https://github.com/yewstack/yew/issues/738) will have to be
+/// resolved first.
 pub struct TopAppBar {
     id: String,
     props: Props,

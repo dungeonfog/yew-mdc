@@ -22,6 +22,10 @@ pub use text_field::TextField;
 
 #[cfg(feature = "menu")]
 pub mod menu;
+#[cfg(feature = "menu")]
+pub use menu::Item as MenuItem;
+#[cfg(feature = "menu")]
+pub use menu::Menu;
 
 #[cfg(feature = "drawer")]
 pub mod drawer;
