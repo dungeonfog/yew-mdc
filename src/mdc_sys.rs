@@ -1,6 +1,20 @@
 use wasm_bindgen::prelude::*;
 use web_sys::Element;
 
+#[wasm_bindgen(module = "@material/base/component/index")]
+extern "C" {
+    pub type MDCComponent;
+
+    #[wasm_bindgen(method)]
+    pub fn listen(this: &MDCComponent, type_: &str, handler: &Closure<dyn FnMut(web_sys::Event)>);
+
+    #[wasm_bindgen(method)]
+    pub fn unlisten(this: &MDCComponent, type_: &str, handler: &Closure<dyn FnMut(web_sys::Event)>);
+
+    #[wasm_bindgen(method)]
+    pub fn destroy(this: &MDCComponent);
+}
+
 #[cfg(any(feature = "button", feature = "fab"))]
 #[wasm_bindgen(module = "@material/ripple/index")]
 extern "C" {
@@ -11,6 +25,7 @@ extern "C" {
     ///
     /// MDC Ripple also works without JavaScript, where it gracefully degrades
     /// to a simpler CSS-Only implementation.
+    #[wasm_bindgen(extends = MDCComponent)]
     pub type MDCRipple;
 
     #[wasm_bindgen(constructor)]
@@ -35,15 +50,13 @@ extern "C" {
 
     #[wasm_bindgen(method)]
     pub fn handle_blur(this: &MDCRipple);
-
-    #[wasm_bindgen(method)]
-    pub fn destroy(this: &MDCRipple);
 }
 
 #[cfg(feature = "text-field")]
 #[wasm_bindgen(module = "@material/textfield/index")]
 extern "C" {
     /// Text fields allow users to input, edit, and select text.
+    #[wasm_bindgen(extends = MDCComponent)]
     pub type MDCTextField;
 
     #[wasm_bindgen(constructor)]
@@ -58,9 +71,6 @@ extern "C" {
     pub fn disabled(this: &MDCTextField) -> bool;
     #[wasm_bindgen(method, setter)]
     pub fn set_disabled(this: &MDCTextField, disabled: bool);
-
-    #[wasm_bindgen(method)]
-    pub fn destroy(this: &MDCTextField);
 }
 
 #[cfg(feature = "menu")]
@@ -68,6 +78,7 @@ extern "C" {
 extern "C" {
     /// A menu displays a list of choices on a temporary surface.
     /// They appear when users interact with a button, action, or other control.
+    #[wasm_bindgen(extends = MDCComponent)]
     pub type MDCMenu;
 
     #[wasm_bindgen(constructor)]
@@ -116,9 +127,6 @@ extern "C" {
 
     #[wasm_bindgen(method, js_name = setEnabled)]
     pub fn set_enabled(this: &MDCMenu, index: u32, is_enabled: bool);
-
-    #[wasm_bindgen(method)]
-    pub fn destroy(this: &MDCMenu);
 }
 
 #[cfg(feature = "menu")]
@@ -127,16 +135,11 @@ extern "C" {
     /// The MDC Menu Surface component is a reusable surface that appears above
     /// the content of the page and can be positioned adjacent to an element.
     /// Menu Surfaces require JavaScript to properly position themselves when opening.
+    #[wasm_bindgen(extends = MDCComponent)]
     pub type MDCMenuSurface;
 
     #[wasm_bindgen(constructor)]
     pub fn new(surface: Element) -> MDCMenuSurface;
-
-    #[wasm_bindgen(method)]
-    pub fn listen(this: &MDCMenuSurface, type_: &str, handler: &Closure<dyn FnMut(web_sys::Event)>);
-
-    #[wasm_bindgen(method)]
-    pub fn destroy(this: &MDCMenuSurface);
 }
 
 // #[cfg(feature = "text-field")]
