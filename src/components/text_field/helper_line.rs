@@ -6,7 +6,9 @@ pub struct HelperLine {
 
 #[derive(Properties)]
 pub struct Props {
-    children: Children<HelperLine>,
+    pub children: Children<HelperLine>,
+    pub persistent: bool,
+    pub validation_msg: bool,
 }
 
 impl Component for HelperLine {
@@ -22,9 +24,20 @@ impl Component for HelperLine {
     }
 
     fn view(&self) -> Html<Self> {
+        let persistent = if self.props.persistent {
+            " mdc-text-field-helper-text--persistent"
+        } else {
+            ""
+        };
+        let validation_msg = if self.props.validation_msg {
+            " mdc-text-field-helper-text--validation-msg"
+        } else {
+            ""
+        };
+        let classes = format!("mdc-text-field-helper-text{}{}", persistent, validation_msg);
         html! {
             <div class="mdc-text-field-helper-line">
-                <div class="mdc-text-field-helper-text" aria-hidden="true">
+                <div class=classes aria-hidden="true">
                     { self.props.children.render() }
                 </div>
             </div>
