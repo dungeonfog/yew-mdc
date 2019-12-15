@@ -65,7 +65,7 @@ extern "C" {
     #[wasm_bindgen(method, getter)]
     pub fn value(this: &MDCTextField) -> String;
     #[wasm_bindgen(method, setter)]
-    pub fn set_value(this: &MDCTextField, value: String);
+    pub fn set_value(this: &MDCTextField, value: &str);
 
     #[wasm_bindgen(method, getter)]
     pub fn disabled(this: &MDCTextField) -> bool;

@@ -54,6 +54,18 @@ impl Component for TextField {
         false
     }
 
+    fn change(&mut self, props: Props) -> ShouldRender {
+        if props != self.props {
+            self.props = props;
+            if let Some(inner) = &self.inner {
+                inner.set_value(&self.props.value);
+            }
+            true
+        } else {
+            false
+        }
+    }
+
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
             Msg::ValueChanged(s) => {
