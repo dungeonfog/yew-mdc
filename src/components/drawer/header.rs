@@ -5,10 +5,10 @@ pub struct Header {
     props: Props,
 }
 
-#[derive(Properties)]
+#[derive(Properties, Clone)]
 pub struct Props {
     pub id: Option<String>,
-    pub children: Children<Header>,
+    pub children: Children,
 }
 
 impl Component for Header {
@@ -28,7 +28,7 @@ impl Component for Header {
         false
     }
 
-    fn view(&self) -> Html<Self> {
+    fn view(&self) -> Html {
         html! {
             <div class="mdc-drawer__header" id=self.id>
                 { self.props.children.render() }

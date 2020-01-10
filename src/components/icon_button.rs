@@ -39,13 +39,14 @@ pub struct IconButton {
     id: String,
     ripple: Option<MDCRipple>,
     props: Props,
+    link: ComponentLink<Self>,
 }
 
-#[derive(Properties)]
+#[derive(Properties, Clone)]
 pub struct Props {
     pub id: Option<String>,
     pub classes: String,
-    pub children: Children<IconButton>,
+    pub children: Children,
     pub togglable: bool,
     pub toggle_on: bool,
     pub onclick: Option<Callback<()>>,
@@ -59,7 +60,7 @@ impl Component for IconButton {
     type Message = Msg;
     type Properties = Props;
 
-    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
+    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
         let id = props
             .id
             .as_ref()
@@ -69,6 +70,7 @@ impl Component for IconButton {
             id,
             ripple: None,
             props,
+            link,
         }
     }
 
@@ -101,7 +103,8 @@ impl Component for IconButton {
         }
     }
 
-    fn view(&self) -> Html<Self> {
+    fn view(&self) -> Html {
+        let onclick = self.link.callback(|_| Msg::Clicked);
         if self.props.togglable {
             let on = if self.props.toggle_on {
                 " mdc-icon-button--on"
@@ -110,7 +113,7 @@ impl Component for IconButton {
             };
             let classes = format!("mdc-icon-button{}", on);
             html! {
-                <button id=self.id class=classes onclick=|_| Msg::Clicked>
+                <button id=self.id class=classes onclick=onclick>
                     { self.props.children.render() }
                 </button>
             }
@@ -118,7 +121,7 @@ impl Component for IconButton {
             let classes = format!("mdc-icon-button {}", self.props.classes);
             html! {
                 <button class=classes id=self.id
-                        onclick=|_| Msg::Clicked
+                        onclick=onclick
                     >{ self.props.children.render() }</button>
             }
         }

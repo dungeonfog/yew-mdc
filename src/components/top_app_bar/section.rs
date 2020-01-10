@@ -6,6 +6,7 @@ pub struct Section {
     props: Props,
 }
 
+#[derive(PartialEq, Clone, Copy, Debug)]
 pub enum Align {
     Start,
     End,
@@ -26,10 +27,10 @@ impl fmt::Display for Align {
     }
 }
 
-#[derive(Properties)]
+#[derive(Properties, Clone)]
 pub struct Props {
     pub id: Option<String>,
-    pub children: Children<Section>,
+    pub children: Children,
     pub align: Align,
 }
 
@@ -50,7 +51,7 @@ impl Component for Section {
         false
     }
 
-    fn view(&self) -> Html<Self> {
+    fn view(&self) -> Html {
         let classes = format!("mdc-top-app-bar__section {}", self.props.align);
         html! {
             <section class=classes id=self.id>

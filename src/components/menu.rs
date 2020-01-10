@@ -13,19 +13,17 @@ pub struct Menu {
     props: Props,
 }
 
-#[derive(Properties)]
+#[derive(Properties, Clone)]
 pub struct Props {
     pub id: Option<String>,
-    pub onitemclicked: Option<Callback<usize>>,
     pub onclose: Option<Callback<()>>,
     pub fixed_position: bool,
     pub absolute_position: Option<(u32, u32)>,
-    pub items: Vec<item::Props>,
     pub open: bool,
+    pub children: Children,
 }
 
 pub enum Msg {
-    ItemClicked(usize),
     Closed,
 }
 
@@ -33,13 +31,13 @@ impl Component for Menu {
     type Message = Msg;
     type Properties = Props;
 
-    fn create(props: Self::Properties, mut link: ComponentLink<Self>) -> Self {
+    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
         let id = props
             .id
             .as_ref()
             .map(|s| s.to_owned())
             .unwrap_or_else(|| format!("menu-{}", crate::next_id()));
-        let callback = link.send_back(|_: ()| Msg::Closed);
+        let callback = link.callback(|_: ()| Msg::Closed);
         let closure = Closure::wrap(Box::new(move |e: web_sys::Event| {
             e.stop_propagation();
             callback.emit(());
@@ -83,11 +81,6 @@ impl Component for Menu {
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
-            Msg::ItemClicked(index) => {
-                if let Some(callback) = &self.props.onitemclicked {
-                    callback.emit(index);
-                }
-            }
             Msg::Closed => {
                 if let Some(callback) = &self.props.onclose {
                     callback.emit(());
@@ -97,18 +90,11 @@ impl Component for Menu {
         false
     }
 
-    fn view(&self) -> Html<Self> {
-        let children = html! {{
-            for self.props.items.iter().enumerate().map(|(index, item)| {
-                html! {
-                    <Item id=&item.id text=&item.text onclick=move |_| Msg::ItemClicked(index) />
-                }
-            })
-        }};
+    fn view(&self) -> Html {
         html! {
             <div class="mdc-menu mdc-menu-surface" id=self.id>
                 <ul class="mdc-list" role="menu" aria-hidden="true" aria-orientation="vertical" tabindex="-1">
-                    { children }
+                    { self.props.children.render() }
                 </ul>
             </div>
         }

@@ -11,10 +11,10 @@ pub struct Drawer {
     props: Props,
 }
 
-#[derive(Properties)]
+#[derive(Properties, Clone)]
 pub struct Props {
     pub id: Option<String>,
-    pub children: Children<Drawer>,
+    pub children: Children,
 }
 
 impl Component for Drawer {
@@ -38,7 +38,7 @@ impl Component for Drawer {
         false
     }
 
-    fn view(&self) -> Html<Self> {
+    fn view(&self) -> Html {
         html! {
             <aside class="mdc-drawer" id=self.id>
                 { self.props.children.render() }

@@ -13,9 +13,10 @@ pub struct TextField {
     pub input_id: String,
     inner: Option<MDCTextField>,
     props: Props,
+    link: ComponentLink<Self>,
 }
 
-#[derive(PartialEq, Properties, Debug)]
+#[derive(PartialEq, Properties, Clone, Debug)]
 pub struct Props {
     pub id: Option<String>,
     pub value: String,
@@ -34,7 +35,7 @@ impl Component for TextField {
     type Message = Msg;
     type Properties = Props;
 
-    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
+    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
         let id = props
             .id
             .as_ref()
@@ -46,6 +47,7 @@ impl Component for TextField {
             input_id,
             props,
             inner: None,
+            link,
         }
     }
 
@@ -77,7 +79,7 @@ impl Component for TextField {
         false
     }
 
-    fn view(&self) -> Html<Self> {
+    fn view(&self) -> Html {
         let disabled = if self.props.disabled {
             " mdc-text-field--disabled"
         } else {
@@ -131,12 +133,15 @@ impl Component for TextField {
         } else {
             ""
         };
+        let oninput = self
+            .link
+            .callback(|e: InputData| Msg::ValueChanged(e.value));
         html! {
             <div class=classes id=self.id>
                 <input type="text" id=self.input_id
                        value=self.props.value
                        class="mdc-text-field__input"
-                       oninput=|e| Msg::ValueChanged(e.value)
+                       oninput=oninput
                        disabled=self.props.disabled
                        placeholder=placeholder
                     />

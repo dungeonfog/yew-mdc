@@ -5,12 +5,13 @@ pub struct FAB {
     id: String,
     ripple: Option<MDCRipple>,
     props: Props,
+    link: ComponentLink<Self>,
 }
 
-#[derive(Properties)]
+#[derive(Properties, Clone)]
 pub struct Props {
     pub id: Option<String>,
-    pub children: Children<FAB>,
+    pub children: Children,
     pub text: Option<String>,
     pub mini: bool,
     pub exited: bool,
@@ -25,7 +26,7 @@ impl Component for FAB {
     type Message = Msg;
     type Properties = Props;
 
-    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
+    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
         let id = props
             .id
             .as_ref()
@@ -35,6 +36,7 @@ impl Component for FAB {
             id,
             ripple: None,
             props,
+            link,
         }
     }
 
@@ -63,7 +65,7 @@ impl Component for FAB {
         }
     }
 
-    fn view(&self) -> Html<Self> {
+    fn view(&self) -> Html {
         let ripple = html! { <div class="mdc-fab__ripple"></div> };
         let mini = if self.props.mini {
             " mdc-fab--mini"
@@ -84,8 +86,9 @@ impl Component for FAB {
             (html! {}, "")
         };
         let classes = format!("mdc-fab{}{}{}", mini, extended, exited);
+        let onclick = self.link.callback(|_| Msg::Clicked);
         html! {
-            <button class=classes id=self.id onclick=|_| Msg::Clicked>
+            <button class=classes id=self.id onclick=onclick>
                 { ripple }
                 { self.props.children.render() }
                 { label }

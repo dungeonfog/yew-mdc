@@ -5,9 +5,10 @@ pub struct Button {
     id: String,
     ripple: Option<MDCRipple>,
     props: Props,
+    link: ComponentLink<Self>,
 }
 
-#[derive(PartialEq, Debug)]
+#[derive(PartialEq, Clone, Copy, Debug)]
 pub enum Style {
     None,
     Raised,
@@ -32,9 +33,9 @@ impl std::fmt::Display for Style {
     }
 }
 
-#[derive(Properties, Debug)]
+#[derive(Properties, Clone, Debug)]
 pub struct Props {
-    pub children: Children<Button>,
+    pub children: Children,
     pub id: Option<String>,
     #[props(required)]
     pub text: String,
@@ -52,7 +53,7 @@ impl Component for Button {
     type Properties = Props;
     type Message = Msg;
 
-    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
+    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
         let id = props
             .id
             .as_ref()
@@ -62,6 +63,7 @@ impl Component for Button {
             id,
             ripple: None,
             props,
+            link,
         }
     }
 
@@ -83,7 +85,7 @@ impl Component for Button {
         false
     }
 
-    fn view(&self) -> Html<Self> {
+    fn view(&self) -> Html {
         let ripple = if self.props.ripple {
             html! {
                 <div class="mdc-button__ripple"></div>
@@ -102,10 +104,11 @@ impl Component for Button {
                 <span class="mdc-button__label">{ &self.props.text }</span>
             </> }
         };
+        let onclick = self.link.callback(|_| Msg::Clicked);
         html! {
             <button class=format!("mdc-button {}", self.props.style)
                     id=self.id
-                    onclick=|_| Msg::Clicked>
+                    onclick=onclick>
                 { ripple }
                 { inner }
             </button>

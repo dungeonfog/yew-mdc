@@ -4,9 +4,9 @@ pub struct HelperLine {
     props: Props,
 }
 
-#[derive(Properties)]
+#[derive(Properties, Clone)]
 pub struct Props {
-    pub children: Children<HelperLine>,
+    pub children: Children,
     pub persistent: bool,
     pub validation_msg: bool,
 }
@@ -23,7 +23,7 @@ impl Component for HelperLine {
         false
     }
 
-    fn view(&self) -> Html<Self> {
+    fn view(&self) -> Html {
         let persistent = if self.props.persistent {
             " mdc-text-field-helper-text--persistent"
         } else {

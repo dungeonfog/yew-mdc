@@ -23,9 +23,9 @@ drawer = []
 top-app-bar = []
 
 [dependencies]
-yew = { version = "0.10", default-features = false }
-wasm-bindgen = "0.2.45"
-js-sys = "0.3.22"
+yew = { version = "0.11", default-features = false }
+wasm-bindgen = "0.2"
+js-sys = "0.3"
 lazy_static = "*"
 cfg-if = "0.1"
 

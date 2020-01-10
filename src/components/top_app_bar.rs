@@ -3,18 +3,15 @@ use yew::prelude::*;
 pub mod section;
 pub use section::Section;
 
-/// This component is not really usable as of now.
-/// [This issue](https://github.com/yewstack/yew/issues/738) will have to be
-/// resolved first.
 pub struct TopAppBar {
     id: String,
     props: Props,
 }
 
-#[derive(Properties)]
+#[derive(Properties, Clone)]
 pub struct Props {
     pub id: Option<String>,
-    pub children: Children<TopAppBar>,
+    pub children: Children,
     pub manualrows: bool,
     pub classes: String,
 }
@@ -33,6 +30,7 @@ impl Component for TopAppBar {
     }
 
     // TODO: Wrap related JavaScript
+    // TODO: Do we need it?
     //fn mounted(&mut self) -> ShouldRender {
     //    false
     //}
@@ -41,7 +39,7 @@ impl Component for TopAppBar {
         false
     }
 
-    fn view(&self) -> Html<Self> {
+    fn view(&self) -> Html {
         let classes = format!("mdc-top-app-bar {}", self.props.classes);
         if self.props.manualrows {
             html! {
@@ -61,5 +59,6 @@ impl Component for TopAppBar {
     }
 
     // TODO: Wrap related JavaScript
+    // TODO: Do we need it?
     //fn destroy(&mut self) {}
 }
