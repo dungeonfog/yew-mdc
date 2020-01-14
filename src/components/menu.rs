@@ -18,7 +18,7 @@ pub struct Props {
     pub id: Option<String>,
     pub onclose: Option<Callback<()>>,
     pub fixed_position: bool,
-    pub absolute_position: Option<(u32, u32)>,
+    pub absolute_position: Option<(i32, i32)>,
     pub open: bool,
     pub children: Children,
 }
@@ -52,10 +52,20 @@ impl Component for Menu {
     }
 
     fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if props.open != self.props.open {
-            self.props.open = props.open;
-            if let Some(inner) = &self.inner {
+        if let Some(inner) = &self.inner {
+            if props.open != self.props.open {
+                self.props.open = props.open;
                 inner.set_open(props.open);
+            }
+            if props.fixed_position != self.props.fixed_position {
+                self.props.fixed_position = props.fixed_position;
+                inner.set_fixed_position(self.props.fixed_position);
+            }
+            if props.absolute_position != self.props.absolute_position {
+                self.props.absolute_position = props.absolute_position;
+                if let Some((x, y)) = props.absolute_position {
+                    inner.set_absolute_position(x, y);
+                }
             }
         }
         false

@@ -108,7 +108,7 @@ extern "C" {
     pub fn set_anchor_margin(this: &MDCMenu, distance: js_sys::Object);
 
     #[wasm_bindgen(method, js_name = setAbsolutePosition)]
-    pub fn set_absolute_position(this: &MDCMenu, x: u32, y: u32);
+    pub fn set_absolute_position(this: &MDCMenu, x: i32, y: i32);
 
     #[wasm_bindgen(method, js_name = setFixedPosition)]
     pub fn set_fixed_position(this: &MDCMenu, is_fixed: bool);

@@ -40,13 +40,13 @@ pub struct Props {
     #[props(required)]
     pub text: String,
     pub style: Style,
-    pub ripple: bool,
     pub trailingicon: bool,
-    pub onclick: Option<Callback<()>>,
+    pub onclick: Option<Callback<ClickEvent>>,
+    pub classes: String,
 }
 
 pub enum Msg {
-    Clicked,
+    Clicked(ClickEvent),
 }
 
 impl Component for Button {
@@ -68,17 +68,15 @@ impl Component for Button {
     }
 
     fn mounted(&mut self) -> ShouldRender {
-        if self.props.ripple {
-            self.ripple = crate::get_element_by_id(&self.id).map(MDCRipple::new);
-        }
+        self.ripple = crate::get_element_by_id(&self.id).map(MDCRipple::new);
         false
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
-            Msg::Clicked => {
+            Msg::Clicked(ev) => {
                 if let Some(callback) = &self.props.onclick {
-                    callback.emit(());
+                    callback.emit(ev);
                 }
             }
         }
@@ -86,13 +84,6 @@ impl Component for Button {
     }
 
     fn view(&self) -> Html {
-        let ripple = if self.props.ripple {
-            html! {
-                <div class="mdc-button__ripple"></div>
-            }
-        } else {
-            html! {}
-        };
         let inner = if self.props.trailingicon {
             html! { <>
                 <span class="mdc-button__label">{ &self.props.text }</span>
@@ -104,12 +95,12 @@ impl Component for Button {
                 <span class="mdc-button__label">{ &self.props.text }</span>
             </> }
         };
-        let onclick = self.link.callback(|_| Msg::Clicked);
+        let onclick = self.link.callback(|ev| Msg::Clicked(ev));
         html! {
-            <button class=format!("mdc-button {}", self.props.style)
+            <button class=format!("mdc-button {} {}", self.props.style, self.props.classes)
                     id=self.id
                     onclick=onclick>
-                { ripple }
+                <div class="mdc-button__ripple"></div>
                 { inner }
             </button>
         }
