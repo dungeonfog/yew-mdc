@@ -45,6 +45,7 @@ pub struct Props {
     pub classes: String,
     #[cfg(feature = "dialog")]
     pub dialog_data: Option<String>,
+    pub disabled: bool,
 }
 
 pub enum Msg {
@@ -134,6 +135,7 @@ impl Component for Button {
             html! {
                 <button class=classes
                         id=self.id
+                        disabled=self.props.disabled
                         data-mdc-dialog-action=action>
                     <div class="mdc-button__ripple"></div>
                     { inner }
@@ -144,6 +146,7 @@ impl Component for Button {
             html! {
                 <button class=classes
                         id=self.id
+                        disabled=self.props.disabled
                         onclick=onclick>
                     <div class="mdc-button__ripple"></div>
                     { inner }
