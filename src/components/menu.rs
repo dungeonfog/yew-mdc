@@ -37,7 +37,7 @@ impl Component for Menu {
             .as_ref()
             .map(|s| s.to_owned())
             .unwrap_or_else(|| format!("menu-{}", crate::next_id()));
-        let callback = link.callback(|_: ()| Msg::Closed);
+        let callback = link.callback(|_| Msg::Closed);
         let closure = Closure::wrap(Box::new(move |e: web_sys::Event| {
             e.stop_propagation();
             callback.emit(());

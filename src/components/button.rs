@@ -43,6 +43,8 @@ pub struct Props {
     pub trailingicon: bool,
     pub onclick: Option<Callback<ClickEvent>>,
     pub classes: String,
+    #[cfg(feature = "dialog")]
+    pub dialog_data: Option<String>,
 }
 
 pub enum Msg {
@@ -59,6 +61,16 @@ impl Component for Button {
             .as_ref()
             .map(|id| id.to_owned())
             .unwrap_or_else(|| format!("button-{}", crate::next_id()));
+        #[cfg(feature = "dialog")]
+        let props = if props.dialog_data.is_some() && !props.classes.contains("mdc-dialog__button")
+        {
+            Props {
+                classes: props.classes + " mdc-dialog__button",
+                ..props
+            }
+        } else {
+            props
+        };
         Self {
             id,
             ripple: None,
@@ -70,6 +82,28 @@ impl Component for Button {
     fn mounted(&mut self) -> ShouldRender {
         self.ripple = crate::get_element_by_id(&self.id).map(MDCRipple::new);
         false
+    }
+
+    fn change(&mut self, props: Props) -> ShouldRender {
+        #[cfg(feature = "dialog")]
+        let props = if props.dialog_data.is_some() && !props.classes.contains("mdc-dialog__button")
+        {
+            Props {
+                classes: props.classes + " mdc-dialog__button",
+                ..props
+            }
+        } else {
+            props
+        };
+        if self.props.id != props.id {
+            self.id = props
+                .id
+                .as_ref()
+                .map(|id| id.to_owned())
+                .unwrap_or_else(|| format!("button-{}", crate::next_id()));
+        }
+        self.props = props;
+        true
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
@@ -95,14 +129,26 @@ impl Component for Button {
                 <span class="mdc-button__label">{ &self.props.text }</span>
             </> }
         };
-        let onclick = self.link.callback(|ev| Msg::Clicked(ev));
-        html! {
-            <button class=format!("mdc-button {} {}", self.props.style, self.props.classes)
-                    id=self.id
-                    onclick=onclick>
-                <div class="mdc-button__ripple"></div>
-                { inner }
-            </button>
+        let classes = format!("mdc-button {} {}", self.props.style, self.props.classes);
+        if let Some(action) = &self.props.dialog_data {
+            html! {
+                <button class=classes
+                        id=self.id
+                        data-mdc-dialog-action=action>
+                    <div class="mdc-button__ripple"></div>
+                    { inner }
+                </button>
+            }
+        } else {
+            let onclick = self.link.callback(|ev| Msg::Clicked(ev));
+            html! {
+                <button class=classes
+                        id=self.id
+                        onclick=onclick>
+                    <div class="mdc-button__ripple"></div>
+                    { inner }
+                </button>
+            }
         }
     }
 

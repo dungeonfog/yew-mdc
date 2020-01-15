@@ -142,76 +142,39 @@ extern "C" {
     pub fn new(surface: Element) -> MDCMenuSurface;
 }
 
-// #[cfg(feature = "text-field")]
-// #[wasm_bindgen(module = "@material/notched-outline/index")]
-// extern "C" {
-//     /// The notched outline is a border around all sides of either a Text Field
-//     /// or Select component. This is used for the Outlined variant of either a
-//     /// Text Field or Select.
-//     pub type MDCNotchedOutline;
+#[cfg(feature = "dialog")]
+#[wasm_bindgen(module = "@material/dialog/index")]
+extern "C" {
+    #[wasm_bindgen(extends = MDCComponent)]
+    pub type MDCDialog;
 
-//     #[wasm_bindgen(constructor)]
-//     pub fn new(surface: Element) -> MDCNotchedOutline;
+    #[wasm_bindgen(constructor)]
+    pub fn new(surface: Element) -> MDCDialog;
 
-//     #[wasm_bindgen(method)]
-//     pub fn notch(this: &MDCNotchedOutline, notch_width: u32);
+    #[wasm_bindgen(method, getter, js_name = isOpen)]
+    pub fn get_is_open(this: &MDCDialog) -> bool;
 
-//     #[wasm_bindgen(method)]
-//     pub fn close_notch(this: &MDCNotchedOutline);
+    #[wasm_bindgen(method, getter, js_name = escapeKeyAction)]
+    pub fn escape_key_action(this: &MDCDialog) -> String;
+    #[wasm_bindgen(method, setter, js_name = escapeKeyAction)]
+    pub fn set_escape_key_action(this: &MDCDialog, action: &str);
 
-//     #[wasm_bindgen(method)]
-//     pub fn destroy(this: &MDCNotchedOutline);
-// }
+    #[wasm_bindgen(method, getter, js_name = scrimClickAction)]
+    pub fn scrim_click_action(this: &MDCDialog) -> String;
+    #[wasm_bindgen(method, setter, js_name = scrimClickAction)]
+    pub fn set_scrim_click_action(this: &MDCDialog, action: &str);
 
-// Commented out for now - might want to revisit later in case we need more
-// sophisticated text fields.
+    #[wasm_bindgen(method, getter, js_name = autoStackButtons)]
+    pub fn auto_stack_buttons(this: &MDCDialog) -> bool;
+    #[wasm_bindgen(method, setter, js_name = autoStackButtons)]
+    pub fn set_auto_stack_buttons(this: &MDCDialog, auto_stack_buttons: bool);
 
-// #[cfg(feature = "text-field")]
-// #[wasm_bindgen(module = "@material/line-ripple/index")]
-// extern "C" {
-//     /// The line ripple is used to highlight user-specified input above it.
-//     /// When a line ripple is active, the line’s color and thickness changes.
-//     pub type MDCLineRipple;
+    #[wasm_bindgen(method)]
+    pub fn layout(this: &MDCDialog);
 
-//     #[wasm_bindgen(constructor)]
-//     pub fn new(surface: Element) -> MDCLineRipple;
+    #[wasm_bindgen(method)]
+    pub fn open(this: &MDCDialog);
 
-//     #[wasm_bindgen(method)]
-//     pub fn activate(this: &MDCLineRipple);
-
-//     #[wasm_bindgen(method)]
-//     pub fn deactivate(this: &MDCLineRipple);
-
-//     #[wasm_bindgen(method)]
-//     pub fn set_ripple_center(this: &MDCLineRipple, xCoordinate: js_sys::Number);
-
-//     #[wasm_bindgen(method)]
-//     pub fn destroy(this: &MDCLineRipple);
-// }
-
-// #[cfg(feature = "text-field")]
-// #[wasm_bindgen(module = "@material/floating-label/index")]
-// extern "C" {
-//     /// Floating labels display the type of input a field requires.
-//     /// Every Text Field and Select should have a label, except for full-width
-//     /// text fields, which use the input’s `placeholder` attribute instead.
-//     /// Labels are aligned with the input line and always visible.
-//     /// They can be resting (when a field is inactive and empty) or floating.
-//     /// The label is a text caption or description for the Text Field.
-//     pub type MDCFloatingLabel;
-
-//     #[wasm_bindgen(constructor)]
-//     pub fn new(surface: Element) -> MDCFloatingLabel;
-
-//     #[wasm_bindgen(method)]
-//     pub fn shake(this: &MDCFloatingLabel, should_shake: bool);
-
-//     #[wasm_bindgen(method)]
-//     pub fn float(this: &MDCFloatingLabel, should_float: bool);
-
-//     #[wasm_bindgen(method)]
-//     pub fn get_width(this: &MDCFloatingLabel) -> js_sys::Number;
-
-//     #[wasm_bindgen(method)]
-//     pub fn destroy(this: &MDCFloatingLabel);
-// }
+    #[wasm_bindgen(method)]
+    pub fn close(this: &MDCDialog, action: Option<&str>);
+}

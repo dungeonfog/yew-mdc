@@ -53,3 +53,10 @@ cfg_if! {
         pub use top_app_bar::TopAppBar;
     }
 }
+
+cfg_if! {
+    if #[cfg(feature = "dialog")] {
+        pub mod dialog;
+        pub use dialog::Dialog;
+    }
+}

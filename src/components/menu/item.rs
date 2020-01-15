@@ -35,8 +35,10 @@ impl Component for Item {
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
             Msg::Clicked => {
-                if let Some(callback) = &self.props.onclick {
-                    callback.emit(());
+                if !self.props.disabled {
+                    if let Some(callback) = &self.props.onclick {
+                        callback.emit(());
+                    }
                 }
             }
         }

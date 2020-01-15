@@ -31,6 +31,7 @@ published as a separate crate at some point.
 Pretty much all of the components are crate features, so you can only pull in
 what you actually need; currently, all features are enabled by default.
 */
+#![recursion_limit = "256"]
 
 pub mod components;
 pub mod mdc_sys;
