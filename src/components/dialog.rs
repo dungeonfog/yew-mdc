@@ -85,20 +85,16 @@ impl Component for Dialog {
 
     fn change(&mut self, props: Self::Properties) -> ShouldRender {
         if props.open != self.props.open {
-            self.props.open = props.open;
             if let Some(inner) = &self.inner {
-                if self.props.open {
+                if props.open {
                     inner.open();
                 } else {
                     inner.close(None);
                 }
             }
         }
-        if props.title != self.props.title {
-            self.props.title = props.title;
-            return true;
-        }
-        false
+        self.props = props;
+        true
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
