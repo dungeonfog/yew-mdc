@@ -49,3 +49,16 @@ fn next_id() -> u32 {
 fn get_element_by_id(id: &str) -> Option<web_sys::Element> {
     web_sys::window()?.document()?.get_element_by_id(id)
 }
+
+#[cfg(test)]
+pub mod tests {
+    use wasm_bindgen_test::{wasm_bindgen_test, wasm_bindgen_test_configure};
+    wasm_bindgen_test_configure!(run_in_browser);
+
+    #[wasm_bindgen_test]
+    fn id_generation() {
+        assert_eq!(super::next_id(), 0);
+        assert_eq!(super::next_id(), 1);
+        assert_eq!(super::next_id(), 2);
+    }
+}
