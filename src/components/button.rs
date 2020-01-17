@@ -142,7 +142,7 @@ impl Component for Button {
                 </button>
             }
         } else {
-            let onclick = self.link.callback(|ev| Msg::Clicked(ev));
+            let onclick = self.link.callback(Msg::Clicked);
             html! {
                 <button class=classes
                         id=self.id
