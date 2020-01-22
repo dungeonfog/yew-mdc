@@ -55,6 +55,16 @@ cfg_if! {
 }
 
 cfg_if! {
+    if #[cfg(feature = "card")] {
+        pub mod card;
+        pub use card::Card;
+        pub use card::PrimaryAction;
+        pub use card::Media;
+        pub use card::MediaStyle;
+    }
+}
+
+cfg_if! {
     if #[cfg(feature = "dialog")] {
         pub mod dialog;
         pub use dialog::Dialog;
