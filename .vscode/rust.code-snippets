@@ -19,12 +19,23 @@
 			"        false",
 			"    }",
 			"",
-			"    fn view(&self) -> Html<Self> {",
+			"    fn view(&self) -> Html {",
 			"        html! {}",
 			"    }",
 			"",
 			"    fn destroy(&mut self) {}",
 			"}"
+		]
+	},
+	"unwrap or get id": {
+		"scope": "rust",
+		"prefix": "let id = p",
+		"body": [
+			"let id = props",
+			"    .id",
+			"    .as_ref()",
+			"    .map(|s| s.to_owned())",
+			"    .unwrap_or_else(|| format!(\"$1-{}\", crate::next_id()));"
 		]
 	}
 }
