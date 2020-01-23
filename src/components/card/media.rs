@@ -34,6 +34,7 @@ pub struct Props {
     pub children: Children,
     pub style: Style,
     pub classes: String,
+    pub raw_css: String,
 }
 
 impl Component for Media {
@@ -76,7 +77,7 @@ impl Component for Media {
             }
         } else {
             html! {
-                <div id=self.id class=classes>
+                <div id=self.id class=classes style=&self.props.raw_css>
                     <div class="mdc-card__media-content">
                         { self.props.children.render() }
                     </div>
