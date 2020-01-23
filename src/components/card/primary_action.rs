@@ -5,19 +5,27 @@ pub struct PrimaryAction {
     id: String,
     props: Props,
     ripple: Option<MDCRipple>,
+    link: ComponentLink<Self>,
 }
 
 #[derive(Properties, Clone)]
 pub struct Props {
     pub id: Option<String>,
     pub children: Children,
+    pub onclick: Option<Callback<ClickEvent>>,
+    pub oncontextclick: Option<Callback<ContextMenuEvent>>,
+}
+
+pub enum Msg {
+    LeftClick(ClickEvent),
+    RightClick(ContextMenuEvent),
 }
 
 impl Component for PrimaryAction {
-    type Message = ();
+    type Message = Msg;
     type Properties = Props;
 
-    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
+    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
         let id = props
             .id
             .as_ref()
@@ -27,6 +35,7 @@ impl Component for PrimaryAction {
             id,
             props,
             ripple: None,
+            link,
         }
     }
 
@@ -44,13 +53,32 @@ impl Component for PrimaryAction {
         }
     }
 
-    fn update(&mut self, _msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+        match msg {
+            Msg::LeftClick(event) => {
+                if let Some(callback) = &self.props.onclick {
+                    callback.emit(event);
+                }
+            }
+            Msg::RightClick(event) => {
+                if let Some(callback) = &self.props.oncontextclick {
+                    callback.emit(event);
+                }
+            }
+        }
         false
     }
 
     fn view(&self) -> Html {
+        let emit_click = self.link.callback(Msg::LeftClick);
+        let emit_contextclick = self.link.callback(Msg::RightClick);
         html! {
-            <div id=self.id class="mdc-card__primary-action" tabindex="0">
+            <div
+                id=self.id
+                class="mdc-card__primary-action"
+                tabindex="0"
+                onclick=emit_click
+                oncontextmenu=emit_contextclick>
                 { self.props.children.render() }
             </div>
         }
