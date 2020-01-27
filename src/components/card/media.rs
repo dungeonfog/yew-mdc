@@ -51,15 +51,8 @@ impl Component for Media {
     }
 
     fn change(&mut self, props: Props) -> ShouldRender {
-        if self.props.id != props.id
-            || self.props.style != props.style
-            || self.props.classes != props.classes
-        {
-            self.props = props;
-            true
-        } else {
-            false
-        }
+        self.props = props;
+        true
     }
 
     fn update(&mut self, _msg: Self::Message) -> ShouldRender {

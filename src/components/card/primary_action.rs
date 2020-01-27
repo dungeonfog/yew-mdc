@@ -45,12 +45,8 @@ impl Component for PrimaryAction {
     }
 
     fn change(&mut self, props: Props) -> ShouldRender {
-        if self.props.id != props.id {
-            self.props = props;
-            true
-        } else {
-            false
-        }
+        self.props = props;
+        true
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {

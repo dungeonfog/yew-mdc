@@ -19,10 +19,14 @@ pub struct Props {
     pub outlined: bool,
     pub classes: String,
     pub oncontextclick: Option<Callback<ContextMenuEvent>>,
+    pub onhoverenter: Option<Callback<MouseEnterEvent>>,
+    pub onhoverleave: Option<Callback<MouseLeaveEvent>>,
 }
 
 pub enum Msg {
     RightClick(ContextMenuEvent),
+    HoverEnter(MouseEnterEvent),
+    HoverLeave(MouseLeaveEvent),
 }
 
 impl Component for Card {
@@ -39,21 +43,24 @@ impl Component for Card {
     }
 
     fn change(&mut self, props: Props) -> ShouldRender {
-        if self.props.id != props.id
-            || self.props.outlined != props.outlined
-            || self.props.classes != props.classes
-        {
-            self.props = props;
-            true
-        } else {
-            false
-        }
+        self.props = props;
+        true
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
             Msg::RightClick(event) => {
                 if let Some(callback) = &self.props.oncontextclick {
+                    callback.emit(event);
+                }
+            }
+            Msg::HoverEnter(event) => {
+                if let Some(callback) = &self.props.onhoverenter {
+                    callback.emit(event);
+                }
+            }
+            Msg::HoverLeave(event) => {
+                if let Some(callback) = &self.props.onhoverleave {
                     callback.emit(event);
                 }
             }
@@ -69,8 +76,13 @@ impl Component for Card {
         };
         let classes = format!("mdc-card {} {}", self.props.classes, outlined);
         let emit_contextclick = self.link.callback(Msg::RightClick);
+        let emit_hoverenter = self.link.callback(Msg::HoverEnter);
+        let emit_hoverleave = self.link.callback(Msg::HoverLeave);
         html! {
-            <div class=classes id=self.id oncontextmenu=emit_contextclick>
+            <div class=classes id=self.id
+                 oncontextmenu=emit_contextclick
+                 onmouseenter=emit_hoverenter
+                 onmouseleave=emit_hoverleave>
                 { self.props.children.render() }
             </div>
         }
