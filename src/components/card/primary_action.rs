@@ -1,4 +1,5 @@
 use crate::mdc_sys::MDCRipple;
+use stdweb::traits::IEvent;
 use yew::prelude::*;
 
 pub struct PrimaryAction {
@@ -58,6 +59,7 @@ impl Component for PrimaryAction {
             }
             Msg::RightClick(event) => {
                 if let Some(callback) = &self.props.oncontextclick {
+                    event.prevent_default();
                     callback.emit(event);
                 }
             }

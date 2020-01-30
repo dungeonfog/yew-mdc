@@ -1,3 +1,4 @@
+use stdweb::traits::IEvent;
 use yew::prelude::*;
 
 pub mod primary_action;
@@ -18,6 +19,7 @@ pub struct Props {
     pub children: Children,
     pub outlined: bool,
     pub classes: String,
+    pub raw_css: String,
     pub oncontextclick: Option<Callback<ContextMenuEvent>>,
     pub onhoverenter: Option<Callback<MouseEnterEvent>>,
     pub onhoverleave: Option<Callback<MouseLeaveEvent>>,
@@ -51,6 +53,7 @@ impl Component for Card {
         match msg {
             Msg::RightClick(event) => {
                 if let Some(callback) = &self.props.oncontextclick {
+                    event.prevent_default();
                     callback.emit(event);
                 }
             }
@@ -80,6 +83,7 @@ impl Component for Card {
         let emit_hoverleave = self.link.callback(Msg::HoverLeave);
         html! {
             <div class=classes id=self.id
+                 style=&self.props.raw_css
                  oncontextmenu=emit_contextclick
                  onmouseenter=emit_hoverenter
                  onmouseleave=emit_hoverleave>

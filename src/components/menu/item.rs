@@ -28,7 +28,7 @@ impl Component for Item {
             .id
             .as_ref()
             .map(|s| s.to_owned())
-            .unwrap_or_else(|| format!("text-field-{}", crate::next_id()));
+            .unwrap_or_else(|| format!("menu-item-{}", crate::next_id()));
         Self { id, props, link }
     }
 
