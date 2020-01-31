@@ -70,3 +70,10 @@ cfg_if! {
         pub use dialog::Dialog;
     }
 }
+
+cfg_if! {
+    if #[cfg(feature = "snackbar")] {
+        pub mod snackbar;
+        pub use snackbar::Snackbar;
+    }
+}

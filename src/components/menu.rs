@@ -65,6 +65,10 @@ impl Component for Menu {
                 self.props.absolute_position = props.absolute_position;
                 if let Some((x, y)) = props.absolute_position {
                     inner.set_absolute_position(x, y);
+                    inner.set_is_hoisted(true);
+                } else {
+                    inner.set_absolute_position(0, 0);
+                    inner.set_is_hoisted(false);
                 }
             }
         }

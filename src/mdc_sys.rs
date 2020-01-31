@@ -152,7 +152,7 @@ extern "C" {
     pub fn new(surface: Element) -> MDCDialog;
 
     #[wasm_bindgen(method, getter, js_name = isOpen)]
-    pub fn get_is_open(this: &MDCDialog) -> bool;
+    pub fn is_open(this: &MDCDialog) -> bool;
 
     #[wasm_bindgen(method, getter, js_name = escapeKeyAction)]
     pub fn escape_key_action(this: &MDCDialog) -> String;
@@ -177,4 +177,42 @@ extern "C" {
 
     #[wasm_bindgen(method)]
     pub fn close(this: &MDCDialog, action: Option<&str>);
+}
+
+#[cfg(feature = "snackbar")]
+#[wasm_bindgen(module = "@material/snackbar/index")]
+extern "C" {
+    #[wasm_bindgen(extends = MDCComponent)]
+    pub type MDCSnackbar;
+
+    #[wasm_bindgen(constructor)]
+    pub fn new(surface: Element) -> MDCSnackbar;
+
+    #[wasm_bindgen(method, getter, js_name = "isOpen")]
+    pub fn is_open(this: &MDCSnackbar) -> bool;
+
+    #[wasm_bindgen(method, getter, js_name = timeoutMs)]
+    pub fn timeout_ms(this: &MDCSnackbar) -> u16;
+    #[wasm_bindgen(method, setter, js_name = timeoutMs)]
+    pub fn set_timeout_ms(this: &MDCSnackbar, timeout_ms: u16);
+
+    #[wasm_bindgen(method, getter, js_name = closeOnEscape)]
+    pub fn close_on_escape(this: &MDCSnackbar) -> bool;
+    #[wasm_bindgen(method, setter, js_name = closeOnEscape)]
+    pub fn set_close_on_escape(this: &MDCSnackbar, close_on_escape: bool);
+
+    #[wasm_bindgen(method, getter, js_name = labelText)]
+    pub fn label_text(this: &MDCSnackbar) -> String;
+    #[wasm_bindgen(method, setter, js_name = labelText)]
+    pub fn set_label_text(this: &MDCSnackbar, label_text: &str);
+
+    #[wasm_bindgen(method, getter, js_name = actionButtonText)]
+    pub fn action_button_text(this: &MDCSnackbar) -> String;
+    #[wasm_bindgen(method, setter, js_name = actionButtonText)]
+    pub fn set_action_button_text(this: &MDCSnackbar, action_button_text: &str);
+
+    #[wasm_bindgen(method)]
+    pub fn open(this: &MDCSnackbar);
+    #[wasm_bindgen(method)]
+    pub fn close(this: &MDCSnackbar, reason: Option<&str>);
 }

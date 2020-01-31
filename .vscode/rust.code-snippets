@@ -37,5 +37,15 @@
 			"    .map(|s| s.to_owned())",
 			"    .unwrap_or_else(|| format!(\"$1-{}\", crate::next_id()));"
 		]
+	},
+	"Implement wasm_bindgen property": {
+		"scope": "rust",
+		"prefix": "#[wasm_b",
+		"body": [
+			"#[wasm_bindgen(method, getter, js_name = $1)]",
+			"pub fn $2(this: &MDC$4) -> $3;",
+			"#[wasm_bindgen(method, setter, js_name = $1)]",
+			"pub fn set_$2(this: &MDC$4, $2: $3);"
+		]
 	}
 }
