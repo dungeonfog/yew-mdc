@@ -216,3 +216,23 @@ extern "C" {
     #[wasm_bindgen(method)]
     pub fn close(this: &MDCSnackbar, reason: Option<&str>);
 }
+
+#[cfg(feature = "switch")]
+#[wasm_bindgen(module = "@material/switch/index")]
+extern "C" {
+    #[wasm_bindgen(extends = MDCComponent)]
+    pub type MDCSwitch;
+
+    #[wasm_bindgen(constructor)]
+    pub fn new(surface: Element) -> MDCSwitch;
+
+    #[wasm_bindgen(method, getter, js_name = checked)]
+    pub fn checked(this: &MDCSwitch) -> bool;
+    #[wasm_bindgen(method, setter, js_name = checked)]
+    pub fn set_checked(this: &MDCSwitch, checked: bool);
+
+    #[wasm_bindgen(method, getter, js_name = disabled)]
+    pub fn disabled(this: &MDCSwitch) -> bool;
+    #[wasm_bindgen(method, setter, js_name = disabled)]
+    pub fn set_disabled(this: &MDCSwitch, disabled: bool);
+}

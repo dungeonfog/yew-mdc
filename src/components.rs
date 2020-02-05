@@ -77,3 +77,10 @@ cfg_if! {
         pub use snackbar::Snackbar;
     }
 }
+
+cfg_if! {
+    if #[cfg(feature = "switch")] {
+        pub mod switch;
+        pub use switch::Switch;
+    }
+}
