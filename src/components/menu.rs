@@ -72,7 +72,8 @@ impl Component for Menu {
                 }
             }
         }
-        false
+        self.props = props;
+        true
     }
 
     fn mounted(&mut self) -> ShouldRender {

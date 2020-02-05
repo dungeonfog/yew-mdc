@@ -47,6 +47,11 @@ impl Component for Section {
         Self { id, props }
     }
 
+    fn change(&mut self, props: Props) -> ShouldRender {
+        self.props = props;
+        true
+    }
+
     fn update(&mut self, _msg: Self::Message) -> ShouldRender {
         false
     }

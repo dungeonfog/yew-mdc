@@ -49,11 +49,11 @@ pub struct Props {
     pub children: Children,
     pub togglable: bool,
     pub toggle_on: bool,
-    pub onclick: Option<Callback<()>>,
+    pub onclick: Option<Callback<ClickEvent>>,
 }
 
 pub enum Msg {
-    Clicked,
+    Clicked(ClickEvent),
 }
 
 impl Component for IconButton {
@@ -85,9 +85,9 @@ impl Component for IconButton {
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
-            Msg::Clicked => {
+            Msg::Clicked(event) => {
                 if let Some(callback) = &self.props.onclick {
-                    callback.emit(());
+                    callback.emit(event);
                 }
             }
         }
@@ -104,7 +104,7 @@ impl Component for IconButton {
     }
 
     fn view(&self) -> Html {
-        let onclick = self.link.callback(|_| Msg::Clicked);
+        let onclick = self.link.callback(Msg::Clicked);
         if self.props.togglable {
             let on = if self.props.toggle_on {
                 " mdc-icon-button--on"

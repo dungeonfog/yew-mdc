@@ -32,6 +32,11 @@ impl Component for Item {
         Self { id, props, link }
     }
 
+    fn change(&mut self, props: Props) -> ShouldRender {
+        self.props = props;
+        true
+    }
+
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
             Msg::Clicked => {

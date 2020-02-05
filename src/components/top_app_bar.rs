@@ -29,11 +29,10 @@ impl Component for TopAppBar {
         Self { id, props }
     }
 
-    // TODO: Wrap related JavaScript
-    // TODO: Do we need it?
-    //fn mounted(&mut self) -> ShouldRender {
-    //    false
-    //}
+    fn change(&mut self, props: Props) -> ShouldRender {
+        self.props = props;
+        true
+    }
 
     fn update(&mut self, _msg: Self::Message) -> ShouldRender {
         false
