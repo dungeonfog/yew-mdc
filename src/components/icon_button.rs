@@ -95,12 +95,8 @@ impl Component for IconButton {
     }
 
     fn change(&mut self, props: Props) -> ShouldRender {
-        if props.toggle_on != self.props.toggle_on {
-            self.props = props;
-            true
-        } else {
-            false
-        }
+        self.props = props;
+        true
     }
 
     fn view(&self) -> Html {
