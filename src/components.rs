@@ -26,6 +26,7 @@ cfg_if! {
         pub mod text_field;
         pub use text_field::HelperLine as TextFieldHelperLine;
         pub use text_field::TextField;
+        pub use text_field::text_area::TextArea;
     }
 }
 

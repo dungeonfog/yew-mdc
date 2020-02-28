@@ -1,12 +1,7 @@
 use crate::mdc_sys::MDCTextField;
 use yew::prelude::*;
 
-pub mod helper_line;
-pub use helper_line::HelperLine;
-
-pub mod text_area;
-
-pub struct TextField {
+pub struct TextArea {
     pub id: String,
     pub input_id: String,
     inner: Option<MDCTextField>,
@@ -21,15 +16,16 @@ pub struct Props {
     pub hint: String,
     pub onchange: Option<Callback<String>>,
     pub disabled: bool,
-    pub outlined: bool,
     pub nolabel: bool,
+    pub rows: Option<u32>,
+    pub cols: Option<u32>,
 }
 
 pub enum Msg {
     ValueChanged(String),
 }
 
-impl Component for TextField {
+impl Component for TextArea {
     type Message = Msg;
     type Properties = Props;
 
@@ -83,33 +79,24 @@ impl Component for TextField {
         } else {
             ""
         };
-        let outlined = if self.props.outlined {
-            " mdc-text-field--outlined"
-        } else {
-            ""
-        };
         let nolabel = if self.props.nolabel {
             " mdc-text-field--no-label"
         } else {
             ""
         };
-        let classes = format!("mdc-text-field{}{}{}", disabled, outlined, nolabel);
-        let label = if self.props.nolabel {
-            html! {}
-        } else {
-            html! {
-                <label class="mdc-floating-label" for=self.input_id>
-                    { &self.props.hint }
-                </label>
-            }
-        };
-        let inner = if self.props.outlined {
+        let classes = format!(
+            "mdc-text-field mdc-text-field--textarea{}{}",
+            disabled, nolabel
+        );
+        let inner = {
             let notch = if self.props.nolabel {
                 html! {}
             } else {
                 html! {
                     <div class="mdc-notched-outline__notch">
-                        { label }
+                        <label class="mdc-floating-label" for=self.input_id>
+                            { &self.props.hint }
+                        </label>
                     </div>
                 }
             };
@@ -120,13 +107,8 @@ impl Component for TextField {
                     <div class="mdc-notched-outline__trailing"></div>
                 </div>
             }
-        } else {
-            html! { <>
-                <div class="mdc-line-ripple"></div>
-                { label }
-            </> }
         };
-        let placeholder = if self.props.nolabel && !self.props.hint.is_empty() {
+        let placeholder = if self.props.nolabel {
             &self.props.hint
         } else {
             ""
@@ -136,12 +118,14 @@ impl Component for TextField {
             .callback(|e: InputData| Msg::ValueChanged(e.value));
         html! {
             <div class=classes id=self.id>
-                <input type="text" id=self.input_id
-                       value=self.props.value
-                       class="mdc-text-field__input"
-                       oninput=oninput
-                       disabled=self.props.disabled
-                       placeholder=placeholder
+                <textarea id=self.input_id
+                          value=self.props.value
+                          class="mdc-text-field__input"
+                          oninput=oninput
+                          disabled=self.props.disabled
+                          placeholder=placeholder
+                          cols=self.props.cols.unwrap_or(80)
+                          rows=self.props.rows.unwrap_or(4)
                     />
                 { inner }
             </div>
