@@ -236,3 +236,31 @@ extern "C" {
     #[wasm_bindgen(method, setter, js_name = disabled)]
     pub fn set_disabled(this: &MDCSwitch, disabled: bool);
 }
+
+#[cfg(feature = "list")]
+#[wasm_bindgen(module = "@material/list")]
+extern "C" {
+    #[wasm_bindgen(extends = MDCComponent)]
+    pub type MDCList;
+
+    #[wasm_bindgen(constructor)]
+    pub fn new(surface: Element) -> MDCList;
+
+    #[wasm_bindgen(method, setter = vertical, structural)]
+    pub fn set_vertical(this: &MDCList, flag: bool);
+
+    #[wasm_bindgen(method, getter = listElements, structural)]
+    pub fn list_elements(this: &MDCList) -> js_sys::Array;
+
+    #[wasm_bindgen(method, setter = wrapFocus, structural)]
+    pub fn set_wrap_focus(this: &MDCList, flag: bool);
+
+    #[wasm_bindgen(method, setter = singleSelection, structural)]
+    pub fn set_single_selection(this: &MDCList, flag: bool);
+
+    #[wasm_bindgen(method, getter = selectedIndex, structural)]
+    pub fn selected_index(this: &MDCList) -> i32;
+
+    #[wasm_bindgen(method, setter = selectedIndex, structural)]
+    pub fn set_selected_index(this: &MDCList, value: i32);
+}
