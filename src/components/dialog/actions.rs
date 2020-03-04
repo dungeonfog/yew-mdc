@@ -4,7 +4,7 @@ pub struct Actions {
     props: Props,
 }
 
-#[derive(Properties, Clone)]
+#[derive(Properties, Clone, PartialEq)]
 pub struct Props {
     children: Children,
 }
@@ -17,8 +17,12 @@ impl Component for Actions {
         Self { props }
     }
     fn change(&mut self, props: Props) -> ShouldRender {
-        self.props = props;
-        true
+        if self.props != props {
+            self.props = props;
+            true
+        } else {
+            false
+        }
     }
     fn update(&mut self, _msg: Self::Message) -> ShouldRender {
         false

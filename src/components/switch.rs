@@ -12,7 +12,7 @@ pub struct Switch {
     state: bool,
 }
 
-#[derive(Properties, Clone)]
+#[derive(Properties, Clone, PartialEq)]
 pub struct Props {
     pub id: Option<String>,
     pub state: bool,
@@ -48,6 +48,15 @@ impl Component for Switch {
     fn mounted(&mut self) -> ShouldRender {
         self.inner = crate::get_element_by_id(&self.id).map(MDCSwitch::new);
         false
+    }
+
+    fn change(&mut self, props: Props) -> ShouldRender {
+        if self.props != props {
+            self.props = props;
+            true
+        } else {
+            false
+        }
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {

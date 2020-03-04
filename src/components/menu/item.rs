@@ -6,7 +6,7 @@ pub struct Item {
     link: ComponentLink<Self>,
 }
 
-#[derive(Properties, Clone)]
+#[derive(Properties, Clone, PartialEq)]
 pub struct Props {
     pub id: Option<String>,
     pub text: String,
@@ -33,8 +33,12 @@ impl Component for Item {
     }
 
     fn change(&mut self, props: Props) -> ShouldRender {
-        self.props = props;
-        true
+        if self.props != props {
+            self.props = props;
+            true
+        } else {
+            false
+        }
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {

@@ -13,7 +13,7 @@ pub struct Menu {
     props: Props,
 }
 
-#[derive(Properties, Clone)]
+#[derive(Properties, Clone, PartialEq)]
 pub struct Props {
     pub id: Option<String>,
     pub onclose: Option<Callback<()>>,
@@ -72,8 +72,12 @@ impl Component for Menu {
                 }
             }
         }
-        self.props = props;
-        true
+        if self.props != props {
+            self.props = props;
+            true
+        } else {
+            false
+        }
     }
 
     fn mounted(&mut self) -> ShouldRender {

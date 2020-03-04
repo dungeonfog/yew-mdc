@@ -11,7 +11,7 @@ pub struct Drawer {
     props: Props,
 }
 
-#[derive(Properties, Clone)]
+#[derive(Properties, Clone, PartialEq)]
 pub struct Props {
     pub id: Option<String>,
     pub children: Children,
@@ -28,6 +28,15 @@ impl Component for Drawer {
             .map(|s| s.to_owned())
             .unwrap_or_else(|| format!("drawer-{}", crate::next_id()));
         Self { id, props }
+    }
+
+    fn change(&mut self, props: Props) -> ShouldRender {
+        if self.props != props {
+            self.props = props;
+            true
+        } else {
+            false
+        }
     }
 
     // fn mounted(&mut self) -> ShouldRender {

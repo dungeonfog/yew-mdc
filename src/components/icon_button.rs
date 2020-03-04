@@ -42,7 +42,7 @@ pub struct IconButton {
     link: ComponentLink<Self>,
 }
 
-#[derive(Properties, Clone)]
+#[derive(Properties, Clone, PartialEq)]
 pub struct Props {
     pub id: Option<String>,
     pub classes: String,
@@ -83,6 +83,15 @@ impl Component for IconButton {
         false
     }
 
+    fn change(&mut self, props: Props) -> ShouldRender {
+        if self.props != props {
+            self.props = props;
+            true
+        } else {
+            false
+        }
+    }
+
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
             Msg::Clicked(event) => {
@@ -92,11 +101,6 @@ impl Component for IconButton {
             }
         }
         false
-    }
-
-    fn change(&mut self, props: Props) -> ShouldRender {
-        self.props = props;
-        true
     }
 
     fn view(&self) -> Html {

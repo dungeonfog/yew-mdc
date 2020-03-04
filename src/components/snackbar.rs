@@ -12,7 +12,7 @@ pub struct Snackbar {
     props: Props,
 }
 
-#[derive(Properties, Clone)]
+#[derive(Properties, Clone, PartialEq)]
 pub struct Props {
     pub id: Option<String>,
     pub text: String,
@@ -71,15 +71,19 @@ impl Component for Snackbar {
     }
 
     fn change(&mut self, props: Props) -> ShouldRender {
-        self.props = props;
-        if let Some(ref inner) = self.inner {
-            if self.props.open {
-                inner.open();
-            } else {
-                inner.close(None);
+        if self.props != props {
+            self.props = props;
+            if let Some(ref inner) = self.inner {
+                if self.props.open {
+                    inner.open();
+                } else {
+                    inner.close(None);
+                }
             }
+            true
+        } else {
+            false
         }
-        true
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {

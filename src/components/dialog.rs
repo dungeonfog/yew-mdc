@@ -14,7 +14,7 @@ pub struct Dialog {
     props: Props,
 }
 
-#[derive(Properties, Clone)]
+#[derive(Properties, Clone, PartialEq)]
 pub struct Props {
     pub id: Option<String>,
     pub children: Children,
@@ -93,8 +93,12 @@ impl Component for Dialog {
                 }
             }
         }
-        self.props = props;
-        true
+        if self.props != props {
+            self.props = props;
+            true
+        } else {
+            false
+        }
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {

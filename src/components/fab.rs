@@ -8,7 +8,7 @@ pub struct FAB {
     link: ComponentLink<Self>,
 }
 
-#[derive(Properties, Clone)]
+#[derive(Properties, Clone, PartialEq)]
 pub struct Props {
     pub id: Option<String>,
     pub children: Children,
@@ -40,6 +40,15 @@ impl Component for FAB {
         }
     }
 
+    fn change(&mut self, props: Props) -> ShouldRender {
+        if self.props != props {
+            self.props = props;
+            true
+        } else {
+            false
+        }
+    }
+
     fn mounted(&mut self) -> ShouldRender {
         self.ripple = crate::get_element_by_id(&self.id).map(MDCRipple::new);
         false
@@ -54,15 +63,6 @@ impl Component for FAB {
             }
         }
         false
-    }
-
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if props.exited != self.props.exited {
-            self.props = props;
-            true
-        } else {
-            false
-        }
     }
 
     fn view(&self) -> Html {

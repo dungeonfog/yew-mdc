@@ -33,7 +33,7 @@ impl std::fmt::Display for Style {
     }
 }
 
-#[derive(Properties, Clone, Debug)]
+#[derive(Properties, Clone, Debug, PartialEq)]
 pub struct Props {
     pub children: Children,
     pub id: Option<String>,
@@ -85,6 +85,7 @@ impl Component for Button {
         false
     }
 
+    #[allow(clippy::useless_let_if_seq)] // <- see further down...
     fn change(&mut self, props: Props) -> ShouldRender {
         #[cfg(feature = "dialog")]
         let props = if props.dialog_data.is_some() && !props.classes.contains("mdc-dialog__button")
@@ -96,15 +97,23 @@ impl Component for Button {
         } else {
             props
         };
+        // Honestly, it looks much clearer to me this way, and it avoids
+        // two useless and ugly `else { false }` blocks, and possibly a
+        // hard-to-read nested if as well. Change my mind.
+        let mut any_change = false;
         if self.props.id != props.id {
             self.id = props
                 .id
                 .as_ref()
                 .map(|id| id.to_owned())
                 .unwrap_or_else(|| format!("button-{}", crate::next_id()));
+            any_change = true;
         }
-        self.props = props;
-        true
+        if self.props != props {
+            self.props = props;
+            any_change = true;
+        }
+        any_change
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
