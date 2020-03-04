@@ -45,7 +45,7 @@ pub struct Props {
     #[prop_or_default]
     pub trailingicon: bool,
     #[prop_or_else(Callback::noop)]
-    pub onclick: Callback<ClickEvent>,
+    pub onclick: Callback<MouseEvent>,
     #[prop_or_default]
     pub classes: String,
     #[cfg(feature = "dialog")]
@@ -56,7 +56,7 @@ pub struct Props {
 }
 
 pub enum Msg {
-    Clicked(ClickEvent),
+    Clicked(MouseEvent),
 }
 
 impl Component for Button {

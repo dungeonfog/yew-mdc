@@ -1,4 +1,3 @@
-use stdweb::traits::IEvent;
 use yew::prelude::*;
 
 pub mod primary_action;
@@ -25,17 +24,17 @@ pub struct Props {
     #[prop_or_default]
     pub raw_css: String,
     #[prop_or_else(Callback::noop)]
-    pub oncontextclick: Callback<ContextMenuEvent>,
+    pub oncontextclick: Callback<MouseEvent>,
     #[prop_or_else(Callback::noop)]
-    pub onhoverenter: Callback<MouseEnterEvent>,
+    pub onhoverenter: Callback<MouseEvent>,
     #[prop_or_else(Callback::noop)]
-    pub onhoverleave: Callback<MouseLeaveEvent>,
+    pub onhoverleave: Callback<MouseEvent>,
 }
 
 pub enum Msg {
-    RightClick(ContextMenuEvent),
-    HoverEnter(MouseEnterEvent),
-    HoverLeave(MouseLeaveEvent),
+    RightClick(MouseEvent),
+    HoverEnter(MouseEvent),
+    HoverLeave(MouseEvent),
 }
 
 impl Component for Card {

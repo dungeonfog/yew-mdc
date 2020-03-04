@@ -1,5 +1,4 @@
 use crate::mdc_sys::MDCRipple;
-use stdweb::traits::IEvent;
 use yew::prelude::*;
 
 pub struct PrimaryAction {
@@ -15,14 +14,14 @@ pub struct Props {
     #[prop_or_default]
     pub id: Option<String>,
     #[prop_or_else(Callback::noop)]
-    pub onclick: Callback<ClickEvent>,
+    pub onclick: Callback<MouseEvent>,
     #[prop_or_else(Callback::noop)]
-    pub oncontextclick: Callback<ContextMenuEvent>,
+    pub oncontextclick: Callback<MouseEvent>,
 }
 
 pub enum Msg {
-    LeftClick(ClickEvent),
-    RightClick(ContextMenuEvent),
+    LeftClick(MouseEvent),
+    RightClick(MouseEvent),
 }
 
 impl Component for PrimaryAction {

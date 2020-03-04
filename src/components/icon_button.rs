@@ -54,11 +54,11 @@ pub struct Props {
     #[prop_or_default]
     pub toggle_on: bool,
     #[prop_or_else(Callback::noop)]
-    pub onclick: Callback<ClickEvent>,
+    pub onclick: Callback<MouseEvent>,
 }
 
 pub enum Msg {
-    Clicked(ClickEvent),
+    Clicked(MouseEvent),
 }
 
 impl Component for IconButton {
