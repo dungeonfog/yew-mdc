@@ -1,5 +1,6 @@
 use crate::mdc_sys::MDCDialog;
 use wasm_bindgen::{prelude::*, JsCast};
+use web_sys::Element;
 use yew::prelude::*;
 
 pub mod actions;
@@ -8,7 +9,7 @@ pub mod content;
 pub use content::Content;
 
 pub struct Dialog {
-    id: String,
+    node_ref: NodeRef,
     inner: Option<MDCDialog>,
     close_callback: Closure<dyn FnMut(web_sys::Event)>,
     props: Props,
@@ -18,7 +19,7 @@ pub struct Dialog {
 pub struct Props {
     pub children: Children,
     #[prop_or_default]
-    pub id: Option<String>,
+    pub id: String,
     #[prop_or_else(Callback::noop)]
     pub onclosed: Callback<Option<String>>,
     #[prop_or_default]
@@ -42,11 +43,6 @@ impl Component for Dialog {
     type Properties = Props;
 
     fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        let id = props
-            .id
-            .as_ref()
-            .map(|s| s.to_owned())
-            .unwrap_or_else(|| format!("dialog-{}", crate::next_id()));
         let callback = link.callback(|action: Option<String>| Msg::Closed { action });
         let closure = Closure::wrap(Box::new(move |e: web_sys::Event| {
             use std::borrow::ToOwned;
@@ -64,7 +60,7 @@ impl Component for Dialog {
             callback.emit(action);
         }) as Box<dyn FnMut(web_sys::Event)>);
         Self {
-            id,
+            node_ref: NodeRef::default(),
             inner: None,
             close_callback: closure,
             props,
@@ -72,7 +68,7 @@ impl Component for Dialog {
     }
 
     fn mounted(&mut self) -> ShouldRender {
-        if let Some(elem) = crate::get_element_by_id(&self.id) {
+        if let Some(elem) = self.node_ref.cast::<Element>() {
             let dialog = MDCDialog::new(elem);
             if let Some(action) = &self.props.escape_key_action {
                 dialog.set_escape_key_action(action);
@@ -119,7 +115,7 @@ impl Component for Dialog {
 
     fn view(&self) -> Html {
         html! {
-            <div class="mdc-dialog" id=self.id>
+            <div class="mdc-dialog" id=&self.props.id ref=self.node_ref.clone()>
                 <div class="mdc-dialog__container">
                     <div class="mdc-dialog__surface">
                         <h2 class="mdc-dialog__title">{ &self.props.title }</h2>

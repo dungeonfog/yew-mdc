@@ -1,8 +1,9 @@
 use crate::mdc_sys::MDCRipple;
+use web_sys::Element;
 use yew::prelude::*;
 
 pub struct PrimaryAction {
-    id: String,
+    node_ref: NodeRef,
     props: Props,
     ripple: Option<MDCRipple>,
     link: ComponentLink<Self>,
@@ -12,7 +13,7 @@ pub struct PrimaryAction {
 pub struct Props {
     pub children: Children,
     #[prop_or_default]
-    pub id: Option<String>,
+    pub id: String,
     #[prop_or_else(Callback::noop)]
     pub onclick: Callback<MouseEvent>,
     #[prop_or_else(Callback::noop)]
@@ -29,13 +30,8 @@ impl Component for PrimaryAction {
     type Properties = Props;
 
     fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        let id = props
-            .id
-            .as_ref()
-            .map(|s| s.to_owned())
-            .unwrap_or_else(|| format!("card-primary-action-{}", crate::next_id()));
         Self {
-            id,
+            node_ref: NodeRef::default(),
             props,
             ripple: None,
             link,
@@ -43,7 +39,7 @@ impl Component for PrimaryAction {
     }
 
     fn mounted(&mut self) -> ShouldRender {
-        self.ripple = crate::get_element_by_id(&self.id).map(MDCRipple::new);
+        self.ripple = self.node_ref.cast::<Element>().map(MDCRipple::new);
         false
     }
 
@@ -76,7 +72,8 @@ impl Component for PrimaryAction {
         let emit_contextclick = self.link.callback(Msg::RightClick);
         html! {
             <div
-                id=self.id
+                id=&self.props.id
+                ref=self.node_ref.clone()
                 class="mdc-card__primary-action"
                 tabindex="0"
                 onclick=emit_click

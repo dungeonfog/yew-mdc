@@ -1,8 +1,9 @@
 use crate::mdc_sys::MDCRipple;
+use web_sys::Element;
 use yew::prelude::*;
 
 pub struct Button {
-    id: String,
+    node_ref: NodeRef,
     ripple: Option<MDCRipple>,
     props: Props,
     link: ComponentLink<Self>,
@@ -38,7 +39,7 @@ pub struct Props {
     #[prop_or_default]
     pub children: Children,
     #[prop_or_default]
-    pub id: Option<String>,
+    pub id: String,
     pub text: String,
     #[prop_or_default]
     pub style: Style,
@@ -64,11 +65,6 @@ impl Component for Button {
     type Message = Msg;
 
     fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        let id = props
-            .id
-            .as_ref()
-            .map(|id| id.to_owned())
-            .unwrap_or_else(|| format!("button-{}", crate::next_id()));
         #[cfg(feature = "dialog")]
         let props = if props.dialog_data.is_some() && !props.classes.contains("mdc-dialog__button")
         {
@@ -80,7 +76,7 @@ impl Component for Button {
             props
         };
         Self {
-            id,
+            node_ref: NodeRef::default(),
             ripple: None,
             props,
             link,
@@ -88,11 +84,10 @@ impl Component for Button {
     }
 
     fn mounted(&mut self) -> ShouldRender {
-        self.ripple = crate::get_element_by_id(&self.id).map(MDCRipple::new);
+        self.ripple = self.node_ref.cast::<Element>().map(MDCRipple::new);
         false
     }
 
-    #[allow(clippy::useless_let_if_seq)] // <- see further down...
     fn change(&mut self, props: Props) -> ShouldRender {
         #[cfg(feature = "dialog")]
         let props = if props.dialog_data.is_some() && !props.classes.contains("mdc-dialog__button")
@@ -104,23 +99,12 @@ impl Component for Button {
         } else {
             props
         };
-        // Honestly, it looks much clearer to me this way, and it avoids
-        // two useless and ugly `else { false }` blocks, and possibly a
-        // hard-to-read nested if as well. Change my mind.
-        let mut any_change = false;
-        if self.props.id != props.id {
-            self.id = props
-                .id
-                .as_ref()
-                .map(|id| id.to_owned())
-                .unwrap_or_else(|| format!("button-{}", crate::next_id()));
-            any_change = true;
-        }
         if self.props != props {
             self.props = props;
-            any_change = true;
+            true
+        } else {
+            false
         }
-        any_change
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
@@ -148,7 +132,8 @@ impl Component for Button {
         if let Some(action) = &self.props.dialog_data {
             html! {
                 <button class=classes
-                        id=self.id
+                        id=&self.props.id
+                        ref=self.node_ref.clone()
                         disabled=self.props.disabled
                         data-mdc-dialog-action=action>
                     <div class="mdc-button__ripple"></div>
@@ -159,7 +144,8 @@ impl Component for Button {
             let onclick = self.link.callback(Msg::Clicked);
             html! {
                 <button class=classes
-                        id=self.id
+                        id=&self.props.id
+                        ref=self.node_ref.clone()
                         disabled=self.props.disabled
                         onclick=onclick>
                     <div class="mdc-button__ripple"></div>

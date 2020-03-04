@@ -4,7 +4,6 @@ pub mod section;
 pub use section::Section;
 
 pub struct TopAppBar {
-    id: String,
     props: Props,
 }
 
@@ -12,7 +11,7 @@ pub struct TopAppBar {
 pub struct Props {
     pub children: Children,
     #[prop_or_default]
-    pub id: Option<String>,
+    pub id: String,
     #[prop_or_default]
     pub manualrows: bool,
     #[prop_or_default]
@@ -24,12 +23,7 @@ impl Component for TopAppBar {
     type Properties = Props;
 
     fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        let id = props
-            .id
-            .as_ref()
-            .map(|s| s.to_owned())
-            .unwrap_or_else(|| format!("top-app-bar-{}", crate::next_id()));
-        Self { id, props }
+        Self { props }
     }
 
     fn change(&mut self, props: Props) -> ShouldRender {
@@ -49,13 +43,13 @@ impl Component for TopAppBar {
         let classes = format!("mdc-top-app-bar {}", self.props.classes);
         if self.props.manualrows {
             html! {
-                <header class=classes id=self.id>
+                <header class=classes id=&self.props.id>
                     { self.props.children.render() }
                 </header>
             }
         } else {
             html! {
-                <header class=classes id=self.id>
+                <header class=classes id=&self.props.id>
                     <div class="mdc-top-app-bar__row">
                         { self.props.children.render() }
                     </div>

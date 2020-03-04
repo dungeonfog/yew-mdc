@@ -26,7 +26,7 @@ text-field = []
 menu = []
 drawer = []
 top-app-bar = []
-card = ["stdweb"]
+card = []
 # These are required to use the data returned by a dialog.
 dialog = ["serde", "serde_json", "wasm-bindgen/serde-serialize"]
 snackbar = []
@@ -41,7 +41,6 @@ lazy_static = "*"
 cfg-if = "0.1"
 serde = { version = "1", optional = true }
 serde_json = { version = "1", optional = true }
-stdweb = { version = "*", optional = true }
 
 [dependencies.web-sys]
 version = "0.3"

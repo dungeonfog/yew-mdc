@@ -1,4 +1,5 @@
 use crate::mdc_sys::MDCTextField;
+use web_sys::Element;
 use yew::prelude::*;
 
 pub mod helper_line;
@@ -7,8 +8,7 @@ pub use helper_line::HelperLine;
 pub mod text_area;
 
 pub struct TextField {
-    pub id: String,
-    pub input_id: String,
+    node_ref: NodeRef,
     inner: Option<MDCTextField>,
     props: Props,
     link: ComponentLink<Self>,
@@ -17,7 +17,7 @@ pub struct TextField {
 #[derive(PartialEq, Properties, Clone, Debug)]
 pub struct Props {
     #[prop_or_default]
-    pub id: Option<String>,
+    pub id: String,
     #[prop_or_default]
     pub value: String,
     #[prop_or_default]
@@ -41,15 +41,8 @@ impl Component for TextField {
     type Properties = Props;
 
     fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        let id = props
-            .id
-            .as_ref()
-            .map(|s| s.to_owned())
-            .unwrap_or_else(|| format!("text-field-{}", crate::next_id()));
-        let input_id = format!("{}-input", id);
         Self {
-            id,
-            input_id,
+            node_ref: NodeRef::default(),
             props,
             inner: None,
             link,
@@ -57,7 +50,7 @@ impl Component for TextField {
     }
 
     fn mounted(&mut self) -> ShouldRender {
-        self.inner = crate::get_element_by_id(&self.id).map(MDCTextField::new);
+        self.inner = self.node_ref.cast::<Element>().map(MDCTextField::new);
         false
     }
 
@@ -103,7 +96,7 @@ impl Component for TextField {
             html! {}
         } else {
             html! {
-                <label class="mdc-floating-label" for=self.input_id>
+                <label class="mdc-floating-label">
                     { &self.props.hint }
                 </label>
             }
@@ -140,8 +133,8 @@ impl Component for TextField {
             .link
             .callback(|e: InputData| Msg::ValueChanged(e.value));
         html! {
-            <div class=classes id=self.id>
-                <input type="text" id=self.input_id
+            <div class=classes id=&self.props.id ref=self.node_ref.clone()>
+                <input type="text"
                        value=self.props.value
                        class="mdc-text-field__input"
                        oninput=oninput

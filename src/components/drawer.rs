@@ -6,7 +6,6 @@ pub mod header;
 pub use header::Header;
 
 pub struct Drawer {
-    id: String,
     // inner: Option<MDCDrawer>,
     props: Props,
 }
@@ -14,7 +13,7 @@ pub struct Drawer {
 #[derive(Properties, Clone, PartialEq)]
 pub struct Props {
     #[prop_or_default]
-    pub id: Option<String>,
+    pub id: String,
     pub children: Children,
 }
 
@@ -23,12 +22,7 @@ impl Component for Drawer {
     type Properties = Props;
 
     fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        let id = props
-            .id
-            .as_ref()
-            .map(|s| s.to_owned())
-            .unwrap_or_else(|| format!("drawer-{}", crate::next_id()));
-        Self { id, props }
+        Self { props }
     }
 
     fn change(&mut self, props: Props) -> ShouldRender {
@@ -50,7 +44,7 @@ impl Component for Drawer {
 
     fn view(&self) -> Html {
         html! {
-            <aside class="mdc-drawer" id=self.id>
+            <aside class="mdc-drawer" id=&self.props.id>
                 { self.props.children.render() }
             </aside>
         }

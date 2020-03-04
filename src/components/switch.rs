@@ -1,11 +1,11 @@
 use crate::mdc_sys::MDCSwitch;
+use web_sys::Element;
 use yew::prelude::*;
 
 // Note: This name conflicts with yew_router::switch::Switch.
 // Not sure what to think about that.
 pub struct Switch {
-    id: String,
-    id_inner: String,
+    node_ref: NodeRef,
     link: ComponentLink<Self>,
     inner: Option<MDCSwitch>,
     props: Props,
@@ -15,13 +15,13 @@ pub struct Switch {
 #[derive(Properties, Clone, PartialEq)]
 pub struct Props {
     #[prop_or_default]
-    pub id: Option<String>,
+    pub id: String,
     #[prop_or_default]
     pub state: bool,
-    #[prop_or_else(Callback::noop)]
-    pub onchange: Callback<bool>,
     #[prop_or_default]
     pub label_text: String,
+    #[prop_or_else(Callback::noop)]
+    pub onchange: Callback<bool>,
 }
 
 pub enum Msg {
@@ -33,15 +33,8 @@ impl Component for Switch {
     type Properties = Props;
 
     fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        let id = props
-            .id
-            .as_ref()
-            .map(|s| s.to_owned())
-            .unwrap_or_else(|| format!("switch-{}", crate::next_id()));
-        let id_inner = format!("{}-inner", id);
         Self {
-            id,
-            id_inner,
+            node_ref: NodeRef::default(),
             link,
             inner: None,
             state: props.state,
@@ -50,7 +43,7 @@ impl Component for Switch {
     }
 
     fn mounted(&mut self) -> ShouldRender {
-        self.inner = crate::get_element_by_id(&self.id).map(MDCSwitch::new);
+        self.inner = self.node_ref.cast::<Element>().map(MDCSwitch::new);
         false
     }
 
@@ -82,12 +75,11 @@ impl Component for Switch {
         };
         let classes = format!("mdc-switch{}", on_class);
         let switch = html! {
-            <div id=&self.id class=classes>
+            <div id=&self.props.id class=classes ref=self.node_ref.clone()>
                 <div class="mdc-switch__track"></div>
                 <div class="mdc-switch__thumb-underlay">
                     <div class="mdc-switch__thumb">
                         <input type="checkbox"
-                               id=&self.id_inner
                                onchange=emit_change
                                class="mdc-switch__native-control"
                                checked=checked
@@ -102,7 +94,7 @@ impl Component for Switch {
             html! {
                 <>
                 { switch }
-                <label for=&self.id_inner>{ &self.props.label_text }</label>
+                <label>{ &self.props.label_text }</label>
                 </>
             }
         }

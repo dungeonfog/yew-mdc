@@ -1,8 +1,9 @@
 use crate::mdc_sys::MDCRipple;
+use web_sys::Element;
 use yew::prelude::*;
 
 pub struct FAB {
-    id: String,
+    node_ref: NodeRef,
     ripple: Option<MDCRipple>,
     props: Props,
     link: ComponentLink<Self>,
@@ -12,7 +13,7 @@ pub struct FAB {
 pub struct Props {
     pub children: Children,
     #[prop_or_default]
-    pub id: Option<String>,
+    pub id: String,
     #[prop_or_default]
     pub text: Option<String>,
     #[prop_or_default]
@@ -32,13 +33,8 @@ impl Component for FAB {
     type Properties = Props;
 
     fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        let id = props
-            .id
-            .as_ref()
-            .map(|id| id.to_owned())
-            .unwrap_or_else(|| format!("fab-{}", crate::next_id()));
         Self {
-            id,
+            node_ref: NodeRef::default(),
             ripple: None,
             props,
             link,
@@ -55,7 +51,7 @@ impl Component for FAB {
     }
 
     fn mounted(&mut self) -> ShouldRender {
-        self.ripple = crate::get_element_by_id(&self.id).map(MDCRipple::new);
+        self.ripple = self.node_ref.cast::<Element>().map(MDCRipple::new);
         false
     }
 
@@ -91,7 +87,9 @@ impl Component for FAB {
         let classes = format!("mdc-fab{}{}{}", mini, extended, exited);
         let onclick = self.link.callback(|_| Msg::Clicked);
         html! {
-            <button class=classes id=self.id onclick=onclick>
+            <button class=classes id=&self.props.id
+                    ref=self.node_ref.clone()
+                    onclick=onclick>
                 { ripple }
                 { self.props.children.render() }
                 { label }

@@ -2,7 +2,6 @@ use std::fmt;
 use yew::prelude::*;
 
 pub struct Section {
-    id: String,
     props: Props,
 }
 
@@ -31,7 +30,7 @@ impl fmt::Display for Align {
 pub struct Props {
     pub children: Children,
     #[prop_or_default]
-    pub id: Option<String>,
+    pub id: String,
     #[prop_or_default]
     pub align: Align,
 }
@@ -41,12 +40,7 @@ impl Component for Section {
     type Properties = Props;
 
     fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        let id = props
-            .id
-            .as_ref()
-            .map(|s| s.to_owned())
-            .unwrap_or_else(|| format!("app-bar-section-{}", crate::next_id()));
-        Self { id, props }
+        Self { props }
     }
 
     fn change(&mut self, props: Props) -> ShouldRender {
@@ -65,7 +59,7 @@ impl Component for Section {
     fn view(&self) -> Html {
         let classes = format!("mdc-top-app-bar__section {}", self.props.align);
         html! {
-            <section class=classes id=self.id>
+            <section class=classes id=&self.props.id>
                 { self.props.children.render() }
             </section>
         }

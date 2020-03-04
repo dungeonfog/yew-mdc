@@ -1,11 +1,12 @@
 use crate::mdc_sys::MDCSnackbar;
 use wasm_bindgen::closure::Closure;
+use web_sys::Element;
 use yew::prelude::*;
 
 use crate::components::Button;
 
 pub struct Snackbar {
-    id: String,
+    node_ref: NodeRef,
     link: ComponentLink<Self>,
     inner: Option<MDCSnackbar>,
     close_callback: Closure<dyn FnMut(web_sys::Event)>,
@@ -15,7 +16,7 @@ pub struct Snackbar {
 #[derive(Properties, Clone, PartialEq)]
 pub struct Props {
     #[prop_or_default]
-    pub id: Option<String>,
+    pub id: String,
     #[prop_or_default]
     pub text: String,
     #[prop_or_default]
@@ -39,11 +40,6 @@ impl Component for Snackbar {
     type Properties = Props;
 
     fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        let id = props
-            .id
-            .as_ref()
-            .map(|s| s.to_owned())
-            .unwrap_or_else(|| format!("snackbar-{}", crate::next_id()));
         let close_callback = {
             let callback = link.callback(|_| Msg::Closed);
             Closure::wrap(Box::new(move |e: web_sys::Event| {
@@ -52,7 +48,7 @@ impl Component for Snackbar {
             }) as Box<dyn FnMut(web_sys::Event)>)
         };
         Self {
-            id,
+            node_ref: NodeRef::default(),
             link,
             inner: None,
             close_callback,
@@ -61,7 +57,7 @@ impl Component for Snackbar {
     }
 
     fn mounted(&mut self) -> ShouldRender {
-        if let Some(elem) = crate::get_element_by_id(&self.id) {
+        if let Some(elem) = self.node_ref.cast::<Element>() {
             let inner = MDCSnackbar::new(elem);
             if let Some(timeout_ms) = &self.props.timeout_ms {
                 inner.set_timeout_ms(*timeout_ms);
@@ -122,7 +118,9 @@ impl Component for Snackbar {
             html! {}
         };
         html! {
-            <div class="mdc-snackbar" id=&self.id>
+            <div class="mdc-snackbar"
+                 id=&self.props.id
+                 ref=self.node_ref.clone()>
                 <div class="mdc-snackbar__surface">
                     <div class="mdc-snackbar__label">
                         { &self.props.text }

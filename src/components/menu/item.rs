@@ -1,7 +1,6 @@
 use yew::prelude::*;
 
 pub struct Item {
-    id: String,
     props: Props,
     link: ComponentLink<Self>,
 }
@@ -9,7 +8,7 @@ pub struct Item {
 #[derive(Properties, Clone, PartialEq)]
 pub struct Props {
     #[prop_or_default]
-    pub id: Option<String>,
+    pub id: String,
     #[prop_or_default]
     pub text: String,
     #[prop_or_default]
@@ -29,12 +28,7 @@ impl Component for Item {
     type Properties = Props;
 
     fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        let id = props
-            .id
-            .as_ref()
-            .map(|s| s.to_owned())
-            .unwrap_or_else(|| format!("menu-item-{}", crate::next_id()));
-        Self { id, props, link }
+        Self { props, link }
     }
 
     fn change(&mut self, props: Props) -> ShouldRender {
@@ -65,7 +59,7 @@ impl Component for Item {
         };
         let onclick = self.link.callback(|_| Msg::Clicked);
         html! {
-            <li class=classes role="menuitem" id=self.id onclick=onclick>
+            <li class=classes role="menuitem" id=&self.props.id onclick=onclick>
                 { self.props.children.render() }
                 <span class="mdc-list-item__text">{ &self.props.text }</span>
             </li>

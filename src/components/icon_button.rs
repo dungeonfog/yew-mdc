@@ -33,10 +33,11 @@ stay in the realm of MDC; the downside is that it's also on you to get it right.
 */
 
 use crate::mdc_sys::MDCRipple;
+use web_sys::Element;
 use yew::prelude::*;
 
 pub struct IconButton {
-    id: String,
+    node_ref: NodeRef,
     ripple: Option<MDCRipple>,
     props: Props,
     link: ComponentLink<Self>,
@@ -46,7 +47,7 @@ pub struct IconButton {
 pub struct Props {
     pub children: Children,
     #[prop_or_default]
-    pub id: Option<String>,
+    pub id: String,
     #[prop_or_default]
     pub classes: String,
     #[prop_or_default]
@@ -66,13 +67,8 @@ impl Component for IconButton {
     type Properties = Props;
 
     fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        let id = props
-            .id
-            .as_ref()
-            .map(|id| id.to_owned())
-            .unwrap_or_else(|| format!("icon-button-{}", crate::next_id()));
         Self {
-            id,
+            node_ref: NodeRef::default(),
             ripple: None,
             props,
             link,
@@ -80,7 +76,7 @@ impl Component for IconButton {
     }
 
     fn mounted(&mut self) -> ShouldRender {
-        self.ripple = crate::get_element_by_id(&self.id).map(|elem| {
+        self.ripple = self.node_ref.cast::<Element>().map(|elem| {
             let ripple = MDCRipple::new(elem);
             ripple.set_unbounded(true);
             ripple
@@ -116,16 +112,20 @@ impl Component for IconButton {
             };
             let classes = format!("mdc-icon-button{}", on);
             html! {
-                <button id=self.id class=classes onclick=onclick>
+                <button id=&self.props.id class=classes
+                        ref=self.node_ref.clone()
+                        onclick=onclick>
                     { self.props.children.render() }
                 </button>
             }
         } else {
             let classes = format!("mdc-icon-button {}", self.props.classes);
             html! {
-                <button class=classes id=self.id
-                        onclick=onclick
-                    >{ self.props.children.render() }</button>
+                <button class=classes id=&self.props.id
+                        ref=self.node_ref.clone()
+                        onclick=onclick>
+                    { self.props.children.render() }
+                </button>
             }
         }
     }

@@ -1,7 +1,6 @@
 use yew::prelude::*;
 
 pub struct Media {
-    id: String,
     props: Props,
 }
 
@@ -32,7 +31,7 @@ impl std::fmt::Display for Style {
 pub struct Props {
     pub children: Children,
     #[prop_or_default]
-    pub id: Option<String>,
+    pub id: String,
     #[prop_or_default]
     pub style: Style,
     #[prop_or_default]
@@ -46,12 +45,7 @@ impl Component for Media {
     type Properties = Props;
 
     fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        let id = props
-            .id
-            .as_ref()
-            .map(|s| s.to_owned())
-            .unwrap_or_else(|| format!("card-media-{}", crate::next_id()));
-        Self { id, props }
+        Self { props }
     }
 
     fn change(&mut self, props: Props) -> ShouldRender {
@@ -74,11 +68,11 @@ impl Component for Media {
         );
         if self.props.children.is_empty() {
             html! {
-                <div id=self.id class=classes></div>
+                <div id=&self.props.id class=classes></div>
             }
         } else {
             html! {
-                <div id=self.id class=classes style=&self.props.raw_css>
+                <div id=&self.props.id class=classes style=&self.props.raw_css>
                     <div class="mdc-card__media-content">
                         { self.props.children.render() }
                     </div>

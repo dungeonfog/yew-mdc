@@ -36,29 +36,15 @@ what you actually need; currently, all features are enabled by default.
 pub mod components;
 pub mod mdc_sys;
 
-use std::sync::atomic::{AtomicU32, Ordering};
-lazy_static::lazy_static! {
-    static ref ID_COUNTER: AtomicU32 = AtomicU32::new(0);
-}
+// #[cfg(test)]
+// pub mod tests {
+//     use wasm_bindgen_test::{wasm_bindgen_test, wasm_bindgen_test_configure};
+//     wasm_bindgen_test_configure!(run_in_browser);
 
-// Tiny wrapper fn so we can make changes here instead of on every call
-fn next_id() -> u32 {
-    ID_COUNTER.fetch_add(1, Ordering::Relaxed)
-}
-
-fn get_element_by_id(id: &str) -> Option<web_sys::Element> {
-    web_sys::window()?.document()?.get_element_by_id(id)
-}
-
-#[cfg(test)]
-pub mod tests {
-    use wasm_bindgen_test::{wasm_bindgen_test, wasm_bindgen_test_configure};
-    wasm_bindgen_test_configure!(run_in_browser);
-
-    #[wasm_bindgen_test]
-    fn id_generation() {
-        assert_eq!(super::next_id(), 0);
-        assert_eq!(super::next_id(), 1);
-        assert_eq!(super::next_id(), 2);
-    }
-}
+//     // #[wasm_bindgen_test]
+//     // fn id_generation() {
+//     //     assert_eq!(super::next_id(), 0);
+//     //     assert_eq!(super::next_id(), 1);
+//     //     assert_eq!(super::next_id(), 2);
+//     // }
+// }

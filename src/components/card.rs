@@ -7,7 +7,6 @@ pub use media::Media;
 pub use media::Style as MediaStyle;
 
 pub struct Card {
-    id: String,
     props: Props,
     link: ComponentLink<Self>,
 }
@@ -16,7 +15,7 @@ pub struct Card {
 pub struct Props {
     pub children: Children,
     #[prop_or_default]
-    pub id: Option<String>,
+    pub id: String,
     #[prop_or_default]
     pub outlined: bool,
     #[prop_or_default]
@@ -42,12 +41,7 @@ impl Component for Card {
     type Properties = Props;
 
     fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        let id = props
-            .id
-            .as_ref()
-            .map(|s| s.to_owned())
-            .unwrap_or_else(|| format!("card-{}", crate::next_id()));
-        Self { id, props, link }
+        Self { props, link }
     }
 
     fn change(&mut self, props: Props) -> ShouldRender {
@@ -88,7 +82,7 @@ impl Component for Card {
         let emit_hoverenter = self.link.callback(Msg::HoverEnter);
         let emit_hoverleave = self.link.callback(Msg::HoverLeave);
         html! {
-            <div class=classes id=self.id
+            <div class=classes id=&self.props.id
                  style=&self.props.raw_css
                  oncontextmenu=emit_contextclick
                  onmouseenter=emit_hoverenter

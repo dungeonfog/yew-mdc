@@ -1,12 +1,13 @@
 use crate::mdc_sys::{MDCMenu, MDCMenuSurface};
 use wasm_bindgen::prelude::*;
+use web_sys::Element;
 use yew::prelude::*;
 
 pub mod item;
 pub use item::Item;
 
 pub struct Menu {
-    id: String,
+    node_ref: NodeRef,
     inner: Option<MDCMenu>,
     surface: Option<MDCMenuSurface>,
     close_callback: Closure<dyn FnMut(web_sys::Event)>,
@@ -17,7 +18,7 @@ pub struct Menu {
 pub struct Props {
     pub children: Children,
     #[prop_or_default]
-    pub id: Option<String>,
+    pub id: String,
     #[prop_or_default]
     pub fixed_position: bool,
     #[prop_or_default]
@@ -37,18 +38,13 @@ impl Component for Menu {
     type Properties = Props;
 
     fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        let id = props
-            .id
-            .as_ref()
-            .map(|s| s.to_owned())
-            .unwrap_or_else(|| format!("menu-{}", crate::next_id()));
         let callback = link.callback(|_| Msg::Closed);
         let closure = Closure::wrap(Box::new(move |e: web_sys::Event| {
             e.stop_propagation();
             callback.emit(());
         }) as Box<dyn FnMut(web_sys::Event)>);
         Self {
-            id,
+            node_ref: NodeRef::default(),
             inner: None,
             surface: None,
             close_callback: closure,
@@ -86,7 +82,7 @@ impl Component for Menu {
     }
 
     fn mounted(&mut self) -> ShouldRender {
-        if let Some(elem) = crate::get_element_by_id(&self.id) {
+        if let Some(elem) = self.node_ref.cast::<Element>() {
             // Our root element has the mdc-menu class...
             let menu = MDCMenu::new(elem.clone());
             menu.set_fixed_position(self.props.fixed_position);
@@ -114,7 +110,8 @@ impl Component for Menu {
 
     fn view(&self) -> Html {
         html! {
-            <div class="mdc-menu mdc-menu-surface" id=self.id>
+            <div class="mdc-menu mdc-menu-surface" id=&self.props.id
+                 ref=self.node_ref.clone()>
                 <ul class="mdc-list" role="menu" aria-hidden="true" aria-orientation="vertical" tabindex="-1">
                     { self.props.children.render() }
                 </ul>
