@@ -15,14 +15,21 @@ pub struct Card {
 
 #[derive(Properties, Clone, PartialEq)]
 pub struct Props {
-    pub id: Option<String>,
     pub children: Children,
+    #[prop_or_default]
+    pub id: Option<String>,
+    #[prop_or_default]
     pub outlined: bool,
+    #[prop_or_default]
     pub classes: String,
+    #[prop_or_default]
     pub raw_css: String,
-    pub oncontextclick: Option<Callback<ContextMenuEvent>>,
-    pub onhoverenter: Option<Callback<MouseEnterEvent>>,
-    pub onhoverleave: Option<Callback<MouseLeaveEvent>>,
+    #[prop_or_else(Callback::noop)]
+    pub oncontextclick: Callback<ContextMenuEvent>,
+    #[prop_or_else(Callback::noop)]
+    pub onhoverenter: Callback<MouseEnterEvent>,
+    #[prop_or_else(Callback::noop)]
+    pub onhoverleave: Callback<MouseLeaveEvent>,
 }
 
 pub enum Msg {
@@ -56,20 +63,16 @@ impl Component for Card {
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
             Msg::RightClick(event) => {
-                if let Some(callback) = &self.props.oncontextclick {
+                if self.props.oncontextclick != Callback::noop() {
                     event.prevent_default();
-                    callback.emit(event);
+                    self.props.oncontextclick.emit(event);
                 }
             }
             Msg::HoverEnter(event) => {
-                if let Some(callback) = &self.props.onhoverenter {
-                    callback.emit(event);
-                }
+                self.props.onhoverenter.emit(event);
             }
             Msg::HoverLeave(event) => {
-                if let Some(callback) = &self.props.onhoverleave {
-                    callback.emit(event);
-                }
+                self.props.onhoverleave.emit(event);
             }
         }
         false

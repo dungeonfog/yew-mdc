@@ -11,10 +11,13 @@ pub struct PrimaryAction {
 
 #[derive(Properties, Clone, PartialEq)]
 pub struct Props {
-    pub id: Option<String>,
     pub children: Children,
-    pub onclick: Option<Callback<ClickEvent>>,
-    pub oncontextclick: Option<Callback<ContextMenuEvent>>,
+    #[prop_or_default]
+    pub id: Option<String>,
+    #[prop_or_else(Callback::noop)]
+    pub onclick: Callback<ClickEvent>,
+    #[prop_or_else(Callback::noop)]
+    pub oncontextclick: Callback<ContextMenuEvent>,
 }
 
 pub enum Msg {
@@ -57,15 +60,13 @@ impl Component for PrimaryAction {
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
             Msg::LeftClick(event) => {
-                if let Some(callback) = &self.props.onclick {
-                    callback.emit(event);
-                }
+                self.props.onclick.emit(event);
             }
             Msg::RightClick(event) => {
-                if let Some(callback) = &self.props.oncontextclick {
+                if self.props.oncontextclick != Callback::noop() {
                     event.prevent_default();
-                    callback.emit(event);
                 }
+                self.props.oncontextclick.emit(event);
             }
         }
         false

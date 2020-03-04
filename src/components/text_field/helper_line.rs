@@ -7,7 +7,9 @@ pub struct HelperLine {
 #[derive(Properties, Clone, PartialEq)]
 pub struct Props {
     pub children: Children,
+    #[prop_or_default]
     pub persistent: bool,
+    #[prop_or_default]
     pub validation_msg: bool,
 }
 

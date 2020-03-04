@@ -16,13 +16,20 @@ pub struct TextField {
 
 #[derive(PartialEq, Properties, Clone, Debug)]
 pub struct Props {
+    #[prop_or_default]
     pub id: Option<String>,
+    #[prop_or_default]
     pub value: String,
+    #[prop_or_default]
     pub hint: String,
-    pub onchange: Option<Callback<String>>,
+    #[prop_or_default]
     pub disabled: bool,
+    #[prop_or_default]
     pub outlined: bool,
+    #[prop_or_default]
     pub nolabel: bool,
+    #[prop_or_else(Callback::noop)]
+    pub onchange: Callback<String>,
 }
 
 pub enum Msg {
@@ -69,9 +76,7 @@ impl Component for TextField {
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
             Msg::ValueChanged(s) => {
-                if let Some(callback) = &self.props.onchange {
-                    callback.emit(s);
-                }
+                self.props.onchange.emit(s);
             }
         };
         false

@@ -7,6 +7,7 @@ pub struct Header {
 
 #[derive(Properties, Clone, PartialEq)]
 pub struct Props {
+    #[prop_or_default]
     pub id: Option<String>,
     pub children: Children,
 }

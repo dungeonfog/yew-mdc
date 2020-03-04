@@ -14,9 +14,13 @@ pub struct Switch {
 
 #[derive(Properties, Clone, PartialEq)]
 pub struct Props {
+    #[prop_or_default]
     pub id: Option<String>,
+    #[prop_or_default]
     pub state: bool,
-    pub onchange: Option<Callback<bool>>,
+    #[prop_or_else(Callback::noop)]
+    pub onchange: Callback<bool>,
+    #[prop_or_default]
     pub label_text: String,
 }
 
@@ -63,9 +67,7 @@ impl Component for Switch {
         match msg {
             Msg::StateChanged => {
                 self.state = !self.state;
-                if let Some(ref callback) = self.props.onchange {
-                    callback.emit(self.state);
-                }
+                self.props.onchange.emit(self.state);
                 true
             }
         }

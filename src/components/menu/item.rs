@@ -8,10 +8,15 @@ pub struct Item {
 
 #[derive(Properties, Clone, PartialEq)]
 pub struct Props {
+    #[prop_or_default]
     pub id: Option<String>,
+    #[prop_or_default]
     pub text: String,
+    #[prop_or_default]
     pub disabled: bool,
-    pub onclick: Option<Callback<()>>,
+    #[prop_or_else(Callback::noop)]
+    pub onclick: Callback<()>,
+    #[prop_or_default]
     pub children: Children,
 }
 
@@ -45,9 +50,7 @@ impl Component for Item {
         match msg {
             Msg::Clicked => {
                 if !self.props.disabled {
-                    if let Some(callback) = &self.props.onclick {
-                        callback.emit(());
-                    }
+                    self.props.onclick.emit(());
                 }
             }
         }

@@ -11,13 +11,21 @@ pub struct TextArea {
 
 #[derive(PartialEq, Properties, Clone, Debug)]
 pub struct Props {
+    #[prop_or_default]
     pub id: Option<String>,
+    #[prop_or_default]
     pub value: String,
+    #[prop_or_default]
     pub hint: String,
-    pub onchange: Option<Callback<String>>,
+    #[prop_or_else(Callback::noop)]
+    pub onchange: Callback<String>,
+    #[prop_or_default]
     pub disabled: bool,
+    #[prop_or_default]
     pub nolabel: bool,
+    #[prop_or_default]
     pub rows: Option<u32>,
+    #[prop_or_default]
     pub cols: Option<u32>,
 }
 
@@ -65,9 +73,7 @@ impl Component for TextArea {
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
             Msg::ValueChanged(s) => {
-                if let Some(callback) = &self.props.onchange {
-                    callback.emit(s);
-                }
+                self.props.onchange.emit(s);
             }
         };
         false

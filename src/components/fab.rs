@@ -10,12 +10,17 @@ pub struct FAB {
 
 #[derive(Properties, Clone, PartialEq)]
 pub struct Props {
-    pub id: Option<String>,
     pub children: Children,
+    #[prop_or_default]
+    pub id: Option<String>,
+    #[prop_or_default]
     pub text: Option<String>,
+    #[prop_or_default]
     pub mini: bool,
+    #[prop_or_default]
     pub exited: bool,
-    pub onclick: Option<Callback<()>>,
+    #[prop_or_else(Callback::noop)]
+    pub onclick: Callback<()>,
 }
 
 pub enum Msg {
@@ -57,9 +62,7 @@ impl Component for FAB {
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
             Msg::Clicked => {
-                if let Some(callback) = &self.props.onclick {
-                    callback.emit(());
-                }
+                self.props.onclick.emit(());
             }
         }
         false

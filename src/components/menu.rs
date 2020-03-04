@@ -15,12 +15,17 @@ pub struct Menu {
 
 #[derive(Properties, Clone, PartialEq)]
 pub struct Props {
-    pub id: Option<String>,
-    pub onclose: Option<Callback<()>>,
-    pub fixed_position: bool,
-    pub absolute_position: Option<(i32, i32)>,
-    pub open: bool,
     pub children: Children,
+    #[prop_or_default]
+    pub id: Option<String>,
+    #[prop_or_default]
+    pub fixed_position: bool,
+    #[prop_or_default]
+    pub absolute_position: Option<(i32, i32)>,
+    #[prop_or_default]
+    pub open: bool,
+    #[prop_or_else(Callback::noop)]
+    pub onclose: Callback<()>,
 }
 
 pub enum Msg {
@@ -101,9 +106,7 @@ impl Component for Menu {
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
             Msg::Closed => {
-                if let Some(callback) = &self.props.onclose {
-                    callback.emit(());
-                }
+                self.props.onclose.emit(());
             }
         }
         false

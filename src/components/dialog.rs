@@ -16,13 +16,20 @@ pub struct Dialog {
 
 #[derive(Properties, Clone, PartialEq)]
 pub struct Props {
-    pub id: Option<String>,
     pub children: Children,
-    pub onclosed: Option<Callback<Option<String>>>,
+    #[prop_or_default]
+    pub id: Option<String>,
+    #[prop_or_else(Callback::noop)]
+    pub onclosed: Callback<Option<String>>,
+    #[prop_or_default]
     pub escape_key_action: Option<String>,
+    #[prop_or_default]
     pub scrim_click_action: Option<String>,
+    #[prop_or_default]
     pub auto_stack_buttons: bool,
+    #[prop_or_default]
     pub title: String,
+    #[prop_or_default]
     pub open: bool,
 }
 
@@ -104,9 +111,7 @@ impl Component for Dialog {
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
             Msg::Closed { action } => {
-                if let Some(callback) = &self.props.onclosed {
-                    callback.emit(action);
-                }
+                self.props.onclosed.emit(action);
             }
         }
         false

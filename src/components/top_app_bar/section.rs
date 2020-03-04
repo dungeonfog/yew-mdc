@@ -29,8 +29,10 @@ impl fmt::Display for Align {
 
 #[derive(Properties, Clone, PartialEq)]
 pub struct Props {
-    pub id: Option<String>,
     pub children: Children,
+    #[prop_or_default]
+    pub id: Option<String>,
+    #[prop_or_default]
     pub align: Align,
 }
 

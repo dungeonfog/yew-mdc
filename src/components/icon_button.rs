@@ -44,12 +44,17 @@ pub struct IconButton {
 
 #[derive(Properties, Clone, PartialEq)]
 pub struct Props {
-    pub id: Option<String>,
-    pub classes: String,
     pub children: Children,
+    #[prop_or_default]
+    pub id: Option<String>,
+    #[prop_or_default]
+    pub classes: String,
+    #[prop_or_default]
     pub togglable: bool,
+    #[prop_or_default]
     pub toggle_on: bool,
-    pub onclick: Option<Callback<ClickEvent>>,
+    #[prop_or_else(Callback::noop)]
+    pub onclick: Callback<ClickEvent>,
 }
 
 pub enum Msg {
@@ -95,9 +100,7 @@ impl Component for IconButton {
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
             Msg::Clicked(event) => {
-                if let Some(callback) = &self.props.onclick {
-                    callback.emit(event);
-                }
+                self.props.onclick.emit(event);
             }
         }
         false

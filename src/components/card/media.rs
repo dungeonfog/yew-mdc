@@ -30,10 +30,14 @@ impl std::fmt::Display for Style {
 
 #[derive(Properties, Clone, PartialEq)]
 pub struct Props {
-    pub id: Option<String>,
     pub children: Children,
+    #[prop_or_default]
+    pub id: Option<String>,
+    #[prop_or_default]
     pub style: Style,
+    #[prop_or_default]
     pub classes: String,
+    #[prop_or_default]
     pub raw_css: String,
 }
 

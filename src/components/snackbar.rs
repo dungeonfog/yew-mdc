@@ -14,13 +14,18 @@ pub struct Snackbar {
 
 #[derive(Properties, Clone, PartialEq)]
 pub struct Props {
+    #[prop_or_default]
     pub id: Option<String>,
+    #[prop_or_default]
     pub text: String,
+    #[prop_or_default]
     pub action_text: String,
+    #[prop_or_default]
     pub onactionclicked: Option<Callback<()>>,
+    #[prop_or_default]
     pub onclose: Option<Callback<()>>,
+    #[prop_or_default]
     pub timeout_ms: Option<u16>,
-    #[props(required)]
     pub open: bool,
 }
 
@@ -104,7 +109,7 @@ impl Component for Snackbar {
 
     fn view(&self) -> Html {
         let actions = if !self.props.action_text.is_empty() {
-            let emit_action = Some(self.link.callback(|_| Msg::ActionClicked));
+            let emit_action = self.link.callback(|_| Msg::ActionClicked);
             html! {
                 <div class="mdc-snackbar__actions">
                     <Button text=&self.props.action_text

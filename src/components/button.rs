@@ -35,16 +35,23 @@ impl std::fmt::Display for Style {
 
 #[derive(Properties, Clone, Debug, PartialEq)]
 pub struct Props {
+    #[prop_or_default]
     pub children: Children,
+    #[prop_or_default]
     pub id: Option<String>,
-    #[props(required)]
     pub text: String,
+    #[prop_or_default]
     pub style: Style,
+    #[prop_or_default]
     pub trailingicon: bool,
-    pub onclick: Option<Callback<ClickEvent>>,
+    #[prop_or_else(Callback::noop)]
+    pub onclick: Callback<ClickEvent>,
+    #[prop_or_default]
     pub classes: String,
     #[cfg(feature = "dialog")]
+    #[prop_or_default]
     pub dialog_data: Option<String>,
+    #[prop_or_default]
     pub disabled: bool,
 }
 
@@ -119,9 +126,7 @@ impl Component for Button {
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
             Msg::Clicked(ev) => {
-                if let Some(callback) = &self.props.onclick {
-                    callback.emit(ev);
-                }
+                self.props.onclick.emit(ev);
             }
         }
         false
