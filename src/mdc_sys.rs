@@ -307,3 +307,25 @@ extern "C" {
     #[wasm_bindgen(method, structural, js_name = stepDown)]
     pub fn step_down(this: &MDCSlider, amount: f64);
 }
+
+#[cfg(feature = "data-table")]
+#[wasm_bindgen(module = "@material/data-table")]
+extern "C" {
+    #[wasm_bindgen(extends = MDCComponent)]
+    pub type MDCDataTable;
+
+    #[wasm_bindgen(constructor)]
+    pub fn new(surface: Element) -> MDCDataTable;
+
+    #[wasm_bindgen(method, structural)]
+    pub fn layout(this: &MDCDataTable);
+
+    #[wasm_bindgen(method, structural, js_name = getRows)]
+    pub fn get_rows(this: &MDCDataTable) -> js_sys::Array;
+    
+    #[wasm_bindgen(method, structural, js_name = getSelectedRowIds)]
+    pub fn get_selected_row_ids(this: &MDCDataTable) -> js_sys::Array;
+    
+    #[wasm_bindgen(method, structural, js_name = setSelectedRowIds)]
+    pub fn set_selected_row_ids(this: &MDCDataTable, row_ids: js_sys::Array);
+}

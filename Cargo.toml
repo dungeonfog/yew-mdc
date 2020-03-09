@@ -19,6 +19,7 @@ default = [
     "switch",
     "list",
     "slider",
+    "data-table",
 ]
 button = []
 fab = []
@@ -34,6 +35,7 @@ snackbar = []
 switch = []
 list = []
 slider = []
+data-table = []
 
 [dependencies]
 yew = { version = "0.13", default-features = false, features = ["web_sys"] }
