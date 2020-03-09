@@ -264,3 +264,46 @@ extern "C" {
     #[wasm_bindgen(method, setter = selectedIndex, structural)]
     pub fn set_selected_index(this: &MDCList, value: i32);
 }
+
+#[cfg(feature = "slider")]
+#[wasm_bindgen(module = "@material/slider")]
+extern "C" {
+    #[wasm_bindgen(extends = MDCComponent)]
+    pub type MDCSlider;
+
+    #[wasm_bindgen(constructor)]
+    pub fn new(surface: Element) -> MDCSlider;
+
+    #[wasm_bindgen(method, setter = value, structural)]
+    pub fn set_value(this: &MDCSlider, value: f64);
+
+    #[wasm_bindgen(method, getter, structural)]
+    pub fn value(this: &MDCSlider) -> f64;
+
+    #[wasm_bindgen(method, setter = min, structural)]
+    pub fn set_min(this: &MDCSlider, value: f64);
+
+    #[wasm_bindgen(method, getter, structural)]
+    pub fn min(this: &MDCSlider) -> f64;
+
+    #[wasm_bindgen(method, setter = max, structural)]
+    pub fn set_max(this: &MDCSlider, value: f64);
+
+    #[wasm_bindgen(method, getter, structural)]
+    pub fn max(this: &MDCSlider) -> f64;
+
+    #[wasm_bindgen(method, setter = step, structural)]
+    pub fn set_step(this: &MDCSlider, value: f64);
+
+    #[wasm_bindgen(method, getter, structural)]
+    pub fn step(this: &MDCSlider) -> f64;
+
+    #[wasm_bindgen(method, structural)]
+    pub fn layout(this: &MDCSlider);
+    
+    #[wasm_bindgen(method, structural, js_name = stepUp)]
+    pub fn step_up(this: &MDCSlider, amount: f64);
+    
+    #[wasm_bindgen(method, structural, js_name = stepDown)]
+    pub fn step_down(this: &MDCSlider, amount: f64);
+}
