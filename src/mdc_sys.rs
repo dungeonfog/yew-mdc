@@ -300,10 +300,10 @@ extern "C" {
 
     #[wasm_bindgen(method, structural)]
     pub fn layout(this: &MDCSlider);
-    
+
     #[wasm_bindgen(method, structural, js_name = stepUp)]
     pub fn step_up(this: &MDCSlider, amount: f64);
-    
+
     #[wasm_bindgen(method, structural, js_name = stepDown)]
     pub fn step_down(this: &MDCSlider, amount: f64);
 }
@@ -322,10 +322,10 @@ extern "C" {
 
     #[wasm_bindgen(method, structural, js_name = getRows)]
     pub fn get_rows(this: &MDCDataTable) -> js_sys::Array;
-    
+
     #[wasm_bindgen(method, structural, js_name = getSelectedRowIds)]
     pub fn get_selected_row_ids(this: &MDCDataTable) -> js_sys::Array;
-    
+
     #[wasm_bindgen(method, structural, js_name = setSelectedRowIds)]
     pub fn set_selected_row_ids(this: &MDCDataTable, row_ids: js_sys::Array);
 }

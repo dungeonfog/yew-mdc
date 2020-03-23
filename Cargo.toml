@@ -20,6 +20,7 @@ default = [
     "list",
     "slider",
     "data-table",
+    "image-list",
 ]
 button = []
 fab = []
@@ -36,6 +37,7 @@ switch = []
 list = []
 slider = []
 data-table = []
+image-list = []
 
 [dependencies]
 yew = { version = "0.14", default-features = false, features = ["web_sys"] }

@@ -85,3 +85,15 @@ cfg_if! {
         pub use switch::Switch;
     }
 }
+
+cfg_if! {
+    if #[cfg(feature = "image-list")] {
+        pub mod image_list;
+        pub use image_list::ImageList;
+        pub use image_list::Item as ImageListItem;
+        pub use image_list::Image as ImageListImage;
+        // Not sure how to call this, I don't expect any other types
+        // being called "Supporting" tho.
+        pub use image_list::Supporting;
+    }
+}
