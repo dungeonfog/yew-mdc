@@ -97,3 +97,10 @@ cfg_if! {
         pub use image_list::Supporting;
     }
 }
+
+cfg_if! {
+    if #[cfg(feature = "tabs")] {
+        pub mod tabs;
+        pub use tabs::*;
+    }
+}

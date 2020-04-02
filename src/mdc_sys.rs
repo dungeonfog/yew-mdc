@@ -329,3 +329,117 @@ extern "C" {
     #[wasm_bindgen(method, structural, js_name = setSelectedRowIds)]
     pub fn set_selected_row_ids(this: &MDCDataTable, row_ids: js_sys::Array);
 }
+
+#[cfg(feature = "tabs")]
+#[wasm_bindgen(module = "@material/tab")]
+extern "C" {
+    #[wasm_bindgen(extends = MDCComponent)]
+    pub type MDCTab;
+
+    #[wasm_bindgen(constructor)]
+    pub fn new(surface: Element) -> MDCTab;
+
+    #[wasm_bindgen(method, getter)]
+    pub fn id(this: &MDCTab) -> String;
+    #[wasm_bindgen(method, setter = id)]
+    pub fn set_id(this: &MDCTab, id: &str);
+
+    #[wasm_bindgen(method, getter)]
+    pub fn active(this: &MDCTab) -> bool;
+
+    #[wasm_bindgen(method, getter = focusOnActivate)]
+    pub fn focus_on_activate(this: &MDCTab) -> bool;
+
+    #[wasm_bindgen(method)]
+    pub fn activate(this: &MDCTab);
+    // Do we even need this variant?
+    #[wasm_bindgen(method, js_name = activate)]
+    pub fn activate_with_previous_indicator_client_rect(
+        this: &MDCTab,
+        previous_indicator_client_rect: JsValue,
+    );
+
+    #[wasm_bindgen(method)]
+    pub fn deactivate(this: &MDCTab);
+
+    #[wasm_bindgen(method)]
+    pub fn focus(this: &MDCTab);
+
+    #[wasm_bindgen(method, js_name = computeIndicatorClientRect)]
+    pub fn compute_indicator_client_rect(this: &MDCTab) -> JsValue;
+
+    #[wasm_bindgen(method, js_name = computeDimensions)]
+    pub fn compute_dimensions(this: &MDCTab) -> JsValue;
+}
+
+#[cfg(feature = "tabs")]
+#[wasm_bindgen(module = "@material/tab-bar")]
+extern "C" {
+    #[wasm_bindgen(extends = MDCComponent)]
+    pub type MDCTabBar;
+
+    #[wasm_bindgen(constructor)]
+    pub fn new(surface: Element) -> MDCTabBar;
+
+    #[wasm_bindgen(method, setter = focusOnActivate)]
+    pub fn focus_on_activate(this: &MDCTabBar, focus_on_active: bool);
+
+    #[wasm_bindgen(method, setter = useAutomaticActivation)]
+    pub fn use_automatic_activation(this: &MDCTabBar, use_automatic_activation: bool);
+
+    #[wasm_bindgen(method, js_name = activateTab)]
+    pub fn activate_tab(this: &MDCTabBar, index: u32);
+
+    #[wasm_bindgen(method, js_name = scrollIntoView)]
+    pub fn scroll_into_view(this: &MDCTabBar, tab_index: u32);
+}
+
+#[cfg(feature = "tabs")]
+#[wasm_bindgen(module = "@material/tab-indicator")]
+extern "C" {
+    #[wasm_bindgen(extends = MDCComponent)]
+    pub type MDCTabIndicator;
+
+    #[wasm_bindgen(constructor)]
+    pub fn new(surface: Element) -> MDCTabIndicator;
+
+    #[wasm_bindgen(method)]
+    pub fn activate(this: &MDCTabIndicator);
+    // Do we even need this variant?
+    #[wasm_bindgen(method, js_name = activate)]
+    pub fn activate_with_previous_indicator_client_rect(
+        this: &MDCTabIndicator,
+        previous_indicator_client_rect: JsValue,
+    );
+
+    #[wasm_bindgen(method)]
+    pub fn deactivate(this: &MDCTabIndicator);
+
+    #[wasm_bindgen(method, js_name = computeContentClientRect)]
+    pub fn compute_content_client_rect(this: &MDCTabIndicator) -> JsValue;
+}
+
+#[cfg(feature = "tabs")]
+#[wasm_bindgen(module = "@material/tab-scroller")]
+extern "C" {
+    #[wasm_bindgen(extends = MDCComponent)]
+    pub type MDCTabScroller;
+
+    #[wasm_bindgen(constructor)]
+    pub fn new(surface: Element) -> MDCTabScroller;
+
+    #[wasm_bindgen(method, js_name = scrollTo)]
+    pub fn scroll_to(this: &MDCTabScroller, scroll_x: i32);
+
+    #[wasm_bindgen(method, js_name = incrementScroll)]
+    pub fn increment_scroll(this: &MDCTabScroller, scroll_x: i32);
+
+    #[wasm_bindgen(method, js_name = incrementScrollImmediate)]
+    pub fn increment_scroll_immediate(this: &MDCTabScroller, scroll_x: i32);
+
+    #[wasm_bindgen(method, js_name = getScrollPosition)]
+    pub fn get_scroll_position(this: &MDCTabScroller) -> i32;
+
+    #[wasm_bindgen(method, js_name = getScrollContentWidth)]
+    pub fn get_scroll_content_width(this: &MDCTabScroller) -> i32;
+}

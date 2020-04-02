@@ -21,6 +21,7 @@ default = [
     "slider",
     "data-table",
     "image-list",
+    "tabs",
 ]
 button = []
 fab = []
@@ -38,6 +39,7 @@ list = []
 slider = []
 data-table = []
 image-list = []
+tabs = ["serde", "serde_json", "wasm-bindgen/serde-serialize"]
 
 [dependencies]
 yew = { version = "0.14", default-features = false, features = ["web_sys"] }
