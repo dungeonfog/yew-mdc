@@ -19,6 +19,8 @@ pub struct Props {
     #[prop_or_default]
     pub id: String,
     #[prop_or_default]
+    pub classes: String,
+    #[prop_or_default]
     pub value: String,
     #[prop_or_default]
     pub hint: String,
@@ -30,6 +32,8 @@ pub struct Props {
     pub nolabel: bool,
     #[prop_or_else(Callback::noop)]
     pub onchange: Callback<String>,
+    #[prop_or_default]
+    pub children: Children,
 }
 
 pub enum Msg {
@@ -91,7 +95,10 @@ impl Component for TextField {
         } else {
             ""
         };
-        let classes = format!("mdc-text-field{}{}{}", disabled, outlined, nolabel);
+        let classes = format!(
+            "mdc-text-field{}{}{} {}",
+            disabled, outlined, nolabel, self.props.classes
+        );
         let label = if self.props.nolabel {
             html! {}
         } else {
@@ -134,6 +141,7 @@ impl Component for TextField {
             .callback(|e: InputData| Msg::ValueChanged(e.value));
         html! {
             <div class=classes id=&self.props.id ref=self.node_ref.clone()>
+                { self.props.children.render() }
                 <input type="text"
                        value=self.props.value
                        class="mdc-text-field__input"
