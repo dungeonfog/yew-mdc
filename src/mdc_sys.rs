@@ -71,6 +71,9 @@ extern "C" {
     pub fn disabled(this: &MDCTextField) -> bool;
     #[wasm_bindgen(method, setter)]
     pub fn set_disabled(this: &MDCTextField, disabled: bool);
+
+    #[wasm_bindgen(method)]
+    pub fn focus(this: &MDCTextField);
 }
 
 #[cfg(feature = "menu")]

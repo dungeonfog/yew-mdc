@@ -79,6 +79,13 @@ impl Component for TabBar {
 
     fn change(&mut self, props: Self::Properties) -> ShouldRender {
         if self.props != props {
+            if let Some(tab) = props.activated_tab {
+                if tab as u64 != self.current_tab {
+                    if let Some(ref inner) = self.inner {
+                        inner.activate_tab(tab);
+                    }
+                }
+            }
             self.props = props;
             true
         } else {

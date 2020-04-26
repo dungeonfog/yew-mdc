@@ -34,10 +34,13 @@ pub struct Props {
     pub onchange: Callback<String>,
     #[prop_or_default]
     pub children: Children,
+    #[prop_or_default]
+    pub evil_gimme_focus_callback: Option<Callback<Callback<()>>>,
 }
 
 pub enum Msg {
     ValueChanged(String),
+    FocusRequested,
 }
 
 impl Component for TextField {
@@ -45,6 +48,10 @@ impl Component for TextField {
     type Properties = Props;
 
     fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
+        if let Some(ref callback) = props.evil_gimme_focus_callback {
+            let my_callback = link.callback(|_| Msg::FocusRequested);
+            callback.emit(my_callback);
+        }
         Self {
             node_ref: NodeRef::default(),
             props,
@@ -60,6 +67,10 @@ impl Component for TextField {
 
     fn change(&mut self, props: Props) -> ShouldRender {
         if props != self.props {
+            if let Some(ref callback) = props.evil_gimme_focus_callback {
+                let my_callback = self.link.callback(|_| Msg::FocusRequested);
+                callback.emit(my_callback);
+            }
             self.props = props;
             if let Some(inner) = &self.inner {
                 inner.set_value(&self.props.value);
@@ -74,6 +85,11 @@ impl Component for TextField {
         match msg {
             Msg::ValueChanged(s) => {
                 self.props.onchange.emit(s);
+            }
+            Msg::FocusRequested => {
+                if let Some(ref inner) = self.inner {
+                    inner.focus();
+                }
             }
         };
         false
