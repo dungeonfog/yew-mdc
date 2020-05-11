@@ -54,6 +54,8 @@ pub struct Props {
     pub togglable: bool,
     #[prop_or_default]
     pub toggle_on: bool,
+    #[prop_or_default]
+    pub disabled: bool,
     #[prop_or_else(Callback::noop)]
     pub onclick: Callback<MouseEvent>,
 }
@@ -114,7 +116,8 @@ impl Component for IconButton {
             html! {
                 <button id=&self.props.id class=classes
                         ref=self.node_ref.clone()
-                        onclick=onclick>
+                        onclick=onclick
+                        disabled=self.props.disabled>
                     { self.props.children.render() }
                 </button>
             }
@@ -123,7 +126,8 @@ impl Component for IconButton {
             html! {
                 <button class=classes id=&self.props.id
                         ref=self.node_ref.clone()
-                        onclick=onclick>
+                        onclick=onclick
+                        disabled=self.props.disabled>
                     { self.props.children.render() }
                 </button>
             }
