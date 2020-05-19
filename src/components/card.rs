@@ -23,6 +23,8 @@ pub struct Props {
     #[prop_or_default]
     pub raw_css: String,
     #[prop_or_else(Callback::noop)]
+    pub onclick: Callback<MouseEvent>,
+    #[prop_or_else(Callback::noop)]
     pub oncontextclick: Callback<MouseEvent>,
     #[prop_or_else(Callback::noop)]
     pub onhoverenter: Callback<MouseEvent>,
@@ -31,6 +33,7 @@ pub struct Props {
 }
 
 pub enum Msg {
+    LeftClick(MouseEvent),
     RightClick(MouseEvent),
     HoverEnter(MouseEvent),
     HoverLeave(MouseEvent),
@@ -55,18 +58,15 @@ impl Component for Card {
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
-            Msg::RightClick(event) => {
+            Msg::LeftClick(ev) => self.props.onclick.emit(ev),
+            Msg::RightClick(ev) => {
                 if self.props.oncontextclick != Callback::noop() {
-                    event.prevent_default();
-                    self.props.oncontextclick.emit(event);
+                    ev.prevent_default();
+                    self.props.oncontextclick.emit(ev);
                 }
             }
-            Msg::HoverEnter(event) => {
-                self.props.onhoverenter.emit(event);
-            }
-            Msg::HoverLeave(event) => {
-                self.props.onhoverleave.emit(event);
-            }
+            Msg::HoverEnter(ev) => self.props.onhoverenter.emit(ev),
+            Msg::HoverLeave(ev) => self.props.onhoverleave.emit(ev),
         }
         false
     }
@@ -78,12 +78,14 @@ impl Component for Card {
             ""
         };
         let classes = format!("mdc-card {} {}", self.props.classes, outlined);
+        let emit_click = self.link.callback(Msg::LeftClick);
         let emit_contextclick = self.link.callback(Msg::RightClick);
         let emit_hoverenter = self.link.callback(Msg::HoverEnter);
         let emit_hoverleave = self.link.callback(Msg::HoverLeave);
         html! {
             <div class=classes id=&self.props.id
                  style=&self.props.raw_css
+                 onclick=emit_click
                  oncontextmenu=emit_contextclick
                  onmouseenter=emit_hoverenter
                  onmouseleave=emit_hoverleave>

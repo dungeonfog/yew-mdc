@@ -108,6 +108,7 @@ impl Component for TabBar {
             <div class="mdc-tab-bar"
                  ref=self.node_ref.clone()
                  id=&self.props.id
+                 onclick=Callback::noop()
                 >
                 { self.props.children.render() }
             </div>
