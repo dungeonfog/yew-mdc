@@ -58,10 +58,17 @@ impl Component for Item {
             "mdc-list-item"
         };
         let onclick = self.link.callback(|_| Msg::Clicked);
+        let text = if self.props.text.is_empty() {
+            html! {}
+        } else {
+            html! {
+                <span class="mdc-list-item__text">{ &self.props.text }</span>
+            }
+        };
         html! {
             <li class=classes role="menuitem" id=&self.props.id onclick=onclick>
                 { self.props.children.render() }
-                <span class="mdc-list-item__text">{ &self.props.text }</span>
+                { text }
             </li>
         }
     }
