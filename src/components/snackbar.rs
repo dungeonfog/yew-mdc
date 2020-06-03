@@ -26,7 +26,7 @@ pub struct Props {
     #[prop_or_default]
     pub onclose: Option<Callback<()>>,
     #[prop_or_default]
-    pub timeout_ms: Option<u16>,
+    pub timeout_ms: Option<i16>,
     pub open: bool,
 }
 

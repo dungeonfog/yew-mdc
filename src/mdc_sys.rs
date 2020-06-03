@@ -197,7 +197,7 @@ extern "C" {
     #[wasm_bindgen(method, getter, js_name = timeoutMs)]
     pub fn timeout_ms(this: &MDCSnackbar) -> u16;
     #[wasm_bindgen(method, setter, js_name = timeoutMs)]
-    pub fn set_timeout_ms(this: &MDCSnackbar, timeout_ms: u16);
+    pub fn set_timeout_ms(this: &MDCSnackbar, timeout_ms: i16);
 
     #[wasm_bindgen(method, getter, js_name = closeOnEscape)]
     pub fn close_on_escape(this: &MDCSnackbar) -> bool;
