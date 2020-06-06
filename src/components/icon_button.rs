@@ -77,13 +77,17 @@ impl Component for IconButton {
         }
     }
 
-    fn mounted(&mut self) -> ShouldRender {
-        self.ripple = self.node_ref.cast::<Element>().map(|elem| {
-            let ripple = MDCRipple::new(elem);
-            ripple.set_unbounded(true);
-            ripple
-        });
-        false
+    fn rendered(&mut self, first_render: bool) {
+        if first_render {
+            if let Some(ripple) = self.ripple.take() {
+                ripple.destroy();
+            }
+            self.ripple = self.node_ref.cast::<Element>().map(|elem| {
+                let ripple = MDCRipple::new(elem);
+                ripple.set_unbounded(true);
+                ripple
+            });
+        }
     }
 
     fn change(&mut self, props: Props) -> ShouldRender {

@@ -38,9 +38,13 @@ impl Component for PrimaryAction {
         }
     }
 
-    fn mounted(&mut self) -> ShouldRender {
-        self.ripple = self.node_ref.cast::<Element>().map(MDCRipple::new);
-        false
+    fn rendered(&mut self, first_render: bool) {
+        if first_render {
+            if let Some(ripple) = self.ripple.take() {
+                ripple.destroy();
+            }
+            self.ripple = self.node_ref.cast::<Element>().map(MDCRipple::new);
+        }
     }
 
     fn change(&mut self, props: Props) -> ShouldRender {

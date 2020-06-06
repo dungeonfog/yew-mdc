@@ -67,23 +67,28 @@ impl Component for Dialog {
         }
     }
 
-    fn mounted(&mut self) -> ShouldRender {
-        if let Some(elem) = self.node_ref.cast::<Element>() {
-            let dialog = MDCDialog::new(elem);
-            if let Some(action) = &self.props.escape_key_action {
-                dialog.set_escape_key_action(action);
+    fn rendered(&mut self, first_render: bool) {
+        if first_render {
+            if let Some(old_inner) = self.inner.take() {
+                old_inner.unlisten("MDCDialog:closed", &self.close_callback);
+                old_inner.destroy();
             }
-            if let Some(action) = &self.props.scrim_click_action {
-                dialog.set_scrim_click_action(action);
+            if let Some(elem) = self.node_ref.cast::<Element>() {
+                let dialog = MDCDialog::new(elem);
+                if let Some(action) = &self.props.escape_key_action {
+                    dialog.set_escape_key_action(action);
+                }
+                if let Some(action) = &self.props.scrim_click_action {
+                    dialog.set_scrim_click_action(action);
+                }
+                dialog.set_auto_stack_buttons(self.props.auto_stack_buttons);
+                dialog.listen("MDCDialog:closed", &self.close_callback);
+                if self.props.open {
+                    dialog.open();
+                }
+                self.inner = Some(dialog);
             }
-            dialog.set_auto_stack_buttons(self.props.auto_stack_buttons);
-            dialog.listen("MDCDialog:closed", &self.close_callback);
-            if self.props.open {
-                dialog.open();
-            }
-            self.inner = Some(dialog);
         }
-        false
     }
 
     fn change(&mut self, props: Self::Properties) -> ShouldRender {

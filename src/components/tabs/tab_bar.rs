@@ -63,18 +63,19 @@ impl Component for TabBar {
         }
     }
 
-    fn mounted(&mut self) -> ShouldRender {
-        if let Some(tab_bar) = self.node_ref.cast::<web_sys::Element>().map(MDCTabBar::new) {
-            tab_bar.focus_on_activate(self.props.focus_tabs_on_activate);
-            tab_bar.use_automatic_activation(self.props.arrow_key_tab_activation);
-            tab_bar.listen("MDCTabBar:activated", &self.activated_callback);
-            if let Some(index) = self.props.activated_tab {
-                self.current_tab = index as u64;
-                tab_bar.activate_tab(index);
+    fn rendered(&mut self, first_render: bool) {
+        if first_render {
+            if let Some(tab_bar) = self.node_ref.cast::<web_sys::Element>().map(MDCTabBar::new) {
+                tab_bar.focus_on_activate(self.props.focus_tabs_on_activate);
+                tab_bar.use_automatic_activation(self.props.arrow_key_tab_activation);
+                tab_bar.listen("MDCTabBar:activated", &self.activated_callback);
+                if let Some(index) = self.props.activated_tab {
+                    self.current_tab = index as u64;
+                    tab_bar.activate_tab(index);
+                }
+                self.inner = Some(tab_bar);
             }
-            self.inner = Some(tab_bar);
         }
-        false
     }
 
     fn change(&mut self, props: Self::Properties) -> ShouldRender {

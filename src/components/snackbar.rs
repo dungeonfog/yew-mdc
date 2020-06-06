@@ -56,19 +56,24 @@ impl Component for Snackbar {
         }
     }
 
-    fn mounted(&mut self) -> ShouldRender {
-        if let Some(elem) = self.node_ref.cast::<Element>() {
-            let inner = MDCSnackbar::new(elem);
-            if let Some(timeout_ms) = &self.props.timeout_ms {
-                inner.set_timeout_ms(*timeout_ms);
+    fn rendered(&mut self, first_render: bool) {
+        if first_render {
+            if let Some(inner) = self.inner.take() {
+                inner.unlisten("MDCSnackbar:closed", &self.close_callback);
+                inner.destroy();
             }
-            if self.props.open {
-                inner.open();
+            if let Some(elem) = self.node_ref.cast::<Element>() {
+                let inner = MDCSnackbar::new(elem);
+                if let Some(timeout_ms) = &self.props.timeout_ms {
+                    inner.set_timeout_ms(*timeout_ms);
+                }
+                if self.props.open {
+                    inner.open();
+                }
+                inner.listen("MDCSnackbar:closed", &self.close_callback);
+                self.inner = Some(inner);
             }
-            inner.listen("MDCSnackbar:closed", &self.close_callback);
-            self.inner = Some(inner);
         }
-        false
     }
 
     fn change(&mut self, props: Props) -> ShouldRender {

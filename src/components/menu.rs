@@ -81,22 +81,30 @@ impl Component for Menu {
         }
     }
 
-    fn mounted(&mut self) -> ShouldRender {
-        if let Some(elem) = self.node_ref.cast::<Element>() {
-            // Our root element has the mdc-menu class...
-            let menu = MDCMenu::new(elem.clone());
-            menu.set_fixed_position(self.props.fixed_position);
-            if let Some((x, y)) = self.props.absolute_position {
-                menu.set_absolute_position(x, y);
+    fn rendered(&mut self, first_render: bool) {
+        if first_render {
+            if let Some(surface) = self.surface.take() {
+                surface.unlisten("MDCMenuSurface:closed", &self.close_callback);
+                surface.destroy();
             }
-            menu.set_open(self.props.open);
-            self.inner = Some(menu);
-            // ...but is also an mdc-menu-surface
-            let surface = MDCMenuSurface::new(elem);
-            surface.listen("MDCMenuSurface:closed", &self.close_callback);
-            self.surface = Some(surface);
+            if let Some(inner) = self.inner.take() {
+                inner.destroy();
+            }
+            if let Some(elem) = self.node_ref.cast::<Element>() {
+                // Our root element has the mdc-menu class...
+                let menu = MDCMenu::new(elem.clone());
+                menu.set_fixed_position(self.props.fixed_position);
+                if let Some((x, y)) = self.props.absolute_position {
+                    menu.set_absolute_position(x, y);
+                }
+                menu.set_open(self.props.open);
+                self.inner = Some(menu);
+                // ...but is also an mdc-menu-surface
+                let surface = MDCMenuSurface::new(elem);
+                surface.listen("MDCMenuSurface:closed", &self.close_callback);
+                self.surface = Some(surface);
+            }
         }
-        false
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {

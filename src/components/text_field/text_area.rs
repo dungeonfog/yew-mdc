@@ -46,9 +46,13 @@ impl Component for TextArea {
         }
     }
 
-    fn mounted(&mut self) -> ShouldRender {
-        self.inner = self.node_ref.cast::<Element>().map(MDCTextField::new);
-        false
+    fn rendered(&mut self, first_render: bool) {
+        if first_render {
+            if let Some(inner) = self.inner.take() {
+                inner.destroy();
+            }
+            self.inner = self.node_ref.cast::<Element>().map(MDCTextField::new);
+        }
     }
 
     fn change(&mut self, props: Props) -> ShouldRender {

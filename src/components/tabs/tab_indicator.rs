@@ -25,8 +25,13 @@ impl Component for TabIndicator {
         Self { props }
     }
 
-    fn mounted(&mut self) -> ShouldRender {
-        false
+    fn change(&mut self, props: Self::Properties) -> ShouldRender {
+        if self.props != props {
+            self.props = props;
+            true
+        } else {
+            false
+        }
     }
 
     fn update(&mut self, _msg: Self::Message) -> ShouldRender {
