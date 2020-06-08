@@ -19,10 +19,16 @@ pub struct Props {
     pub classes: String,
     #[prop_or_else(Callback::noop)]
     pub onclick: Callback<MouseEvent>,
+    #[prop_or_else(Callback::noop)]
+    pub onmouseenter: Callback<MouseEvent>,
+    #[prop_or_else(Callback::noop)]
+    pub onmouseleave: Callback<MouseEvent>,
 }
 
 pub enum Msg {
     Clicked(MouseEvent),
+    MouseEnter(MouseEvent),
+    MouseLeave(MouseEvent),
 }
 
 impl Component for Item {
@@ -43,11 +49,12 @@ impl Component for Item {
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
-        match msg {
-            Msg::Clicked(ev) => {
-                self.props.onclick.emit(ev);
-            }
-        }
+        let (callback, event) = match msg {
+            Msg::Clicked(ev) => (&self.props.onclick, ev),
+            Msg::MouseEnter(ev) => (&self.props.onmouseenter, ev),
+            Msg::MouseLeave(ev) => (&self.props.onmouseleave, ev),
+        };
+        callback.emit(event);
         false
     }
 
@@ -56,6 +63,8 @@ impl Component for Item {
             <li id=&self.props.id
                 class=format!("mdc-image-list__item {}", self.props.classes)
                 onclick=self.link.callback(Msg::Clicked)
+                onmouseenter=self.link.callback(Msg::MouseEnter)
+                onmouseleave=self.link.callback(Msg::MouseLeave)
                 >
                 { self.props.children.render() }
             </li>
