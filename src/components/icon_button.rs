@@ -58,6 +58,8 @@ pub struct Props {
     pub disabled: bool,
     #[prop_or_else(Callback::noop)]
     pub onclick: Callback<MouseEvent>,
+    #[prop_or(-1)]
+    pub tabindex: i16,
 }
 
 pub enum Msg {
@@ -110,31 +112,20 @@ impl Component for IconButton {
 
     fn view(&self) -> Html {
         let onclick = self.link.callback(Msg::Clicked);
-        if self.props.togglable {
-            let on = if self.props.toggle_on {
-                " mdc-icon-button--on"
-            } else {
-                ""
-            };
-            let classes = format!("mdc-icon-button{}", on);
-            html! {
-                <button id=&self.props.id class=classes
-                        ref=self.node_ref.clone()
-                        onclick=onclick
-                        disabled=self.props.disabled>
-                    { self.props.children.render() }
-                </button>
-            }
+        let on = if self.props.togglable && self.props.toggle_on {
+            Some("mdc-icon-button--on")
         } else {
-            let classes = format!("mdc-icon-button {}", self.props.classes);
-            html! {
-                <button class=classes id=&self.props.id
-                        ref=self.node_ref.clone()
-                        onclick=onclick
-                        disabled=self.props.disabled>
-                    { self.props.children.render() }
-                </button>
-            }
+            None
+        };
+        html! {
+            <button class=("mdc-icon-button", on, &self.props.classes)
+                    id=&self.props.id
+                    ref=self.node_ref.clone()
+                    onclick=onclick
+                    disabled=self.props.disabled
+                    tabindex=self.props.tabindex>
+                { self.props.children.render() }
+            </button>
         }
     }
 
