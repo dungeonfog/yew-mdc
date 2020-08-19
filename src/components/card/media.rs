@@ -74,7 +74,7 @@ impl Component for Media {
             html! {
                 <div id=&self.props.id class=classes style=&self.props.raw_css>
                     <div class="mdc-card__media-content">
-                        { self.props.children.render() }
+                        { self.props.children.clone() }
                     </div>
                 </div>
             }

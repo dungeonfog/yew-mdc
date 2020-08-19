@@ -45,7 +45,7 @@ impl Component for Drawer {
     fn view(&self) -> Html {
         html! {
             <aside class="mdc-drawer" id=&self.props.id>
-                { self.props.children.render() }
+                { self.props.children.clone() }
             </aside>
         }
     }

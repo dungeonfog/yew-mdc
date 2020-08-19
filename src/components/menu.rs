@@ -121,7 +121,7 @@ impl Component for Menu {
             <div class="mdc-menu mdc-menu-surface" id=&self.props.id
                  ref=self.node_ref.clone()>
                 <ul class="mdc-list" role="menu" aria-hidden="true" aria-orientation="vertical" tabindex="-1">
-                    { self.props.children.render() }
+                    { self.props.children.clone() }
                 </ul>
             </div>
         }

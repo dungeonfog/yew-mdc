@@ -124,11 +124,11 @@ impl Component for Button {
         let inner = if self.props.trailingicon {
             html! { <>
                 <span class="mdc-button__label">{ &self.props.text }</span>
-                { self.props.children.render() }
+                { self.props.children.clone() }
             </> }
         } else {
             html! { <>
-                { self.props.children.render() }
+                { self.props.children.clone() }
                 <span class="mdc-button__label">{ &self.props.text }</span>
             </> }
         };

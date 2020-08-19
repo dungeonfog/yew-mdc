@@ -124,7 +124,7 @@ impl Component for Dialog {
                 <div class="mdc-dialog__container">
                     <div class="mdc-dialog__surface">
                         <h2 class="mdc-dialog__title">{ &self.props.title }</h2>
-                        { self.props.children.render() }
+                        { self.props.children.clone() }
                     </div>
                 </div>
                 <div class="mdc-dialog__scrim"></div>

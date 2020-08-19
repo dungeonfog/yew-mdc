@@ -67,7 +67,7 @@ impl Component for Item {
         };
         html! {
             <li class=classes role="menuitem" id=&self.props.id onclick=onclick>
-                { self.props.children.render() }
+                { self.props.children.clone() }
                 { text }
             </li>
         }

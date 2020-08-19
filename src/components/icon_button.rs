@@ -124,7 +124,7 @@ impl Component for IconButton {
                     onclick=onclick
                     disabled=self.props.disabled
                     tabindex=self.props.tabindex>
-                { self.props.children.render() }
+                { self.props.children.clone() }
             </button>
         }
     }

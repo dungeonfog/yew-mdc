@@ -66,7 +66,7 @@ impl Component for Item {
                 onmouseenter=self.link.callback(Msg::MouseEnter)
                 onmouseleave=self.link.callback(Msg::MouseLeave)
                 >
-                { self.props.children.render() }
+                { self.props.children.clone() }
             </li>
         }
     }

@@ -30,7 +30,7 @@ impl Component for Content {
     fn view(&self) -> Html {
         html! {
             <div class="mdc-dialog__content">
-                { self.props.children.render() }
+                { self.props.children.clone() }
             </div>
         }
     }

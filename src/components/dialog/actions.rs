@@ -30,7 +30,7 @@ impl Component for Actions {
     fn view(&self) -> Html {
         html! {
             <div class="mdc-dialog__actions">
-                { self.props.children.render() }
+                { self.props.children.clone() }
             </div>
         }
     }

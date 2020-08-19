@@ -35,7 +35,7 @@ impl Component for Header {
     fn view(&self) -> Html {
         html! {
             <div class="mdc-drawer__header" id=&self.props.id>
-                { self.props.children.render() }
+                { self.props.children.clone() }
             </div>
         }
     }
