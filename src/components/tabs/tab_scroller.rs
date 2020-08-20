@@ -40,7 +40,7 @@ impl Component for TabScroller {
             <div class="mdc-tab-scroller" id=&self.props.id>
                 <div class="mdc-tab-scroller__scroll-area">
                     <div class="mdc-tab-scroller__scroll-content">
-                        { self.props.children.render() }
+                        { self.props.children.clone() }
                     </div>
                 </div>
             </div>

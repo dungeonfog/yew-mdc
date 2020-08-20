@@ -82,7 +82,7 @@ impl Component for PrimaryAction {
                 tabindex="0"
                 onclick=emit_click
                 oncontextmenu=emit_contextclick>
-                { self.props.children.render() }
+                { self.props.children.clone() }
             </div>
         }
     }

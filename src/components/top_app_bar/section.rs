@@ -60,7 +60,7 @@ impl Component for Section {
         let classes = format!("mdc-top-app-bar__section {}", self.props.align);
         html! {
             <section class=classes id=&self.props.id>
-                { self.props.children.render() }
+                { self.props.children.clone() }
             </section>
         }
     }

@@ -161,7 +161,7 @@ impl Component for TextField {
             .callback(|e: InputData| Msg::ValueChanged(e.value));
         html! {
             <div class=classes id=&self.props.id ref=self.node_ref.clone()>
-                { self.props.children.render() }
+                { self.props.children.clone() }
                 <input type="text"
                        value=self.props.value
                        class="mdc-text-field__input"

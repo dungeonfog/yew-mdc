@@ -44,14 +44,14 @@ impl Component for TopAppBar {
         if self.props.manualrows {
             html! {
                 <header class=classes id=&self.props.id>
-                    { self.props.children.render() }
+                    { self.props.children.clone() }
                 </header>
             }
         } else {
             html! {
                 <header class=classes id=&self.props.id>
                     <div class="mdc-top-app-bar__row">
-                        { self.props.children.render() }
+                        { self.props.children.clone() }
                     </div>
                 </header>
             }

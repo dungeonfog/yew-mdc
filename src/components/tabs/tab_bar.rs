@@ -111,7 +111,7 @@ impl Component for TabBar {
                  id=&self.props.id
                  onclick=Callback::noop()
                 >
-                { self.props.children.render() }
+                { self.props.children.clone() }
             </div>
         }
     }

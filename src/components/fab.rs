@@ -95,7 +95,7 @@ impl Component for FAB {
                     ref=self.node_ref.clone()
                     onclick=onclick>
                 { ripple }
-                { self.props.children.render() }
+                { self.props.children.clone() }
                 { label }
             </button>
         }

@@ -49,7 +49,7 @@ impl Component for HelperLine {
         html! {
             <div class="mdc-text-field-helper-line">
                 <div class=classes aria-hidden="true">
-                    { self.props.children.render() }
+                    { self.props.children.clone() }
                 </div>
             </div>
         }

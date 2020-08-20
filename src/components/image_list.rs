@@ -100,7 +100,7 @@ impl Component for ImageList {
     fn view(&self) -> Html {
         html! {
             <ul id=&self.props.id class=format!("mdc-image-list {}", self.props.classes)>
-                { self.props.children.render() }
+                { self.props.children.clone() }
             </ul>
         }
     }

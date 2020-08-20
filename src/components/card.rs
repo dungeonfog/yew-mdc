@@ -89,7 +89,7 @@ impl Component for Card {
                  oncontextmenu=emit_contextclick
                  onmouseenter=emit_hoverenter
                  onmouseleave=emit_hoverleave>
-                { self.props.children.render() }
+                { self.props.children.clone() }
             </div>
         }
     }
