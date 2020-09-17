@@ -32,6 +32,8 @@ pub struct Props {
     pub nolabel: bool,
     #[prop_or_else(Callback::noop)]
     pub onchange: Callback<String>,
+    #[prop_or_else(Callback::noop)]
+    pub onkeydown: Callback<KeyboardEvent>,
     #[prop_or_default]
     pub children: Children,
     #[prop_or_default]
@@ -40,6 +42,7 @@ pub struct Props {
 
 pub enum Msg {
     ValueChanged(String),
+    KeyDown(KeyboardEvent),
     FocusRequested,
 }
 
@@ -89,6 +92,9 @@ impl Component for TextField {
         match msg {
             Msg::ValueChanged(s) => {
                 self.props.onchange.emit(s);
+            }
+            Msg::KeyDown(e) => {
+                self.props.onkeydown.emit(e);
             }
             Msg::FocusRequested => {
                 if let Some(ref inner) = self.inner {
@@ -166,6 +172,7 @@ impl Component for TextField {
                        value=self.props.value
                        class="mdc-text-field__input"
                        oninput=oninput
+                       onkeydown=self.link.callback(Msg::KeyDown)
                        disabled=self.props.disabled
                        placeholder=placeholder
                     />
