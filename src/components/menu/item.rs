@@ -14,13 +14,13 @@ pub struct Props {
     #[prop_or_default]
     pub disabled: bool,
     #[prop_or_else(Callback::noop)]
-    pub onclick: Callback<()>,
+    pub onclick: Callback<MouseEvent>,
     #[prop_or_default]
     pub children: Children,
 }
 
 pub enum Msg {
-    Clicked,
+    Clicked(MouseEvent),
 }
 
 impl Component for Item {
@@ -42,9 +42,9 @@ impl Component for Item {
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
-            Msg::Clicked => {
+            Msg::Clicked(ev) => {
                 if !self.props.disabled {
-                    self.props.onclick.emit(());
+                    self.props.onclick.emit(ev);
                 }
             }
         }
@@ -57,7 +57,7 @@ impl Component for Item {
         } else {
             "mdc-list-item"
         };
-        let onclick = self.link.callback(|_| Msg::Clicked);
+        let onclick = self.link.callback(Msg::Clicked);
         let text = if self.props.text.is_empty() {
             html! {}
         } else {

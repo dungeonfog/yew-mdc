@@ -21,11 +21,11 @@ pub struct Props {
     #[prop_or_default]
     pub exited: bool,
     #[prop_or_else(Callback::noop)]
-    pub onclick: Callback<()>,
+    pub onclick: Callback<MouseEvent>,
 }
 
 pub enum Msg {
-    Clicked,
+    Clicked(MouseEvent),
 }
 
 impl Component for FAB {
@@ -61,8 +61,8 @@ impl Component for FAB {
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
-            Msg::Clicked => {
-                self.props.onclick.emit(());
+            Msg::Clicked(ev) => {
+                self.props.onclick.emit(ev);
             }
         }
         false
@@ -89,7 +89,7 @@ impl Component for FAB {
             (html! {}, "")
         };
         let classes = format!("mdc-fab{}{}{}", mini, extended, exited);
-        let onclick = self.link.callback(|_| Msg::Clicked);
+        let onclick = self.link.callback(Msg::Clicked);
         html! {
             <button class=classes id=&self.props.id
                     ref=self.node_ref.clone()

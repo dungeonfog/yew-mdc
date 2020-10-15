@@ -22,7 +22,7 @@ pub struct Props {
     #[prop_or_default]
     pub action_text: String,
     #[prop_or_default]
-    pub onactionclicked: Option<Callback<()>>,
+    pub onactionclicked: Option<Callback<MouseEvent>>,
     #[prop_or_default]
     pub onclose: Option<Callback<()>>,
     #[prop_or_default]
@@ -31,7 +31,7 @@ pub struct Props {
 }
 
 pub enum Msg {
-    ActionClicked,
+    ActionClicked(MouseEvent),
     Closed,
 }
 
@@ -94,9 +94,9 @@ impl Component for Snackbar {
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
-            Msg::ActionClicked => {
+            Msg::ActionClicked(ev) => {
                 if let Some(ref callback) = self.props.onactionclicked {
-                    callback.emit(());
+                    callback.emit(ev);
                 }
             }
             Msg::Closed => {
@@ -110,7 +110,7 @@ impl Component for Snackbar {
 
     fn view(&self) -> Html {
         let actions = if !self.props.action_text.is_empty() {
-            let emit_action = self.link.callback(|_| Msg::ActionClicked);
+            let emit_action = self.link.callback(Msg::ActionClicked);
             html! {
                 <div class="mdc-snackbar__actions">
                     <Button text=&self.props.action_text
