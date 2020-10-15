@@ -64,6 +64,9 @@ impl Component for Switch {
         match msg {
             Msg::StateChanged => {
                 self.state = !self.state;
+                if let Some(ref inner) = self.inner {
+                    inner.set_checked(self.state);
+                }
                 self.props.onchange.emit(self.state);
                 true
             }
