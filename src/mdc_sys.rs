@@ -52,6 +52,21 @@ extern "C" {
     pub fn handle_blur(this: &MDCRipple);
 }
 
+#[cfg(feature = "drawer")]
+#[wasm_bindgen(module = "@material/drawer/index")]
+extern "C" {
+    #[wasm_bindgen(extends = MDCComponent)]
+    pub type MDCDrawer;
+
+    #[wasm_bindgen(constructor)]
+    pub fn new(surface: Element) -> MDCDrawer;
+
+    #[wasm_bindgen(method, getter)]
+    pub fn open(this: &MDCDrawer) -> bool;
+    #[wasm_bindgen(method, setter)]
+    pub fn set_open(this: &MDCDrawer, open: bool);
+}
+
 #[cfg(feature = "text-field")]
 #[wasm_bindgen(module = "@material/textfield/index")]
 extern "C" {
