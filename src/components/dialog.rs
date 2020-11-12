@@ -13,6 +13,7 @@ pub struct Dialog {
     inner: Option<MDCDialog>,
     close_callback: Closure<dyn FnMut(web_sys::Event)>,
     props: Props,
+    link: ComponentLink<Self>,
 }
 
 #[derive(Properties, Clone, PartialEq)]
@@ -32,10 +33,13 @@ pub struct Props {
     pub title: String,
     #[prop_or_default]
     pub open: bool,
+    #[prop_or_default]
+    pub onkeydown: Callback<KeyboardEvent>,
 }
 
 pub enum Msg {
     Closed { action: Option<String> },
+    KeyDown(KeyboardEvent),
 }
 
 impl Component for Dialog {
@@ -64,6 +68,7 @@ impl Component for Dialog {
             inner: None,
             close_callback: closure,
             props,
+            link,
         }
     }
 
@@ -114,13 +119,18 @@ impl Component for Dialog {
             Msg::Closed { action } => {
                 self.props.onclosed.emit(action);
             }
+            Msg::KeyDown(ev) => self.props.onkeydown.emit(ev),
         }
         false
     }
 
     fn view(&self) -> Html {
         html! {
-            <div class="mdc-dialog" id=&self.props.id ref=self.node_ref.clone()>
+            <div
+                class="mdc-dialog"
+                id=&self.props.id
+                ref=self.node_ref.clone()
+                onkeydown=self.link.callback(Msg::KeyDown)>
                 <div class="mdc-dialog__container">
                     <div class="mdc-dialog__surface">
                         <h2 class="mdc-dialog__title">{ &self.props.title }</h2>
