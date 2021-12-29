@@ -34,7 +34,7 @@ impl Component for Content {
 
     fn view(&self) -> Html {
         html! {
-            <div class="mdc-drawer__content" id=&self.props.id>
+            <div class="mdc-drawer__content" id=self.props.id.clone()>
                 { self.props.children.clone() }
             </div>
         }

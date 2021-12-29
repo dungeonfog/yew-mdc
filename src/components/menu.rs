@@ -118,7 +118,7 @@ impl Component for Menu {
 
     fn view(&self) -> Html {
         html! {
-            <div class="mdc-menu mdc-menu-surface" id=&self.props.id
+            <div class="mdc-menu mdc-menu-surface" id=self.props.id.clone()
                  ref=self.node_ref.clone()>
                 <ul class="mdc-list" role="menu" aria-hidden="true" aria-orientation="vertical" tabindex="-1">
                     { self.props.children.clone() }

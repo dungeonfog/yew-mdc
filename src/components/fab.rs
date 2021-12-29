@@ -91,7 +91,7 @@ impl Component for FAB {
         let classes = format!("mdc-fab{}{}{}", mini, extended, exited);
         let onclick = self.link.callback(Msg::Clicked);
         html! {
-            <button class=classes id=&self.props.id
+            <button class=classes id=self.props.id.clone()
                     ref=self.node_ref.clone()
                     onclick=onclick>
                 { ripple }

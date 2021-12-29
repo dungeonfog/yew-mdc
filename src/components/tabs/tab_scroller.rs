@@ -37,7 +37,7 @@ impl Component for TabScroller {
 
     fn view(&self) -> Html {
         html! {
-            <div class="mdc-tab-scroller" id=&self.props.id>
+            <div class="mdc-tab-scroller" id=self.props.id.clone()>
                 <div class="mdc-tab-scroller__scroll-area">
                     <div class="mdc-tab-scroller__scroll-content">
                         { self.props.children.clone() }

@@ -113,7 +113,7 @@ impl Component for Snackbar {
             let emit_action = self.link.callback(Msg::ActionClicked);
             html! {
                 <div class="mdc-snackbar__actions">
-                    <Button text=&self.props.action_text
+                    <Button text=self.props.action_text.clone()
                             classes="mdc-snackbar__action"
                             onclick=emit_action
                             />
@@ -124,7 +124,7 @@ impl Component for Snackbar {
         };
         html! {
             <div class="mdc-snackbar"
-                 id=&self.props.id
+                 id=self.props.id.clone()
                  ref=self.node_ref.clone()>
                 <div class="mdc-snackbar__surface">
                     <div class="mdc-snackbar__label">

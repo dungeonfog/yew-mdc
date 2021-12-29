@@ -133,10 +133,10 @@ impl Component for Button {
             </> }
         };
         let classes = format!("mdc-button {} {}", self.props.style, self.props.classes);
-        if let Some(action) = &self.props.dialog_data {
+        if let Some(action) = self.props.dialog_data.clone() {
             html! {
                 <button class=classes
-                        id=&self.props.id
+                        id=self.props.id.clone()
                         ref=self.node_ref.clone()
                         disabled=self.props.disabled
                         data-mdc-dialog-action=action>
@@ -148,7 +148,7 @@ impl Component for Button {
             let onclick = self.link.callback(Msg::Clicked);
             html! {
                 <button class=classes
-                        id=&self.props.id
+                        id=self.props.id.clone()
                         ref=self.node_ref.clone()
                         disabled=self.props.disabled
                         onclick=onclick>

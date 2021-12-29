@@ -82,7 +82,7 @@ impl Component for Switch {
         };
         let classes = format!("mdc-switch{}", on_class);
         let switch = html! {
-            <div id=&self.props.id class=classes ref=self.node_ref.clone()>
+            <div id=self.props.id.clone() class=classes ref=self.node_ref.clone()>
                 <div class="mdc-switch__track"></div>
                 <div class="mdc-switch__thumb-underlay">
                     <div class="mdc-switch__thumb">

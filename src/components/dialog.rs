@@ -128,7 +128,7 @@ impl Component for Dialog {
         html! {
             <div
                 class="mdc-dialog"
-                id=&self.props.id
+                id=self.props.id.clone()
                 ref=self.node_ref.clone()
                 onkeydown=self.link.callback(Msg::KeyDown)>
                 <div class="mdc-dialog__container">

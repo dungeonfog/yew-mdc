@@ -1,0 +1,25 @@
+{
+  "name": "yew-mdc",
+  "version": "1.0.0",
+  "description": "Material Design Components for the Yew framework",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lukepfeiffer10/yew-mdc.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lukepfeiffer10/yew-mdc/issues"
+  },
+  "homepage": "https://github.com/lukepfeiffer10/yew-mdc#readme",
+  "devDependencies": {
+    "material-components-web": "^13.0.0"
+  }
+}

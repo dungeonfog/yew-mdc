@@ -112,22 +112,22 @@ impl Component for TextArea {
             }
         };
         let placeholder = if self.props.nolabel {
-            &self.props.hint
+            self.props.hint.clone()
         } else {
-            ""
+            "".to_string()
         };
         let oninput = self
             .link
             .callback(|e: InputData| Msg::ValueChanged(e.value));
         html! {
-            <div class=classes id=&self.props.id ref=self.node_ref.clone()>
-                <textarea value=self.props.value
+            <div class=classes id=self.props.id.clone() ref=self.node_ref.clone()>
+                <textarea value=self.props.value.clone()
                           class="mdc-text-field__input"
                           oninput=oninput
                           disabled=self.props.disabled
                           placeholder=placeholder
-                          cols=self.props.cols.unwrap_or(80)
-                          rows=self.props.rows.unwrap_or(4)
+                          cols=self.props.cols.unwrap_or(80).to_string()
+                          rows=self.props.rows.unwrap_or(4).to_string()
                     />
                 { inner }
             </div>

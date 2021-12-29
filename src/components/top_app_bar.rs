@@ -43,13 +43,13 @@ impl Component for TopAppBar {
         let classes = format!("mdc-top-app-bar {}", self.props.classes);
         if self.props.manualrows {
             html! {
-                <header class=classes id=&self.props.id>
+                <header class=classes id=self.props.id.clone()>
                     { self.props.children.clone() }
                 </header>
             }
         } else {
             html! {
-                <header class=classes id=&self.props.id>
+                <header class=classes id=self.props.id.clone()>
                     <div class="mdc-top-app-bar__row">
                         { self.props.children.clone() }
                     </div>

@@ -17,27 +17,27 @@ pub struct Props {
     pub container_classes: String,
 }
 
-use std::borrow::Cow;
+use std::rc::Rc;
 impl Image {
     // Note: This should probably be done for any component exposing "classes"
     // to improve performance by avoiding `format!` whereever unnecessary.
     // An experimental trait for this is trivial to implement; I need to look
     // into this more tho.
-    fn container_classes(&self) -> Cow<'_, str> {
+    fn container_classes(&self) -> Rc<String> {
         if self.props.container_classes.is_empty() {
-            Cow::Borrowed("mdc-image-list__image-aspect-container")
+            Rc::new("mdc-image-list__image-aspect-container".to_string())
         } else {
-            Cow::Owned(format!(
+            Rc::new(format!(
                 "mdc-image-list__image-aspect-container {}",
                 self.props.container_classes
             ))
         }
     }
-    fn classes(&self) -> Cow<'_, str> {
+    fn classes(&self) -> Rc<String> {
         if self.props.classes.is_empty() {
-            Cow::Borrowed("mdc-image-list__image")
+            Rc::new("mdc-image-list__image".to_string())
         } else {
-            Cow::Owned(format!("mdc-image-list__image {}", self.props.classes))
+            Rc::new(format!("mdc-image-list__image {}", self.props.classes))
         }
     }
 }
@@ -65,11 +65,11 @@ impl Component for Image {
 
     fn view(&self) -> Html {
         html! {
-            <div id=&self.props.container_id
+            <div id=self.props.container_id.clone()
                  class=self.container_classes().as_ref()
                 >
-                <img id=&self.props.id
-                     src=&self.props.src
+                <img id=self.props.id.clone()
+                     src=self.props.src.clone()
                      class=self.classes().as_ref()
                     />
             </div>

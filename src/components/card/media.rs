@@ -68,11 +68,11 @@ impl Component for Media {
         );
         if self.props.children.is_empty() {
             html! {
-                <div id=&self.props.id class=classes></div>
+                <div id=self.props.id.clone() class=classes></div>
             }
         } else {
             html! {
-                <div id=&self.props.id class=classes style=&self.props.raw_css>
+                <div id=self.props.id.clone() class=classes style=self.props.raw_css.clone()>
                     <div class="mdc-card__media-content">
                         { self.props.children.clone() }
                     </div>

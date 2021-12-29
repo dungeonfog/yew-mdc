@@ -36,7 +36,7 @@ impl Component for Supporting {
 
     fn view(&self) -> Html {
         html! {
-            <div id=&self.props.id class=format!("mdc-image-list__supporting {}", self.props.classes)>
+            <div id=self.props.id.clone() class=format!("mdc-image-list__supporting {}", self.props.classes)>
                 { self.props.children.clone() }
             </div>
         }

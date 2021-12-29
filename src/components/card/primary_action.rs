@@ -76,7 +76,7 @@ impl Component for PrimaryAction {
         let emit_contextclick = self.link.callback(Msg::RightClick);
         html! {
             <div
-                id=&self.props.id
+                id=self.props.id.clone()
                 ref=self.node_ref.clone()
                 class="mdc-card__primary-action"
                 tabindex="0"

@@ -51,7 +51,7 @@ impl Component for TabIndicator {
         };
         let classes = format!("mdc-tab-indicator{}{}", fading, active);
         html! {
-            <span class=classes id=&self.props.id>
+            <span class=classes id=self.props.id.clone()>
                 <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
             </span>
         }

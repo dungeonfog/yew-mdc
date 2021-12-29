@@ -158,18 +158,18 @@ impl Component for TextField {
             </> }
         };
         let placeholder = if self.props.nolabel && !self.props.hint.is_empty() {
-            &self.props.hint
+            self.props.hint.clone()
         } else {
-            ""
+            "".to_string()
         };
         let oninput = self
             .link
             .callback(|e: InputData| Msg::ValueChanged(e.value));
         html! {
-            <div class=classes id=&self.props.id ref=self.node_ref.clone()>
+            <div class=classes id=self.props.id.clone() ref=self.node_ref.clone()>
                 { self.props.children.clone() }
                 <input type="text"
-                       value=self.props.value
+                       value=self.props.value.clone()
                        class="mdc-text-field__input"
                        oninput=oninput
                        onkeydown=self.link.callback(Msg::KeyDown)

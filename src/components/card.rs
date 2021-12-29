@@ -83,8 +83,8 @@ impl Component for Card {
         let emit_hoverenter = self.link.callback(Msg::HoverEnter);
         let emit_hoverleave = self.link.callback(Msg::HoverLeave);
         html! {
-            <div class=classes id=&self.props.id
-                 style=&self.props.raw_css
+            <div class=classes id=self.props.id.clone()
+                 style=self.props.raw_css.clone()
                  onclick=emit_click
                  oncontextmenu=emit_contextclick
                  onmouseenter=emit_hoverenter

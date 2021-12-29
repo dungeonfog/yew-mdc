@@ -60,7 +60,7 @@ impl Component for Item {
 
     fn view(&self) -> Html {
         html! {
-            <li id=&self.props.id
+            <li id=self.props.id.clone()
                 class=format!("mdc-image-list__item {}", self.props.classes)
                 onclick=self.link.callback(Msg::Clicked)
                 onmouseenter=self.link.callback(Msg::MouseEnter)

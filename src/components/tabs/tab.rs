@@ -63,7 +63,7 @@ impl Component for Tab {
             "mdc-tab"
         };
         html! {
-            <button class=classes id=&self.props.id>
+            <button class=classes id=self.props.id.clone()>
                 <span class="mdc-tab__content">
                     { self.props.children.clone() }
                     { inner_indic }

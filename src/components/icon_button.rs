@@ -118,12 +118,12 @@ impl Component for IconButton {
             None
         };
         html! {
-            <button class=("mdc-icon-button", on, &self.props.classes)
-                    id=&self.props.id
+            <button class=classes!("mdc-icon-button", on, &self.props.classes)
+                    id=self.props.id.clone()
                     ref=self.node_ref.clone()
                     onclick=onclick
                     disabled=self.props.disabled
-                    tabindex=self.props.tabindex>
+                    tabindex=self.props.tabindex.to_string()>
                 { self.props.children.clone() }
             </button>
         }
