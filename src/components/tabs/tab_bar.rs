@@ -6,7 +6,7 @@ pub struct TabBar {
     props: Props,
     inner: Option<MDCTabBar>,
     node_ref: NodeRef,
-    activated_callback: Closure<dyn FnMut(web_sys::Event)>,
+    activated_callback: Closure<dyn FnMut(web_sys::CustomEvent)>,
     current_tab: u64,
 }
 
@@ -43,7 +43,7 @@ impl Component for TabBar {
 
     fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
         let callback = link.callback(Msg::TabActivated);
-        let closure = Closure::wrap(Box::new(move |e: web_sys::Event| {
+        let closure = Closure::wrap(Box::new(move |e: web_sys::CustomEvent| {
             if let Some(e) = e.dyn_ref::<web_sys::CustomEvent>() {
                 e.stop_propagation();
                 if let Ok(value) = e.detail().into_serde::<serde_json::Value>() {
@@ -53,7 +53,7 @@ impl Component for TabBar {
                 }
             }
             e.stop_propagation();
-        }) as Box<dyn FnMut(web_sys::Event)>);
+        }) as Box<dyn FnMut(web_sys::CustomEvent)>);
         Self {
             props,
             inner: None,

@@ -1,15 +1,23 @@
 use wasm_bindgen::prelude::*;
 use web_sys::Element;
 
-#[wasm_bindgen(module = "@material/base/component/index")]
+#[wasm_bindgen(module = "@material/base")]
 extern "C" {
     pub type MDCComponent;
 
     #[wasm_bindgen(method)]
-    pub fn listen(this: &MDCComponent, type_: &str, handler: &Closure<dyn FnMut(web_sys::Event)>);
+    pub fn listen(
+        this: &MDCComponent,
+        type_: &str,
+        handler: &Closure<dyn FnMut(web_sys::CustomEvent)>,
+    );
 
     #[wasm_bindgen(method)]
-    pub fn unlisten(this: &MDCComponent, type_: &str, handler: &Closure<dyn FnMut(web_sys::Event)>);
+    pub fn unlisten(
+        this: &MDCComponent,
+        type_: &str,
+        handler: &Closure<dyn FnMut(web_sys::CustomEvent)>,
+    );
 
     #[wasm_bindgen(method)]
     pub fn destroy(this: &MDCComponent);
@@ -445,4 +453,65 @@ extern "C" {
 
     #[wasm_bindgen(method, js_name = getScrollContentWidth)]
     pub fn get_scroll_content_width(this: &MDCTabScroller) -> i32;
+}
+
+#[cfg(feature = "select")]
+#[wasm_bindgen(module = "@material/select")]
+extern "C" {
+    #[wasm_bindgen(extends = MDCComponent)]
+    pub type MDCSelect;
+
+    #[wasm_bindgen(constructor)]
+    pub fn new(select: Element) -> MDCSelect;
+
+    #[wasm_bindgen(method, getter)]
+    pub fn value(this: &MDCSelect) -> String;
+
+    #[wasm_bindgen(method, setter, js_name = value)]
+    pub fn set_value(this: &MDCSelect, value: &str);
+
+    #[wasm_bindgen(method, js_name = setValue)]
+    pub fn set_value_with_skip_notify(this: &MDCSelect, value: &str, skip_notify: bool);
+
+    #[wasm_bindgen(method, getter, js_name = selectedIndex)]
+    pub fn selected_index(this: &MDCSelect) -> i64;
+
+    #[wasm_bindgen(method, setter, js_name = selectedIndex)]
+    pub fn set_selected_index(this: &MDCSelect, index: i64);
+
+    #[wasm_bindgen(method, getter)]
+    pub fn disabled(this: &MDCSelect) -> bool;
+
+    #[wasm_bindgen(method, setter, js_name = disabled)]
+    pub fn set_disabled(this: &MDCSelect, disabled: bool);
+
+    #[wasm_bindgen(method, setter, js_name = useDefaultValidation)]
+    pub fn set_use_default_validation(this: &MDCSelect, use_default_validation: bool);
+
+    #[wasm_bindgen(method, getter)]
+    pub fn valid(this: &MDCSelect) -> bool;
+
+    #[wasm_bindgen(method, setter, js_name = valid)]
+    pub fn set_valid(this: &MDCSelect, valid: bool);
+
+    #[wasm_bindgen(method, getter)]
+    pub fn required(this: &MDCSelect) -> bool;
+
+    #[wasm_bindgen(method, setter, js_name = required)]
+    pub fn set_required(this: &MDCSelect, required: bool);
+
+    #[wasm_bindgen(method, setter, js_name = leadingIconAriaLabel)]
+    pub fn set_leading_icon_aria_label(this: &MDCSelect, leading_icon_aria_lablel: &str);
+
+    #[wasm_bindgen(method, setter, js_name = leadingIconContent)]
+    pub fn set_leading_icon_content(this: &MDCSelect, leading_icon_content: &str);
+
+    #[wasm_bindgen(method, setter, js_name = helperTextContent)]
+    pub fn set_helper_text_content(this: &MDCSelect, helper_text_content: &str);
+
+    #[wasm_bindgen(method, js_name = layout)]
+    pub fn layout(this: &MDCSelect);
+
+    #[wasm_bindgen(method, js_name = layoutOptions)]
+    pub fn layout_options(this: &MDCSelect);
 }

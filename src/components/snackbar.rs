@@ -9,7 +9,7 @@ pub struct Snackbar {
     node_ref: NodeRef,
     link: ComponentLink<Self>,
     inner: Option<MDCSnackbar>,
-    close_callback: Closure<dyn FnMut(web_sys::Event)>,
+    close_callback: Closure<dyn FnMut(web_sys::CustomEvent)>,
     props: Props,
 }
 
@@ -42,10 +42,10 @@ impl Component for Snackbar {
     fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
         let close_callback = {
             let callback = link.callback(|_| Msg::Closed);
-            Closure::wrap(Box::new(move |e: web_sys::Event| {
+            Closure::wrap(Box::new(move |e: web_sys::CustomEvent| {
                 e.stop_propagation();
                 callback.emit(());
-            }) as Box<dyn FnMut(web_sys::Event)>)
+            }) as Box<dyn FnMut(web_sys::CustomEvent)>)
         };
         Self {
             node_ref: NodeRef::default(),

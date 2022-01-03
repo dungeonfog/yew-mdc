@@ -104,3 +104,11 @@ cfg_if! {
         pub use tabs::*;
     }
 }
+
+cfg_if! {
+    if #[cfg(feature = "select")] {
+        pub mod select;
+        pub use select::Select;
+        pub use select::Item as SelectItem;
+    }
+}

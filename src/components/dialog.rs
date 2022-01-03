@@ -11,7 +11,7 @@ pub use content::Content;
 pub struct Dialog {
     node_ref: NodeRef,
     inner: Option<MDCDialog>,
-    close_callback: Closure<dyn FnMut(web_sys::Event)>,
+    close_callback: Closure<dyn FnMut(web_sys::CustomEvent)>,
     props: Props,
     link: ComponentLink<Self>,
 }
@@ -48,7 +48,7 @@ impl Component for Dialog {
 
     fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
         let callback = link.callback(|action: Option<String>| Msg::Closed { action });
-        let closure = Closure::wrap(Box::new(move |e: web_sys::Event| {
+        let closure = Closure::wrap(Box::new(move |e: web_sys::CustomEvent| {
             use std::borrow::ToOwned;
             e.stop_propagation();
             let action = e.dyn_ref::<web_sys::CustomEvent>().and_then(|e| {
@@ -62,7 +62,7 @@ impl Component for Dialog {
                     })
             });
             callback.emit(action);
-        }) as Box<dyn FnMut(web_sys::Event)>);
+        }) as Box<dyn FnMut(web_sys::CustomEvent)>);
         Self {
             node_ref: NodeRef::default(),
             inner: None,

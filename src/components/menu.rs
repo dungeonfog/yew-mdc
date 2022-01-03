@@ -10,7 +10,7 @@ pub struct Menu {
     node_ref: NodeRef,
     inner: Option<MDCMenu>,
     surface: Option<MDCMenuSurface>,
-    close_callback: Closure<dyn FnMut(web_sys::Event)>,
+    close_callback: Closure<dyn FnMut(web_sys::CustomEvent)>,
     props: Props,
 }
 
@@ -39,10 +39,10 @@ impl Component for Menu {
 
     fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
         let callback = link.callback(|_| Msg::Closed);
-        let closure = Closure::wrap(Box::new(move |e: web_sys::Event| {
+        let closure = Closure::wrap(Box::new(move |e: web_sys::CustomEvent| {
             e.stop_propagation();
             callback.emit(());
-        }) as Box<dyn FnMut(web_sys::Event)>);
+        }) as Box<dyn FnMut(web_sys::CustomEvent)>);
         Self {
             node_ref: NodeRef::default(),
             inner: None,
