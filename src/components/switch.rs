@@ -6,9 +6,7 @@ use yew::prelude::*;
 // Not sure what to think about that.
 pub struct Switch {
     node_ref: NodeRef,
-    link: ComponentLink<Self>,
     inner: Option<MDCSwitch>,
-    props: Props,
     state: bool,
 }
 
@@ -32,17 +30,15 @@ impl Component for Switch {
     type Message = Msg;
     type Properties = Props;
 
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
+    fn create(ctx: &Context<Self>) -> Self {
         Self {
             node_ref: NodeRef::default(),
-            link,
             inner: None,
-            state: props.state,
-            props,
+            state: ctx.props().state,
         }
     }
 
-    fn rendered(&mut self, first_render: bool) {
+    fn rendered(&mut self, _ctx: &Context<Self>, first_render: bool) {
         if first_render {
             if let Some(inner) = self.inner.take() {
                 inner.destroy();
@@ -51,30 +47,25 @@ impl Component for Switch {
         }
     }
 
-    fn change(&mut self, props: Props) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
+    fn changed(&mut self, _ctx: &Context<Self>) -> bool {
+        true
     }
 
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             Msg::StateChanged => {
                 self.state = !self.state;
                 if let Some(ref inner) = self.inner {
                     inner.set_checked(self.state);
                 }
-                self.props.onchange.emit(self.state);
+                ctx.props().onchange.emit(self.state);
                 true
             }
         }
     }
 
-    fn view(&self) -> Html {
-        let emit_change = self.link.callback(|_| Msg::StateChanged);
+    fn view(&self, ctx: &Context<Self>) -> Html {
+        let emit_change = ctx.link().callback(|_| Msg::StateChanged);
         let (on_class, checked) = if self.state {
             (" mdc-switch--checked", true)
         } else {
@@ -82,32 +73,32 @@ impl Component for Switch {
         };
         let classes = format!("mdc-switch{}", on_class);
         let switch = html! {
-            <div id=self.props.id.clone() class=classes ref=self.node_ref.clone()>
+            <div id={ctx.props().id.clone()} class={classes} ref={self.node_ref.clone()}>
                 <div class="mdc-switch__track"></div>
                 <div class="mdc-switch__thumb-underlay">
                     <div class="mdc-switch__thumb">
                         <input type="checkbox"
-                               onchange=emit_change
+                               onchange={emit_change}
                                class="mdc-switch__native-control"
-                               checked=checked
+                               checked={checked}
                             />
                     </div>
                 </div>
             </div>
         };
-        if self.props.label_text.is_empty() {
+        if ctx.props().label_text.is_empty() {
             switch
         } else {
             html! {
                 <>
                 { switch }
-                <label>{ &self.props.label_text }</label>
+                <label>{ &ctx.props().label_text }</label>
                 </>
             }
         }
     }
 
-    fn destroy(&mut self) {
+    fn destroy(&mut self, _ctx: &Context<Self>) {
         if let Some(ref inner) = self.inner {
             inner.destroy();
         }

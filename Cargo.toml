@@ -58,9 +58,8 @@ cfg-if = '0.1'
 boolinator = '2.4.0'
 
 [dependencies.yew]
-version = '0.18.0'
+version = '0.19.3'
 default-features = false
-features = ['web_sys']
 
 [dependencies.serde]
 version = '1'
@@ -78,6 +77,8 @@ features = [
     'Document',
     'Event',
     'CustomEvent',
+    'EventTarget',
+    'HtmlInputElement',
 ]
 
 [dev-dependencies]

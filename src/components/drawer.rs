@@ -7,7 +7,6 @@ pub use header::Header;
 
 pub struct Drawer {
     // inner: Option<MDCDrawer>,
-    props: Props,
 }
 
 #[derive(Properties, Clone, PartialEq)]
@@ -21,34 +20,23 @@ impl Component for Drawer {
     type Message = ();
     type Properties = Props;
 
-    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        Self { props }
+    fn create(_ctx: &Context<Self>) -> Self {
+        Self {}
     }
 
-    fn change(&mut self, props: Props) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
+    fn changed(&mut self, _ctx: &Context<Self>) -> bool {
+        true
     }
 
-    // fn mounted(&mut self) -> ShouldRender {
-    //     false
-    // }
-
-    fn update(&mut self, _msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, _ctx: &Context<Self>, _msg: Self::Message) -> bool {
         false
     }
 
-    fn view(&self) -> Html {
+    fn view(&self, ctx: &Context<Self>) -> Html {
         html! {
-            <aside class="mdc-drawer" id=self.props.id.clone()>
-                { self.props.children.clone() }
+            <aside class="mdc-drawer" id={ctx.props().id.clone()}>
+                { ctx.props().children.clone() }
             </aside>
         }
     }
-
-    // fn destroy(&mut self) {}
 }

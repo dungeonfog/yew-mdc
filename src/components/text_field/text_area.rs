@@ -1,12 +1,12 @@
 use crate::mdc_sys::MDCTextField;
-use web_sys::Element;
+use wasm_bindgen::JsCast;
+use web_sys::{Element, EventTarget, HtmlInputElement};
+use yew::events::InputEvent;
 use yew::prelude::*;
 
 pub struct TextArea {
     node_ref: NodeRef,
     inner: Option<MDCTextField>,
-    props: Props,
-    link: ComponentLink<Self>,
 }
 
 #[derive(PartialEq, Properties, Clone, Debug)]
@@ -37,16 +37,14 @@ impl Component for TextArea {
     type Message = Msg;
     type Properties = Props;
 
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
+    fn create(_ctx: &Context<Self>) -> Self {
         Self {
             node_ref: NodeRef::default(),
-            props,
             inner: None,
-            link,
         }
     }
 
-    fn rendered(&mut self, first_render: bool) {
+    fn rendered(&mut self, _ctx: &Context<Self>, first_render: bool) {
         if first_render {
             if let Some(inner) = self.inner.take() {
                 inner.destroy();
@@ -55,34 +53,29 @@ impl Component for TextArea {
         }
     }
 
-    fn change(&mut self, props: Props) -> ShouldRender {
-        if props != self.props {
-            self.props = props;
-            if let Some(inner) = &self.inner {
-                inner.set_value(&self.props.value);
-            }
-            true
-        } else {
-            false
+    fn changed(&mut self, ctx: &Context<Self>) -> bool {
+        if let Some(inner) = &self.inner {
+            inner.set_value(&ctx.props().value);
         }
+        true
     }
 
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             Msg::ValueChanged(s) => {
-                self.props.onchange.emit(s);
+                ctx.props().onchange.emit(s);
             }
         };
         false
     }
 
-    fn view(&self) -> Html {
-        let disabled = if self.props.disabled {
+    fn view(&self, ctx: &Context<Self>) -> Html {
+        let disabled = if ctx.props().disabled {
             " mdc-text-field--disabled"
         } else {
             ""
         };
-        let nolabel = if self.props.nolabel {
+        let nolabel = if ctx.props().nolabel {
             " mdc-text-field--no-label"
         } else {
             ""
@@ -92,13 +85,13 @@ impl Component for TextArea {
             disabled, nolabel
         );
         let inner = {
-            let notch = if self.props.nolabel {
+            let notch = if ctx.props().nolabel {
                 html! {}
             } else {
                 html! {
                     <div class="mdc-notched-outline__notch">
                         <label class="mdc-floating-label">
-                            { &self.props.hint }
+                            { &ctx.props().hint }
                         </label>
                     </div>
                 }
@@ -111,30 +104,33 @@ impl Component for TextArea {
                 </div>
             }
         };
-        let placeholder = if self.props.nolabel {
-            self.props.hint.clone()
+        let placeholder = if ctx.props().nolabel {
+            ctx.props().hint.clone()
         } else {
             "".to_string()
         };
-        let oninput = self
-            .link
-            .callback(|e: InputData| Msg::ValueChanged(e.value));
+        let oninput = ctx.link().batch_callback(|e: InputEvent| {
+            let target: Option<EventTarget> = e.target();
+            let input = target.and_then(|t| t.dyn_into::<HtmlInputElement>().ok());
+
+            input.map(|input| Msg::ValueChanged(input.value()))
+        });
         html! {
-            <div class=classes id=self.props.id.clone() ref=self.node_ref.clone()>
-                <textarea value=self.props.value.clone()
+            <div class={classes} id={ctx.props().id.clone()} ref={self.node_ref.clone()}>
+                <textarea value={ctx.props().value.clone()}
                           class="mdc-text-field__input"
-                          oninput=oninput
-                          disabled=self.props.disabled
-                          placeholder=placeholder
-                          cols=self.props.cols.unwrap_or(80).to_string()
-                          rows=self.props.rows.unwrap_or(4).to_string()
+                          oninput={oninput}
+                          disabled={ctx.props().disabled}
+                          placeholder={placeholder}
+                          cols={ctx.props().cols.unwrap_or(80).to_string()}
+                          rows={ctx.props().rows.unwrap_or(4).to_string()}
                     />
                 { inner }
             </div>
         }
     }
 
-    fn destroy(&mut self) {
+    fn destroy(&mut self, _ctx: &Context<Self>) {
         if let Some(inner) = &self.inner {
             inner.destroy();
         }

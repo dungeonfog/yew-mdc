@@ -4,7 +4,6 @@ use yew::prelude::*;
 use super::TabIndicator;
 
 pub struct Tab {
-    props: Props,
     //inner: Option<MDCTab>,
 }
 
@@ -28,44 +27,39 @@ impl Component for Tab {
     type Message = ();
     type Properties = Props;
 
-    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        Self { props }
+    fn create(_ctx: &Context<Self>) -> Self {
+        Self {}
     }
 
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
+    fn changed(&mut self, _ctx: &Context<Self>) -> bool {
+        true
     }
 
-    fn update(&mut self, _msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, _ctx: &Context<Self>, _msg: Self::Message) -> bool {
         false
     }
 
-    fn view(&self) -> Html {
+    fn view(&self, ctx: &Context<Self>) -> Html {
         let indicator = html! {
             <TabIndicator
-                active=self.props.active
-                fading=self.props.fading_indicator
+                active={ctx.props().active}
+                fading={ctx.props().fading_indicator}
             />
         };
-        let (outer_indic, inner_indic) = if self.props.content_only_indicator {
+        let (outer_indic, inner_indic) = if ctx.props().content_only_indicator {
             (html! {}, indicator)
         } else {
             (indicator, html! {})
         };
-        let classes = if self.props.active {
+        let classes = if ctx.props().active {
             "mdc-tab mdc-tab--active"
         } else {
             "mdc-tab"
         };
         html! {
-            <button class=classes id=self.props.id.clone()>
+            <button class={classes} id={ctx.props().id.clone()}>
                 <span class="mdc-tab__content">
-                    { self.props.children.clone() }
+                    { ctx.props().children.clone() }
                     { inner_indic }
                 </span>
                 { outer_indic }
@@ -73,6 +67,4 @@ impl Component for Tab {
             </button>
         }
     }
-
-    fn destroy(&mut self) {}
 }

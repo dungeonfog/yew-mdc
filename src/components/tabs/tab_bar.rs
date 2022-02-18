@@ -3,7 +3,6 @@ use wasm_bindgen::{prelude::*, JsCast};
 use yew::prelude::*;
 
 pub struct TabBar {
-    props: Props,
     inner: Option<MDCTabBar>,
     node_ref: NodeRef,
     activated_callback: Closure<dyn FnMut(web_sys::CustomEvent)>,
@@ -41,8 +40,8 @@ impl Component for TabBar {
     type Message = Msg;
     type Properties = Props;
 
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        let callback = link.callback(Msg::TabActivated);
+    fn create(ctx: &Context<Self>) -> Self {
+        let callback = ctx.link().callback(Msg::TabActivated);
         let closure = Closure::wrap(Box::new(move |e: web_sys::CustomEvent| {
             if let Some(e) = e.dyn_ref::<web_sys::CustomEvent>() {
                 e.stop_propagation();
@@ -55,7 +54,6 @@ impl Component for TabBar {
             e.stop_propagation();
         }) as Box<dyn FnMut(web_sys::CustomEvent)>);
         Self {
-            props,
             inner: None,
             node_ref: NodeRef::default(),
             activated_callback: closure,
@@ -63,13 +61,13 @@ impl Component for TabBar {
         }
     }
 
-    fn rendered(&mut self, first_render: bool) {
+    fn rendered(&mut self, ctx: &Context<Self>, first_render: bool) {
         if first_render {
             if let Some(tab_bar) = self.node_ref.cast::<web_sys::Element>().map(MDCTabBar::new) {
-                tab_bar.focus_on_activate(self.props.focus_tabs_on_activate);
-                tab_bar.use_automatic_activation(self.props.arrow_key_tab_activation);
+                tab_bar.focus_on_activate(ctx.props().focus_tabs_on_activate);
+                tab_bar.use_automatic_activation(ctx.props().arrow_key_tab_activation);
                 tab_bar.listen("MDCTabBar:activated", &self.activated_callback);
-                if let Some(index) = self.props.activated_tab {
+                if let Some(index) = ctx.props().activated_tab {
                     self.current_tab = index as u64;
                     tab_bar.activate_tab(index);
                 }
@@ -78,45 +76,40 @@ impl Component for TabBar {
         }
     }
 
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            if let Some(tab) = props.activated_tab {
-                if tab as u64 != self.current_tab {
-                    if let Some(ref inner) = self.inner {
-                        inner.activate_tab(tab);
-                    }
+    fn changed(&mut self, ctx: &Context<Self>) -> bool {
+        if let Some(tab) = ctx.props().activated_tab {
+            if tab as u64 != self.current_tab {
+                if let Some(ref inner) = self.inner {
+                    inner.activate_tab(tab);
                 }
             }
-            self.props = props;
-            true
-        } else {
-            false
         }
+        true
     }
 
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             Msg::TabActivated(index) => {
                 self.current_tab = index;
-                self.props.ontabactivate.emit(index);
+                ctx.props().ontabactivate.emit(index);
             }
         }
         false
     }
 
-    fn view(&self) -> Html {
+    fn view(&self, ctx: &Context<Self>) -> Html {
         html! {
             <div class="mdc-tab-bar"
-                 ref=self.node_ref.clone()
-                 id=self.props.id.clone()
-                 onclick=Callback::noop()
+                 ref={self.node_ref.clone()}
+                 id={ctx.props().id.clone()}
+                 onclick={Callback::noop()}
                 >
-                { self.props.children.clone() }
+                { ctx.props().children.clone() }
             </div>
         }
     }
 
-    fn destroy(&mut self) {
+    fn destroy(&mut self, _ctx: &Context<Self>) {
         if let Some(ref inner) = self.inner {
             inner.unlisten("MDCTabBar:activated", &self.activated_callback);
             inner.destroy();

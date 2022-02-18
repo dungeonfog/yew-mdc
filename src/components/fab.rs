@@ -5,8 +5,6 @@ use yew::prelude::*;
 pub struct FAB {
     node_ref: NodeRef,
     ripple: Option<MDCRipple>,
-    props: Props,
-    link: ComponentLink<Self>,
 }
 
 #[derive(Properties, Clone, PartialEq)]
@@ -32,25 +30,18 @@ impl Component for FAB {
     type Message = Msg;
     type Properties = Props;
 
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
+    fn create(_ctx: &Context<Self>) -> Self {
         Self {
             node_ref: NodeRef::default(),
             ripple: None,
-            props,
-            link,
         }
     }
 
-    fn change(&mut self, props: Props) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
+    fn changed(&mut self, _ctx: &Context<Self>) -> bool {
+        true
     }
 
-    fn rendered(&mut self, first_render: bool) {
+    fn rendered(&mut self, _ctx: &Context<Self>, first_render: bool) {
         if first_render {
             if let Some(ripple) = self.ripple.take() {
                 ripple.destroy();
@@ -59,28 +50,28 @@ impl Component for FAB {
         }
     }
 
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             Msg::Clicked(ev) => {
-                self.props.onclick.emit(ev);
+                ctx.props().onclick.emit(ev);
             }
         }
         false
     }
 
-    fn view(&self) -> Html {
+    fn view(&self, ctx: &Context<Self>) -> Html {
         let ripple = html! { <div class="mdc-fab__ripple"></div> };
-        let mini = if self.props.mini {
+        let mini = if ctx.props().mini {
             " mdc-fab--mini"
         } else {
             ""
         };
-        let exited = if self.props.exited {
+        let exited = if ctx.props().exited {
             " mdc-fab--exited"
         } else {
             ""
         };
-        let (label, extended) = if let Some(text) = &self.props.text {
+        let (label, extended) = if let Some(text) = &ctx.props().text {
             (
                 html! { <span class="mdc-fab__label">{ text }</span> },
                 " mdc-fab--extended",
@@ -89,19 +80,19 @@ impl Component for FAB {
             (html! {}, "")
         };
         let classes = format!("mdc-fab{}{}{}", mini, extended, exited);
-        let onclick = self.link.callback(Msg::Clicked);
+        let onclick = ctx.link().callback(Msg::Clicked);
         html! {
-            <button class=classes id=self.props.id.clone()
-                    ref=self.node_ref.clone()
-                    onclick=onclick>
+            <button class={classes} id={ctx.props().id.clone()}
+                    ref={self.node_ref.clone()}
+                    onclick={onclick}>
                 { ripple }
-                { self.props.children.clone() }
+                { ctx.props().children.clone() }
                 { label }
             </button>
         }
     }
 
-    fn destroy(&mut self) {
+    fn destroy(&mut self, _ctx: &Context<Self>) {
         if let Some(ripple) = &self.ripple {
             ripple.destroy();
         }

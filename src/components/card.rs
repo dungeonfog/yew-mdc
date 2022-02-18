@@ -6,10 +6,7 @@ pub mod media;
 pub use media::Media;
 pub use media::Style as MediaStyle;
 
-pub struct Card {
-    props: Props,
-    link: ComponentLink<Self>,
-}
+pub struct Card;
 
 #[derive(Properties, Clone, PartialEq)]
 pub struct Props {
@@ -43,53 +40,48 @@ impl Component for Card {
     type Message = Msg;
     type Properties = Props;
 
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        Self { props, link }
+    fn create(_ctx: &Context<Self>) -> Self {
+        Self
     }
 
-    fn change(&mut self, props: Props) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
+    fn changed(&mut self, _ctx: &Context<Self>) -> bool {
+        true
     }
 
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
-            Msg::LeftClick(ev) => self.props.onclick.emit(ev),
+            Msg::LeftClick(ev) => ctx.props().onclick.emit(ev),
             Msg::RightClick(ev) => {
-                if self.props.oncontextclick != Callback::noop() {
+                if ctx.props().oncontextclick != Callback::noop() {
                     ev.prevent_default();
-                    self.props.oncontextclick.emit(ev);
+                    ctx.props().oncontextclick.emit(ev);
                 }
             }
-            Msg::HoverEnter(ev) => self.props.onhoverenter.emit(ev),
-            Msg::HoverLeave(ev) => self.props.onhoverleave.emit(ev),
+            Msg::HoverEnter(ev) => ctx.props().onhoverenter.emit(ev),
+            Msg::HoverLeave(ev) => ctx.props().onhoverleave.emit(ev),
         }
         false
     }
 
-    fn view(&self) -> Html {
-        let outlined = if self.props.outlined {
+    fn view(&self, ctx: &Context<Self>) -> Html {
+        let outlined = if ctx.props().outlined {
             "mdc-card--outlined"
         } else {
             ""
         };
-        let classes = format!("mdc-card {} {}", self.props.classes, outlined);
-        let emit_click = self.link.callback(Msg::LeftClick);
-        let emit_contextclick = self.link.callback(Msg::RightClick);
-        let emit_hoverenter = self.link.callback(Msg::HoverEnter);
-        let emit_hoverleave = self.link.callback(Msg::HoverLeave);
+        let classes = format!("mdc-card {} {}", ctx.props().classes, outlined);
+        let emit_click = ctx.link().callback(Msg::LeftClick);
+        let emit_contextclick = ctx.link().callback(Msg::RightClick);
+        let emit_hoverenter = ctx.link().callback(Msg::HoverEnter);
+        let emit_hoverleave = ctx.link().callback(Msg::HoverLeave);
         html! {
-            <div class=classes id=self.props.id.clone()
-                 style=self.props.raw_css.clone()
-                 onclick=emit_click
-                 oncontextmenu=emit_contextclick
-                 onmouseenter=emit_hoverenter
-                 onmouseleave=emit_hoverleave>
-                { self.props.children.clone() }
+            <div class={classes} id={ctx.props().id.clone()}
+                 style={ctx.props().raw_css.clone()}
+                 onclick={emit_click}
+                 oncontextmenu={emit_contextclick}
+                 onmouseenter={emit_hoverenter}
+                 onmouseleave={emit_hoverleave}>
+                { ctx.props().children.clone() }
             </div>
         }
     }

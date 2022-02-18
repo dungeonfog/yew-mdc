@@ -11,7 +11,6 @@ pub struct Menu {
     inner: Option<MDCMenu>,
     surface: Option<MDCMenuSurface>,
     close_callback: Closure<dyn FnMut(web_sys::CustomEvent)>,
-    props: Props,
 }
 
 #[derive(Properties, Clone, PartialEq)]
@@ -37,8 +36,8 @@ impl Component for Menu {
     type Message = Msg;
     type Properties = Props;
 
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        let callback = link.callback(|_| Msg::Closed);
+    fn create(ctx: &Context<Self>) -> Self {
+        let callback = ctx.link().callback(|_| Msg::Closed);
         let closure = Closure::wrap(Box::new(move |e: web_sys::CustomEvent| {
             e.stop_propagation();
             callback.emit(());
@@ -48,40 +47,25 @@ impl Component for Menu {
             inner: None,
             surface: None,
             close_callback: closure,
-            props,
         }
     }
 
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
+    fn changed(&mut self, ctx: &Context<Self>) -> bool {
         if let Some(inner) = &self.inner {
-            if props.open != self.props.open {
-                self.props.open = props.open;
-                inner.set_open(props.open);
-            }
-            if props.fixed_position != self.props.fixed_position {
-                self.props.fixed_position = props.fixed_position;
-                inner.set_fixed_position(self.props.fixed_position);
-            }
-            if props.absolute_position != self.props.absolute_position {
-                self.props.absolute_position = props.absolute_position;
-                if let Some((x, y)) = props.absolute_position {
-                    inner.set_absolute_position(x, y);
-                    inner.set_is_hoisted(true);
-                } else {
-                    inner.set_absolute_position(0, 0);
-                    inner.set_is_hoisted(false);
-                }
+            inner.set_open(ctx.props().open);
+            inner.set_fixed_position(ctx.props().fixed_position);
+            if let Some((x, y)) = ctx.props().absolute_position {
+                inner.set_absolute_position(x, y);
+                inner.set_is_hoisted(true);
+            } else {
+                inner.set_absolute_position(0, 0);
+                inner.set_is_hoisted(false);
             }
         }
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
+        true
     }
 
-    fn rendered(&mut self, first_render: bool) {
+    fn rendered(&mut self, ctx: &Context<Self>, first_render: bool) {
         if first_render {
             if let Some(surface) = self.surface.take() {
                 surface.unlisten("MDCMenuSurface:closed", &self.close_callback);
@@ -93,11 +77,11 @@ impl Component for Menu {
             if let Some(elem) = self.node_ref.cast::<Element>() {
                 // Our root element has the mdc-menu class...
                 let menu = MDCMenu::new(elem.clone());
-                menu.set_fixed_position(self.props.fixed_position);
-                if let Some((x, y)) = self.props.absolute_position {
+                menu.set_fixed_position(ctx.props().fixed_position);
+                if let Some((x, y)) = ctx.props().absolute_position {
                     menu.set_absolute_position(x, y);
                 }
-                menu.set_open(self.props.open);
+                menu.set_open(ctx.props().open);
                 self.inner = Some(menu);
                 // ...but is also an mdc-menu-surface
                 let surface = MDCMenuSurface::new(elem);
@@ -107,27 +91,27 @@ impl Component for Menu {
         }
     }
 
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             Msg::Closed => {
-                self.props.onclose.emit(());
+                ctx.props().onclose.emit(());
             }
         }
         false
     }
 
-    fn view(&self) -> Html {
+    fn view(&self, ctx: &Context<Self>) -> Html {
         html! {
-            <div class="mdc-menu mdc-menu-surface" id=self.props.id.clone()
-                 ref=self.node_ref.clone()>
+            <div class="mdc-menu mdc-menu-surface" id={ctx.props().id.clone()}
+                 ref={self.node_ref.clone()}>
                 <ul class="mdc-list" role="menu" aria-hidden="true" aria-orientation="vertical" tabindex="-1">
-                    { self.props.children.clone() }
+                    { ctx.props().children.clone() }
                 </ul>
             </div>
         }
     }
 
-    fn destroy(&mut self) {
+    fn destroy(&mut self, _ctx: &Context<Self>) {
         if let Some(surface) = &self.surface {
             surface.unlisten("MDCMenuSurface:closed", &self.close_callback);
             surface.destroy();

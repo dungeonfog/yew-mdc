@@ -19,7 +19,7 @@ you have to make sure you put exactly the right contents inside (as defined
 This could, for example, look like this:
 
 ```xml
-<IconButton togglable=true toggle_on=true>
+<IconButton togglable={true} toggle_on={true}>
     <i class="material-icons mdc-icon-button__icon mdc-icon-button__icon--on">{ "favorite" }</i>
     <i class="material-icons mdc-icon-button__icon">{ "favorite_border" }</i>
 </IconButton>
@@ -39,8 +39,6 @@ use yew::prelude::*;
 pub struct IconButton {
     node_ref: NodeRef,
     ripple: Option<MDCRipple>,
-    props: Props,
-    link: ComponentLink<Self>,
 }
 
 #[derive(Properties, Clone, PartialEq)]
@@ -70,16 +68,14 @@ impl Component for IconButton {
     type Message = Msg;
     type Properties = Props;
 
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
+    fn create(_ctx: &Context<Self>) -> Self {
         Self {
             node_ref: NodeRef::default(),
             ripple: None,
-            props,
-            link,
         }
     }
 
-    fn rendered(&mut self, first_render: bool) {
+    fn rendered(&mut self, _ctx: &Context<Self>, first_render: bool) {
         if first_render {
             if let Some(ripple) = self.ripple.take() {
                 ripple.destroy();
@@ -92,44 +88,39 @@ impl Component for IconButton {
         }
     }
 
-    fn change(&mut self, props: Props) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
+    fn changed(&mut self, _ctx: &Context<Self>) -> bool {
+        true
     }
 
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             Msg::Clicked(event) => {
-                self.props.onclick.emit(event);
+                ctx.props().onclick.emit(event);
             }
         }
         false
     }
 
-    fn view(&self) -> Html {
-        let onclick = self.link.callback(Msg::Clicked);
-        let on = if self.props.togglable && self.props.toggle_on {
+    fn view(&self, ctx: &Context<Self>) -> Html {
+        let onclick = ctx.link().callback(Msg::Clicked);
+        let on = if ctx.props().togglable && ctx.props().toggle_on {
             Some("mdc-icon-button--on")
         } else {
             None
         };
         html! {
-            <button class=classes!("mdc-icon-button", on, &self.props.classes)
-                    id=self.props.id.clone()
-                    ref=self.node_ref.clone()
-                    onclick=onclick
-                    disabled=self.props.disabled
-                    tabindex=self.props.tabindex.to_string()>
-                { self.props.children.clone() }
+            <button class={classes!("mdc-icon-button", on, &ctx.props().classes)}
+                    id={ctx.props().id.clone()}
+                    ref={self.node_ref.clone()}
+                    onclick={onclick}
+                    disabled={ctx.props().disabled}
+                    tabindex={ctx.props().tabindex.to_string()}>
+                { ctx.props().children.clone() }
             </button>
         }
     }
 
-    fn destroy(&mut self) {
+    fn destroy(&mut self, _ctx: &Context<Self>) {
         if let Some(ripple) = &self.ripple {
             ripple.destroy();
         }

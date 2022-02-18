@@ -7,10 +7,8 @@ use crate::components::Button;
 
 pub struct Snackbar {
     node_ref: NodeRef,
-    link: ComponentLink<Self>,
     inner: Option<MDCSnackbar>,
     close_callback: Closure<dyn FnMut(web_sys::CustomEvent)>,
-    props: Props,
 }
 
 #[derive(Properties, Clone, PartialEq)]
@@ -39,9 +37,9 @@ impl Component for Snackbar {
     type Message = Msg;
     type Properties = Props;
 
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
+    fn create(ctx: &Context<Self>) -> Self {
         let close_callback = {
-            let callback = link.callback(|_| Msg::Closed);
+            let callback = ctx.link().callback(|_| Msg::Closed);
             Closure::wrap(Box::new(move |e: web_sys::CustomEvent| {
                 e.stop_propagation();
                 callback.emit(());
@@ -49,14 +47,12 @@ impl Component for Snackbar {
         };
         Self {
             node_ref: NodeRef::default(),
-            link,
             inner: None,
             close_callback,
-            props,
         }
     }
 
-    fn rendered(&mut self, first_render: bool) {
+    fn rendered(&mut self, ctx: &Context<Self>, first_render: bool) {
         if first_render {
             if let Some(inner) = self.inner.take() {
                 inner.unlisten("MDCSnackbar:closed", &self.close_callback);
@@ -64,10 +60,10 @@ impl Component for Snackbar {
             }
             if let Some(elem) = self.node_ref.cast::<Element>() {
                 let inner = MDCSnackbar::new(elem);
-                if let Some(timeout_ms) = &self.props.timeout_ms {
+                if let Some(timeout_ms) = &ctx.props().timeout_ms {
                     inner.set_timeout_ms(*timeout_ms);
                 }
-                if self.props.open {
+                if ctx.props().open {
                     inner.open();
                 }
                 inner.listen("MDCSnackbar:closed", &self.close_callback);
@@ -76,31 +72,26 @@ impl Component for Snackbar {
         }
     }
 
-    fn change(&mut self, props: Props) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            if let Some(ref inner) = self.inner {
-                if self.props.open {
-                    inner.open();
-                } else {
-                    inner.close(None);
-                }
+    fn changed(&mut self, ctx: &Context<Self>) -> bool {
+        if let Some(ref inner) = self.inner {
+            if ctx.props().open {
+                inner.open();
+            } else {
+                inner.close(None);
             }
-            true
-        } else {
-            false
         }
+        true
     }
 
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             Msg::ActionClicked(ev) => {
-                if let Some(ref callback) = self.props.onactionclicked {
+                if let Some(ref callback) = ctx.props().onactionclicked {
                     callback.emit(ev);
                 }
             }
             Msg::Closed => {
-                if let Some(ref callback) = self.props.onclose {
+                if let Some(ref callback) = ctx.props().onclose {
                     callback.emit(());
                 }
             }
@@ -108,14 +99,14 @@ impl Component for Snackbar {
         false
     }
 
-    fn view(&self) -> Html {
-        let actions = if !self.props.action_text.is_empty() {
-            let emit_action = self.link.callback(Msg::ActionClicked);
+    fn view(&self, ctx: &Context<Self>) -> Html {
+        let actions = if !ctx.props().action_text.is_empty() {
+            let emit_action = ctx.link().callback(Msg::ActionClicked);
             html! {
                 <div class="mdc-snackbar__actions">
-                    <Button text=self.props.action_text.clone()
+                    <Button text={ctx.props().action_text.clone()}
                             classes="mdc-snackbar__action"
-                            onclick=emit_action
+                            onclick={emit_action}
                             />
                 </div>
             }
@@ -124,11 +115,11 @@ impl Component for Snackbar {
         };
         html! {
             <div class="mdc-snackbar"
-                 id=self.props.id.clone()
-                 ref=self.node_ref.clone()>
+                 id={ctx.props().id.clone()}
+                 ref={self.node_ref.clone()}>
                 <div class="mdc-snackbar__surface">
                     <div class="mdc-snackbar__label">
-                        { &self.props.text }
+                        { &ctx.props().text }
                     </div>
                     { actions }
                 </div>
@@ -136,7 +127,7 @@ impl Component for Snackbar {
         }
     }
 
-    fn destroy(&mut self) {
+    fn destroy(&mut self, _ctx: &Context<Self>) {
         if let Some(ref inner) = self.inner {
             inner.unlisten("MDCSnackbar:closed", &self.close_callback);
             inner.destroy();

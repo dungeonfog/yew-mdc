@@ -2,7 +2,6 @@
 use yew::prelude::*;
 
 pub struct TabScroller {
-    props: Props,
     //inner: Option<MDCTabScroller>,
 }
 
@@ -18,34 +17,27 @@ impl Component for TabScroller {
     type Message = ();
     type Properties = Props;
 
-    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        Self { props }
+    fn create(_ctx: &Context<Self>) -> Self {
+        Self {}
     }
 
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
+    fn changed(&mut self, _ctx: &Context<Self>) -> bool {
+        true
     }
 
-    fn update(&mut self, _msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, _ctx: &Context<Self>, _msg: Self::Message) -> bool {
         false
     }
 
-    fn view(&self) -> Html {
+    fn view(&self, ctx: &Context<Self>) -> Html {
         html! {
-            <div class="mdc-tab-scroller" id=self.props.id.clone()>
+            <div class="mdc-tab-scroller" id={ctx.props().id.clone()}>
                 <div class="mdc-tab-scroller__scroll-area">
                     <div class="mdc-tab-scroller__scroll-content">
-                        { self.props.children.clone() }
+                        { ctx.props().children.clone() }
                     </div>
                 </div>
             </div>
         }
     }
-
-    fn destroy(&mut self) {}
 }

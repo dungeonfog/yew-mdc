@@ -1,8 +1,6 @@
 use yew::prelude::*;
 
-pub struct Media {
-    props: Props,
-}
+pub struct Media;
 
 #[derive(Clone, Copy, PartialEq)]
 pub enum Style {
@@ -44,37 +42,30 @@ impl Component for Media {
     type Message = ();
     type Properties = Props;
 
-    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        Self { props }
+    fn create(_ctx: &Context<Self>) -> Self {
+        Self
     }
 
-    fn change(&mut self, props: Props) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
+    fn changed(&mut self, _ctx: &Context<Self>) -> bool {
+        true
     }
 
-    fn update(&mut self, _msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, _ctx: &Context<Self>, _msg: Self::Message) -> bool {
         false
     }
 
-    fn view(&self) -> Html {
-        let classes = format!(
-            "mdc-card__media {} {}",
-            self.props.style, self.props.classes
-        );
-        if self.props.children.is_empty() {
+    fn view(&self, ctx: &Context<Self>) -> Html {
+        let props = ctx.props();
+        let classes = format!("mdc-card__media {} {}", props.style, props.classes);
+        if props.children.is_empty() {
             html! {
-                <div id=self.props.id.clone() class=classes></div>
+                <div id={props.id.clone()} class={classes}></div>
             }
         } else {
             html! {
-                <div id=self.props.id.clone() class=classes style=self.props.raw_css.clone()>
+                <div id={props.id.clone()} class={classes} style={props.raw_css.clone()}>
                     <div class="mdc-card__media-content">
-                        { self.props.children.clone() }
+                        { props.children.clone() }
                     </div>
                 </div>
             }

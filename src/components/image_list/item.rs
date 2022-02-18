@@ -5,10 +5,7 @@ pub use image::Image;
 pub mod supporting;
 pub use supporting::Supporting;
 
-pub struct Item {
-    props: Props,
-    link: ComponentLink<Self>,
-}
+pub struct Item;
 
 #[derive(Properties, Clone, PartialEq)]
 pub struct Props {
@@ -35,38 +32,33 @@ impl Component for Item {
     type Message = Msg;
     type Properties = Props;
 
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        Self { props, link }
+    fn create(_ctx: &Context<Self>) -> Self {
+        Self
     }
 
-    fn change(&mut self, props: Props) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
+    fn changed(&mut self, _ctx: &Context<Self>) -> bool {
+        true
     }
 
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         let (callback, event) = match msg {
-            Msg::Clicked(ev) => (&self.props.onclick, ev),
-            Msg::MouseEnter(ev) => (&self.props.onmouseenter, ev),
-            Msg::MouseLeave(ev) => (&self.props.onmouseleave, ev),
+            Msg::Clicked(ev) => (&ctx.props().onclick, ev),
+            Msg::MouseEnter(ev) => (&ctx.props().onmouseenter, ev),
+            Msg::MouseLeave(ev) => (&ctx.props().onmouseleave, ev),
         };
         callback.emit(event);
         false
     }
 
-    fn view(&self) -> Html {
+    fn view(&self, ctx: &Context<Self>) -> Html {
         html! {
-            <li id=self.props.id.clone()
-                class=format!("mdc-image-list__item {}", self.props.classes)
-                onclick=self.link.callback(Msg::Clicked)
-                onmouseenter=self.link.callback(Msg::MouseEnter)
-                onmouseleave=self.link.callback(Msg::MouseLeave)
+            <li id={ctx.props().id.clone()}
+                class={format!("mdc-image-list__item {}", ctx.props().classes)}
+                onclick={ctx.link().callback(Msg::Clicked)}
+                onmouseenter={ctx.link().callback(Msg::MouseEnter)}
+                onmouseleave={ctx.link().callback(Msg::MouseLeave)}
                 >
-                { self.props.children.clone() }
+                { ctx.props().children.clone() }
             </li>
         }
     }
