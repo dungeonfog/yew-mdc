@@ -1,9 +1,6 @@
 use yew::prelude::*;
 
-pub struct Item {
-    props: Props,
-    link: ComponentLink<Self>,
-}
+pub struct Item;
 
 #[derive(Properties, Clone, PartialEq)]
 pub struct Props {
@@ -27,47 +24,42 @@ impl Component for Item {
     type Message = Msg;
     type Properties = Props;
 
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        Self { props, link }
+    fn create(_ctx: &Context<Self>) -> Self {
+        Self
     }
 
-    fn change(&mut self, props: Props) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
+    fn changed(&mut self, _ctx: &Context<Self>) -> bool {
+        true
     }
 
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             Msg::Clicked(ev) => {
-                if !self.props.disabled {
-                    self.props.onclick.emit(ev);
+                if !ctx.props().disabled {
+                    ctx.props().onclick.emit(ev);
                 }
             }
         }
         false
     }
 
-    fn view(&self) -> Html {
-        let classes = if self.props.disabled {
+    fn view(&self, ctx: &Context<Self>) -> Html {
+        let classes = if ctx.props().disabled {
             "mdc-list-item mdc-list-item--disabled"
         } else {
             "mdc-list-item"
         };
-        let onclick = self.link.callback(Msg::Clicked);
-        let text = if self.props.text.is_empty() {
+        let onclick = ctx.link().callback(Msg::Clicked);
+        let text = if ctx.props().text.is_empty() {
             html! {}
         } else {
             html! {
-                <span class="mdc-list-item__text">{ &self.props.text }</span>
+                <span class="mdc-list-item__text">{ &ctx.props().text }</span>
             }
         };
         html! {
-            <li class=classes role="menuitem" id=self.props.id.clone() onclick=onclick>
-                { self.props.children.clone() }
+            <li class={classes} role="menuitem" id={ctx.props().id.clone()} onclick={onclick}>
+                { ctx.props().children.clone() }
                 { text }
             </li>
         }

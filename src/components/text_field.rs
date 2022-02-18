@@ -1,5 +1,6 @@
 use crate::mdc_sys::MDCTextField;
-use web_sys::Element;
+use wasm_bindgen::JsCast;
+use web_sys::{Element, EventTarget, HtmlInputElement};
 use yew::prelude::*;
 
 pub mod helper_line;
@@ -10,8 +11,6 @@ pub mod text_area;
 pub struct TextField {
     node_ref: NodeRef,
     inner: Option<MDCTextField>,
-    props: Props,
-    link: ComponentLink<Self>,
 }
 
 #[derive(PartialEq, Properties, Clone, Debug)]
@@ -50,20 +49,18 @@ impl Component for TextField {
     type Message = Msg;
     type Properties = Props;
 
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        if let Some(ref callback) = props.evil_gimme_focus_callback {
-            let my_callback = link.callback(|_| Msg::FocusRequested);
+    fn create(ctx: &Context<Self>) -> Self {
+        if let Some(ref callback) = ctx.props().evil_gimme_focus_callback {
+            let my_callback = ctx.link().callback(|_| Msg::FocusRequested);
             callback.emit(my_callback);
         }
         Self {
             node_ref: NodeRef::default(),
-            props,
             inner: None,
-            link,
         }
     }
 
-    fn rendered(&mut self, first_render: bool) {
+    fn rendered(&mut self, _ctx: &Context<Self>, first_render: bool) {
         if first_render {
             if let Some(inner) = self.inner.take() {
                 inner.destroy();
@@ -72,29 +69,24 @@ impl Component for TextField {
         }
     }
 
-    fn change(&mut self, props: Props) -> ShouldRender {
-        if props != self.props {
-            if let Some(ref callback) = props.evil_gimme_focus_callback {
-                let my_callback = self.link.callback(|_| Msg::FocusRequested);
-                callback.emit(my_callback);
-            }
-            self.props = props;
-            if let Some(inner) = &self.inner {
-                inner.set_value(&self.props.value);
-            }
-            true
-        } else {
-            false
+    fn changed(&mut self, ctx: &Context<Self>) -> bool {
+        if let Some(ref callback) = ctx.props().evil_gimme_focus_callback {
+            let my_callback = ctx.link().callback(|_| Msg::FocusRequested);
+            callback.emit(my_callback);
         }
+        if let Some(inner) = &self.inner {
+            inner.set_value(&ctx.props().value);
+        }
+        true
     }
 
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             Msg::ValueChanged(s) => {
-                self.props.onchange.emit(s);
+                ctx.props().onchange.emit(s);
             }
             Msg::KeyDown(e) => {
-                self.props.onkeydown.emit(e);
+                ctx.props().onkeydown.emit(e);
             }
             Msg::FocusRequested => {
                 if let Some(ref inner) = self.inner {
@@ -105,37 +97,40 @@ impl Component for TextField {
         false
     }
 
-    fn view(&self) -> Html {
-        let disabled = if self.props.disabled {
+    fn view(&self, ctx: &Context<Self>) -> Html {
+        let disabled = if ctx.props().disabled {
             " mdc-text-field--disabled"
         } else {
             ""
         };
-        let outlined = if self.props.outlined {
+        let outlined = if ctx.props().outlined {
             " mdc-text-field--outlined"
         } else {
             ""
         };
-        let nolabel = if self.props.nolabel {
+        let nolabel = if ctx.props().nolabel {
             " mdc-text-field--no-label"
         } else {
             ""
         };
         let classes = format!(
             "mdc-text-field{}{}{} {}",
-            disabled, outlined, nolabel, self.props.classes
+            disabled,
+            outlined,
+            nolabel,
+            ctx.props().classes
         );
-        let label = if self.props.nolabel {
+        let label = if ctx.props().nolabel {
             html! {}
         } else {
             html! {
                 <label class="mdc-floating-label">
-                    { &self.props.hint }
+                    { &ctx.props().hint }
                 </label>
             }
         };
-        let inner = if self.props.outlined {
-            let notch = if self.props.nolabel {
+        let inner = if ctx.props().outlined {
+            let notch = if ctx.props().nolabel {
                 html! {}
             } else {
                 html! {
@@ -157,31 +152,34 @@ impl Component for TextField {
                 { label }
             </> }
         };
-        let placeholder = if self.props.nolabel && !self.props.hint.is_empty() {
-            self.props.hint.clone()
+        let placeholder = if ctx.props().nolabel && !ctx.props().hint.is_empty() {
+            ctx.props().hint.clone()
         } else {
             "".to_string()
         };
-        let oninput = self
-            .link
-            .callback(|e: InputData| Msg::ValueChanged(e.value));
+        let oninput = ctx.link().batch_callback(|e: InputEvent| {
+            let target: Option<EventTarget> = e.target();
+            let input = target.and_then(|t| t.dyn_into::<HtmlInputElement>().ok());
+
+            input.map(|input| Msg::ValueChanged(input.value()))
+        });
         html! {
-            <div class=classes id=self.props.id.clone() ref=self.node_ref.clone()>
-                { self.props.children.clone() }
+            <div class={classes} id={ctx.props().id.clone()} ref={self.node_ref.clone()}>
+                { ctx.props().children.clone() }
                 <input type="text"
-                       value=self.props.value.clone()
+                       value={ctx.props().value.clone()}
                        class="mdc-text-field__input"
-                       oninput=oninput
-                       onkeydown=self.link.callback(Msg::KeyDown)
-                       disabled=self.props.disabled
-                       placeholder=placeholder
+                       oninput={oninput}
+                       onkeydown={ctx.link().callback(Msg::KeyDown)}
+                       disabled={ctx.props().disabled}
+                       placeholder={placeholder}
                     />
                 { inner }
             </div>
         }
     }
 
-    fn destroy(&mut self) {
+    fn destroy(&mut self, _ctx: &Context<Self>) {
         if let Some(inner) = &self.inner {
             inner.destroy();
         }

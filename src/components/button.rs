@@ -5,8 +5,6 @@ use yew::prelude::*;
 pub struct Button {
     node_ref: NodeRef,
     ripple: Option<MDCRipple>,
-    props: Props,
-    link: ComponentLink<Self>,
 }
 
 #[derive(PartialEq, Clone, Copy, Debug)]
@@ -64,26 +62,14 @@ impl Component for Button {
     type Properties = Props;
     type Message = Msg;
 
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        #[cfg(feature = "dialog")]
-        let props = if props.dialog_data.is_some() && !props.classes.contains("mdc-dialog__button")
-        {
-            Props {
-                classes: props.classes + " mdc-dialog__button",
-                ..props
-            }
-        } else {
-            props
-        };
+    fn create(_ctx: &Context<Self>) -> Self {
         Self {
             node_ref: NodeRef::default(),
             ripple: None,
-            props,
-            link,
         }
     }
 
-    fn rendered(&mut self, first_render: bool) {
+    fn rendered(&mut self, _ctx: &Context<Self>, first_render: bool) {
         if first_render {
             if let Some(ripple) = self.ripple.take() {
                 ripple.destroy();
@@ -92,66 +78,63 @@ impl Component for Button {
         }
     }
 
-    fn change(&mut self, props: Props) -> ShouldRender {
-        #[cfg(feature = "dialog")]
-        let props = if props.dialog_data.is_some() && !props.classes.contains("mdc-dialog__button")
-        {
-            Props {
-                classes: props.classes + " mdc-dialog__button",
-                ..props
-            }
-        } else {
-            props
-        };
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
+    fn changed(&mut self, _ctx: &Context<Self>) -> bool {
+        true
     }
 
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             Msg::Clicked(ev) => {
-                self.props.onclick.emit(ev);
+                ctx.props().onclick.emit(ev);
             }
         }
         false
     }
 
-    fn view(&self) -> Html {
-        let inner = if self.props.trailingicon {
+    fn view(&self, ctx: &Context<Self>) -> Html {
+        #[cfg(feature = "dialog")]
+        let props = ctx.props();
+        let props = if props.dialog_data.is_some() && !props.classes.contains("mdc-dialog__button")
+        {
+            Props {
+                classes: props.classes.clone() + " mdc-dialog__button",
+                ..(props.clone())
+            }
+        } else {
+            props.clone()
+        };
+
+        let inner = if props.trailingicon {
             html! { <>
-                <span class="mdc-button__label">{ &self.props.text }</span>
-                { self.props.children.clone() }
+                <span class="mdc-button__label">{ &props.text }</span>
+                { props.children.clone() }
             </> }
         } else {
             html! { <>
-                { self.props.children.clone() }
-                <span class="mdc-button__label">{ &self.props.text }</span>
+                { props.children.clone() }
+                <span class="mdc-button__label">{ &props.text }</span>
             </> }
         };
-        let classes = format!("mdc-button {} {}", self.props.style, self.props.classes);
-        if let Some(action) = self.props.dialog_data.clone() {
+        let classes = format!("mdc-button {} {}", props.style, props.classes);
+        if let Some(action) = props.dialog_data.clone() {
             html! {
-                <button class=classes
-                        id=self.props.id.clone()
-                        ref=self.node_ref.clone()
-                        disabled=self.props.disabled
-                        data-mdc-dialog-action=action>
+                <button class={classes}
+                        id={props.id.clone()}
+                        ref={self.node_ref.clone()}
+                        disabled={props.disabled}
+                        data-mdc-dialog-action={action}>
                     <div class="mdc-button__ripple"></div>
                     { inner }
                 </button>
             }
         } else {
-            let onclick = self.link.callback(Msg::Clicked);
+            let onclick = ctx.link().callback(Msg::Clicked);
             html! {
-                <button class=classes
-                        id=self.props.id.clone()
-                        ref=self.node_ref.clone()
-                        disabled=self.props.disabled
-                        onclick=onclick>
+                <button class={classes}
+                        id={props.id.clone()}
+                        ref={self.node_ref.clone()}
+                        disabled={props.disabled}
+                        onclick={onclick}>
                     <div class="mdc-button__ripple"></div>
                     { inner }
                 </button>
@@ -159,7 +142,7 @@ impl Component for Button {
         }
     }
 
-    fn destroy(&mut self) {
+    fn destroy(&mut self, _ctx: &Context<Self>) {
         if let Some(ripple) = &self.ripple {
             ripple.destroy();
         }

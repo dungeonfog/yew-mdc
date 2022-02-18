@@ -1,8 +1,6 @@
 use yew::prelude::*;
 
-pub struct Header {
-    props: Props,
-}
+pub struct Header;
 
 #[derive(Properties, Clone, PartialEq)]
 pub struct Props {
@@ -15,27 +13,22 @@ impl Component for Header {
     type Message = ();
     type Properties = Props;
 
-    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        Self { props }
+    fn create(_ctx: &Context<Self>) -> Self {
+        Self
     }
 
-    fn change(&mut self, props: Props) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
+    fn changed(&mut self, _ctx: &Context<Self>) -> bool {
+        true
     }
 
-    fn update(&mut self, _msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, _ctx: &Context<Self>, _msg: Self::Message) -> bool {
         false
     }
 
-    fn view(&self) -> Html {
+    fn view(&self, ctx: &Context<Self>) -> Html {
         html! {
-            <div class="mdc-drawer__header" id=self.props.id.clone()>
-                { self.props.children.clone() }
+            <div class="mdc-drawer__header" id={ctx.props().id.clone()}>
+                { ctx.props().children.clone() }
             </div>
         }
     }

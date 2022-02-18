@@ -2,7 +2,6 @@
 use yew::prelude::*;
 
 pub struct TabIndicator {
-    props: Props,
     //inner: Option<MDCTabIndicator>,
 }
 
@@ -21,41 +20,34 @@ impl Component for TabIndicator {
     type Message = ();
     type Properties = Props;
 
-    fn create(props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-        Self { props }
+    fn create(_ctx: &Context<Self>) -> Self {
+        Self {}
     }
 
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
+    fn changed(&mut self, _ctx: &Context<Self>) -> bool {
+        true
     }
 
-    fn update(&mut self, _msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, _ctx: &Context<Self>, _msg: Self::Message) -> bool {
         false
     }
 
-    fn view(&self) -> Html {
-        let fading = if self.props.fading {
+    fn view(&self, ctx: &Context<Self>) -> Html {
+        let fading = if ctx.props().fading {
             " mdc-tab-indicator--fade"
         } else {
             ""
         };
-        let active = if self.props.active {
+        let active = if ctx.props().active {
             " mdc-tab-indicator--active"
         } else {
             ""
         };
         let classes = format!("mdc-tab-indicator{}{}", fading, active);
         html! {
-            <span class=classes id=self.props.id.clone()>
+            <span class={classes} id={ctx.props().id.clone()}>
                 <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
             </span>
         }
     }
-
-    fn destroy(&mut self) {}
 }

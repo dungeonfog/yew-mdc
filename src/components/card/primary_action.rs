@@ -4,9 +4,7 @@ use yew::prelude::*;
 
 pub struct PrimaryAction {
     node_ref: NodeRef,
-    props: Props,
     ripple: Option<MDCRipple>,
-    link: ComponentLink<Self>,
 }
 
 #[derive(Properties, Clone, PartialEq)]
@@ -29,16 +27,14 @@ impl Component for PrimaryAction {
     type Message = Msg;
     type Properties = Props;
 
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
+    fn create(_ctx: &Context<Self>) -> Self {
         Self {
             node_ref: NodeRef::default(),
-            props,
             ripple: None,
-            link,
         }
     }
 
-    fn rendered(&mut self, first_render: bool) {
+    fn rendered(&mut self, _ctx: &Context<Self>, first_render: bool) {
         if first_render {
             if let Some(ripple) = self.ripple.take() {
                 ripple.destroy();
@@ -47,47 +43,42 @@ impl Component for PrimaryAction {
         }
     }
 
-    fn change(&mut self, props: Props) -> ShouldRender {
-        if self.props != props {
-            self.props = props;
-            true
-        } else {
-            false
-        }
+    fn changed(&mut self, _ctx: &Context<Self>) -> bool {
+        true
     }
 
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             Msg::LeftClick(event) => {
-                self.props.onclick.emit(event);
+                ctx.props().onclick.emit(event);
             }
             Msg::RightClick(event) => {
-                if self.props.oncontextclick != Callback::noop() {
+                if ctx.props().oncontextclick != Callback::noop() {
                     event.prevent_default();
                 }
-                self.props.oncontextclick.emit(event);
+                ctx.props().oncontextclick.emit(event);
             }
         }
         false
     }
 
-    fn view(&self) -> Html {
-        let emit_click = self.link.callback(Msg::LeftClick);
-        let emit_contextclick = self.link.callback(Msg::RightClick);
+    fn view(&self, ctx: &Context<Self>) -> Html {
+        let emit_click = ctx.link().callback(Msg::LeftClick);
+        let emit_contextclick = ctx.link().callback(Msg::RightClick);
         html! {
             <div
-                id=self.props.id.clone()
-                ref=self.node_ref.clone()
+                id={ctx.props().id.clone()}
+                ref={self.node_ref.clone()}
                 class="mdc-card__primary-action"
                 tabindex="0"
-                onclick=emit_click
-                oncontextmenu=emit_contextclick>
-                { self.props.children.clone() }
+                onclick={emit_click}
+                oncontextmenu={emit_contextclick}>
+                { ctx.props().children.clone() }
             </div>
         }
     }
 
-    fn destroy(&mut self) {
+    fn destroy(&mut self, _ctx: &Context<Self>) {
         if let Some(ripple) = &self.ripple {
             ripple.destroy();
         }
