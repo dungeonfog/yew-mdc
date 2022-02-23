@@ -6,6 +6,38 @@ use yew::prelude::*;
 pub mod item;
 pub use item::Item;
 
+#[derive(Clone, PartialEq)]
+pub enum Corner {
+    TopLeft,
+    TopRight,
+    BottomLeft,
+    BottomRight,
+    TopStart,
+    TopEnd,
+    BottomStart,
+    BottomEnd,
+}
+
+impl Corner {
+    fn get_js_enum_value(&self) -> f64 {
+        let js_enum_name = match self {
+            Corner::TopLeft => "TOP_LEFT",
+            Corner::TopRight => "TOP_RIGHT",
+            Corner::BottomLeft => "BOTTOM_LEFT",
+            Corner::BottomRight => "BOTTOM_RIGHT",
+            Corner::TopStart => "TOP_START",
+            Corner::TopEnd => "TOP_END",
+            Corner::BottomStart => "BOTTOM_START",
+            Corner::BottomEnd => "BOTTOM_END",
+        };
+
+        js_sys::Reflect::get(&crate::mdc_sys::Corner, &JsValue::from_str(js_enum_name))
+            .unwrap()
+            .as_f64()
+            .unwrap()
+    }
+}
+
 pub struct Menu {
     node_ref: NodeRef,
     inner: Option<MDCMenu>,
@@ -26,6 +58,8 @@ pub struct Props {
     pub open: bool,
     #[prop_or_else(Callback::noop)]
     pub onclose: Callback<()>,
+    #[prop_or(Corner::TopLeft)]
+    pub corner: Corner,
 }
 
 pub enum Msg {
@@ -52,6 +86,7 @@ impl Component for Menu {
 
     fn changed(&mut self, ctx: &Context<Self>) -> bool {
         if let Some(inner) = &self.inner {
+            inner.set_anchor_corner(ctx.props().corner.get_js_enum_value());
             inner.set_open(ctx.props().open);
             inner.set_fixed_position(ctx.props().fixed_position);
             if let Some((x, y)) = ctx.props().absolute_position {
@@ -77,6 +112,7 @@ impl Component for Menu {
             if let Some(elem) = self.node_ref.cast::<Element>() {
                 // Our root element has the mdc-menu class...
                 let menu = MDCMenu::new(elem.clone());
+                menu.set_anchor_corner(ctx.props().corner.get_js_enum_value());
                 menu.set_fixed_position(ctx.props().fixed_position);
                 if let Some((x, y)) = ctx.props().absolute_position {
                     menu.set_absolute_position(x, y);
