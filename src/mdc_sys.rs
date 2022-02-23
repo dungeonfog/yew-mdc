@@ -114,7 +114,7 @@ extern "C" {
     pub fn set_wrap_focus(this: &MDCMenu, wrap_focus: bool);
 
     #[wasm_bindgen(method, js_name = setAnchorCorner)]
-    pub fn set_anchor_corner(this: &MDCMenu, corner: js_sys::Object);
+    pub fn set_anchor_corner(this: &MDCMenu, corner: f64);
     #[wasm_bindgen(method, js_name = setAnchorMargin)]
     pub fn set_anchor_margin(this: &MDCMenu, distance: js_sys::Object);
 
@@ -143,6 +143,9 @@ extern "C" {
 #[cfg(feature = "menu")]
 #[wasm_bindgen(module = "@material/menu-surface/index")]
 extern "C" {
+    #[allow(non_upper_case_globals)]
+    pub static Corner: js_sys::Object;
+
     /// The MDC Menu Surface component is a reusable surface that appears above
     /// the content of the page and can be positioned adjacent to an element.
     /// Menu Surfaces require JavaScript to properly position themselves when opening.
