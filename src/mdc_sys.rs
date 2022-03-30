@@ -518,3 +518,19 @@ extern "C" {
     #[wasm_bindgen(method, js_name = layoutOptions)]
     pub fn layout_options(this: &MDCSelect);
 }
+
+#[cfg(feature = "drawer")]
+#[wasm_bindgen(module = "@material/drawer")]
+extern "C" {
+    #[wasm_bindgen(extends = MDCComponent)]
+    pub type MDCDrawer;
+
+    #[wasm_bindgen(constructor)]
+    pub fn new(drawer: Element) -> MDCDrawer;
+
+    #[wasm_bindgen(method, getter)]
+    pub fn open(this: &MDCDrawer) -> bool;
+
+    #[wasm_bindgen(method, setter, js_name = open)]
+    pub fn set_open(this: &MDCDrawer, value: bool);
+}
