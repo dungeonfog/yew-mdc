@@ -23,6 +23,7 @@ default = [
     'image-list',
     'tabs',
     'select',
+    'list',
 ]
 button = []
 fab = []
